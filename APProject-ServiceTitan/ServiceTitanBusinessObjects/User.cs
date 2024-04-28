@@ -24,19 +24,34 @@ namespace ServiceTitanBusinessObjects
 
         [Required]
         [MaxLength(50)]
-        [Column("username")]
         public string UserName { get; set; }
 
         [Required]
         [MaxLength(50)]
-        [Column ("email")]
         [RegularExpression("#emailregexgoeshere")]
         public string UserEmail { get; set; }
 
         [Required]
         [MaxLength(50)]
-        [Column("password")]
         public string Password { get; set; }
+
+        [Required]
+        [Column("role_id")]
+        public UserRole RoleID { get; set; }
+
+        public Category ManagerForCategory { get; set; }
+
+        public ICollection<Service> Services { get; set; }
+
+        public ICollection<ServiceRequest> ServiceRequests { get; set; }
+
+        public ICollection<Notification> Notifications { get; set; }
+
+        public ICollection<Comment> Comments { get; set; }
+
+        public ICollection<Document> Documents { get; set; }
+
+        public ICollection<Log> Logs { get; set; }
 
 
     }

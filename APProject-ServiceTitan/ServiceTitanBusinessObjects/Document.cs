@@ -31,7 +31,9 @@ namespace ServiceTitanBusinessObjects
 
         [Required]
         [Column("document_path")]
-        [MaxLength(int.MaxValue)]
         public string DocumentPath { get; set; }
+
+        [Required]
+        public User User { get; set; }
     }
 }

@@ -24,6 +24,10 @@ namespace ServiceTitanBusinessObjects
         [Column("comment_date")]
         public DateTime CommentDate { get; set; }
 
+        [Required]
+        public User User { get; set; }
 
+        [Required]
+        public ServiceRequest ServiceRequest { get; set; }
     }
 }

@@ -21,7 +21,6 @@ namespace ServiceTitanBusinessObjects
         public string ServiceName { get; set; }
 
         [Required]
-        [MaxLength(200)]
         [Column("service_description")]
         public string ServiceDescription { get; set; }
 
@@ -29,6 +28,11 @@ namespace ServiceTitanBusinessObjects
         [Column("service_price")]
         public float ServiceType { get; set; }
 
+        [Required]
+        public Category Category { get; set; }
 
+        public ICollection<User> Technicians { get; set; }
+
+        public ICollection<ServiceRequest> ServiceRequests { get; set; }
     }
 }

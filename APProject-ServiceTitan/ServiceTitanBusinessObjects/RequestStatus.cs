@@ -16,7 +16,10 @@ namespace ServiceTitanBusinessObjects
         public int StatusID { get; set; }
 
         [Required]
+        [MaxLength(15)]
         [Column("request_status")]
         public string Status { get; set; }
+
+        public ICollection<ServiceRequest> ServiceRequests { get; set; }
     }
 }

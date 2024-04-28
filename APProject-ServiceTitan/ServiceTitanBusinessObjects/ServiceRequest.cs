@@ -12,11 +12,10 @@ namespace ServiceTitanBusinessObjects
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("service_request")]
+        [Column("request_id")]
         public int RequestID { get; set; }
 
         //[Required]
-        [MaxLength(50)]
         [Column("request_description")]
         public string RequestDescription { get; set; }
 
@@ -28,7 +27,16 @@ namespace ServiceTitanBusinessObjects
         [Column("request_date_needed")]
         public DateTime RequestDateNeeded { get; set; }
 
+        [Required]
+        public User User { get; set; }
 
+        public ICollection<Comment> Comments { get; set; }
+
+        [Required]
+        public Service Service { get; set; }
+
+        [Required]
+        public RequestStatus Status { get; set; }
 
 
     }
