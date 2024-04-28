@@ -8,8 +8,14 @@ using System.Threading.Tasks;
 
 namespace ServiceTitanBusinessObjects
 {
+    public enum NotificationStatus
+    {
+        unread = 1,
+        read = 2
+    }
     public class Notification
     {
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("notification_id")]
@@ -18,9 +24,9 @@ namespace ServiceTitanBusinessObjects
         [Column("notification_message")]
         public string NotificationMessage { get; set; }
 
-        //[Column("notification_title")]
-        //[MaxLength(100)]
-        //public string NotificationTitle { get; set; }
+        [Column("notification_title")]
+        [MaxLength(100)]
+        public string NotificationTitle { get; set; }
 
         [Required]
         [MaxLength(15)]

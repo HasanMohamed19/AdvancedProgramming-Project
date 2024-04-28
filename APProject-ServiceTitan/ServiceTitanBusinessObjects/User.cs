@@ -39,7 +39,7 @@ namespace ServiceTitanBusinessObjects
         [Column("role_id")]
         public UserRole RoleID { get; set; }
 
-        public Category ManagerForCategory { get; set; }
+        public ICollection<Category> Categories { get; set; }
 
         public ICollection<Service> Services { get; set; }
 
