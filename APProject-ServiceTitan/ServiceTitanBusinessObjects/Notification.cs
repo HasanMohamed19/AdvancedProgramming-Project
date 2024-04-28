@@ -8,11 +8,6 @@ using System.Threading.Tasks;
 
 namespace ServiceTitanBusinessObjects
 {
-    public enum NotificationStatus
-    {
-        unread = 1,
-        read = 2
-    }
     public class Notification
     {
 
