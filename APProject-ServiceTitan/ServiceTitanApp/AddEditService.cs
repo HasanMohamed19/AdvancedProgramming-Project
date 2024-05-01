@@ -10,16 +10,11 @@ using System.Windows.Forms;
 
 namespace ServiceTitanApp
 {
-    public partial class Header : UserControl
+    public partial class AddEditService : Form
     {
-        public Header()
+        public AddEditService()
         {
             InitializeComponent();
-        }
-
-        public void ShowSignOut(bool visible)
-        {
-            btnSignOut.Visible = visible;
         }
     }
 }

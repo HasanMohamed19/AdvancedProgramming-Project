@@ -13,5 +13,10 @@ namespace ServiceTitanApp
         {
             Helper.SetForm(destinationForm, pnlContent);
         }
+
+        public void ShowSignOut(bool visible)
+        {
+            header.ShowSignOut(visible);
+        }
     }
 }

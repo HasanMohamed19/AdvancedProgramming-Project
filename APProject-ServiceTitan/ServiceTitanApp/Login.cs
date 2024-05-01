@@ -20,6 +20,8 @@ namespace ServiceTitanApp
             InitializeComponent();
             this.parentForm = parent;
             this.context = new ServiceTitanDBContext();
+            // sign out button should not appear on login screen
+            parent.ShowSignOut(false);
         }
     }
 }

@@ -29,19 +29,28 @@
         private void InitializeComponent()
         {
             pnlHeader = new Panel();
+            header = new Header();
             pnlContent = new Panel();
-            header1 = new Header();
             pnlHeader.SuspendLayout();
             SuspendLayout();
             // 
             // pnlHeader
             // 
-            pnlHeader.Controls.Add(header1);
+            pnlHeader.Controls.Add(header);
             pnlHeader.Dock = DockStyle.Top;
             pnlHeader.Location = new Point(0, 0);
             pnlHeader.Name = "pnlHeader";
             pnlHeader.Size = new Size(1000, 100);
             pnlHeader.TabIndex = 0;
+            // 
+            // header
+            // 
+            header.Dock = DockStyle.Fill;
+            header.Location = new Point(0, 0);
+            header.Margin = new Padding(0);
+            header.Name = "header";
+            header.Size = new Size(1000, 100);
+            header.TabIndex = 0;
             // 
             // pnlContent
             // 
@@ -50,15 +59,6 @@
             pnlContent.Name = "pnlContent";
             pnlContent.Size = new Size(1000, 500);
             pnlContent.TabIndex = 1;
-            // 
-            // header1
-            // 
-            header1.Dock = DockStyle.Fill;
-            header1.Location = new Point(0, 0);
-            header1.Margin = new Padding(0);
-            header1.Name = "header1";
-            header1.Size = new Size(1000, 100);
-            header1.TabIndex = 0;
             // 
             // BaseForm
             // 
@@ -79,6 +79,6 @@
 
         private Panel pnlHeader;
         private Panel pnlContent;
-        private Header header1;
+        private Header header;
     }
 }
