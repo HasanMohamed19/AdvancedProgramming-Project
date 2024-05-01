@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             tblSide = new TableLayoutPanel();
-            btnCategories = new Button();
-            btnServices = new Button();
-            btnMonitor = new Button();
+            btnManageCategories = new Button();
+            btnManageServices = new Button();
+            btnViewCategories = new Button();
             tblMain = new TableLayoutPanel();
             tblSide.SuspendLayout();
             SuspendLayout();
@@ -40,9 +40,9 @@
             // 
             tblSide.ColumnCount = 1;
             tblSide.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tblSide.Controls.Add(btnCategories, 0, 1);
-            tblSide.Controls.Add(btnServices, 0, 2);
-            tblSide.Controls.Add(btnMonitor, 0, 3);
+            tblSide.Controls.Add(btnManageCategories, 0, 1);
+            tblSide.Controls.Add(btnManageServices, 0, 3);
+            tblSide.Controls.Add(btnViewCategories, 0, 2);
             tblSide.Dock = DockStyle.Left;
             tblSide.Location = new Point(0, 0);
             tblSide.Name = "tblSide";
@@ -55,35 +55,35 @@
             tblSide.Size = new Size(250, 500);
             tblSide.TabIndex = 0;
             // 
-            // btnCategories
+            // btnManageCategories
             // 
-            btnCategories.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            btnCategories.Location = new Point(3, 141);
-            btnCategories.Name = "btnCategories";
-            btnCategories.Size = new Size(244, 57);
-            btnCategories.TabIndex = 0;
-            btnCategories.Text = "Manage Categories";
-            btnCategories.UseVisualStyleBackColor = true;
+            btnManageCategories.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            btnManageCategories.Location = new Point(3, 141);
+            btnManageCategories.Name = "btnManageCategories";
+            btnManageCategories.Size = new Size(244, 57);
+            btnManageCategories.TabIndex = 0;
+            btnManageCategories.Text = "Manage Categories";
+            btnManageCategories.UseVisualStyleBackColor = true;
             // 
-            // btnServices
+            // btnManageServices
             // 
-            btnServices.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            btnServices.Location = new Point(3, 220);
-            btnServices.Name = "btnServices";
-            btnServices.Size = new Size(244, 57);
-            btnServices.TabIndex = 1;
-            btnServices.Text = "Manage Services";
-            btnServices.UseVisualStyleBackColor = true;
+            btnManageServices.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            btnManageServices.Location = new Point(3, 299);
+            btnManageServices.Name = "btnManageServices";
+            btnManageServices.Size = new Size(244, 57);
+            btnManageServices.TabIndex = 1;
+            btnManageServices.Text = "Manage Services";
+            btnManageServices.UseVisualStyleBackColor = true;
             // 
-            // btnMonitor
+            // btnViewCategories
             // 
-            btnMonitor.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            btnMonitor.Location = new Point(3, 299);
-            btnMonitor.Name = "btnMonitor";
-            btnMonitor.Size = new Size(244, 57);
-            btnMonitor.TabIndex = 2;
-            btnMonitor.Text = "Monitor and Report";
-            btnMonitor.UseVisualStyleBackColor = true;
+            btnViewCategories.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            btnViewCategories.Location = new Point(3, 220);
+            btnViewCategories.Name = "btnViewCategories";
+            btnViewCategories.Size = new Size(244, 57);
+            btnViewCategories.TabIndex = 2;
+            btnViewCategories.Text = "View Categories";
+            btnViewCategories.UseVisualStyleBackColor = true;
             // 
             // tblMain
             // 
@@ -119,9 +119,9 @@
         #endregion
 
         private TableLayoutPanel tblSide;
-        private Button btnCategories;
+        private Button btnManageCategories;
         private TableLayoutPanel tblMain;
-        private Button btnServices;
-        private Button btnMonitor;
+        private Button btnManageServices;
+        private Button btnViewCategories;
     }
 }
