@@ -24,8 +24,9 @@ namespace ServiceTitanBusinessObjects
         [Column("comment_date")]
         public DateTime CommentDate { get; set; }
 
-        [Required]
-        public User User { get; set; }
+        // comments should stay if user gets deleted,
+        // hence the optional
+        public User? User { get; set; }
 
         [Required]
         public ServiceRequest ServiceRequest { get; set; }

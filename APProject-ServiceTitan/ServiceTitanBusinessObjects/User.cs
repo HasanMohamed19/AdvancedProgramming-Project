@@ -8,13 +8,6 @@ using System.Threading.Tasks;
 
 namespace ServiceTitanBusinessObjects
 {
-    public enum UserRole
-    {
-        admin = 1,
-        manager = 2,
-        technician = 3,
-        client = 4
-    }
     public class User
     {
         [Key]
@@ -36,7 +29,6 @@ namespace ServiceTitanBusinessObjects
         public string Password { get; set; }
 
         [Required]
-        [Column("role_id")]
         public UserRole RoleID { get; set; }
 
         public ICollection<Category> Categories { get; set; }

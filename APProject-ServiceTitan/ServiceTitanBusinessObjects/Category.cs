@@ -21,10 +21,12 @@ namespace ServiceTitanBusinessObjects
         public string CategoryName { get; set; }
 
         [Column("category_description")]
-        public string CategoryDescription { get; set; }
+        public string? CategoryDescription { get; set; }
 
+        // if category manager gets deleted, category should not delete
+        // which makes manager optional
         [Column("category_manager_id")]
-        public User CategoryManager { get; set; }
+        public User? CategoryManager { get; set; }
 
         public ICollection<Service> Services { get; set; }
     }

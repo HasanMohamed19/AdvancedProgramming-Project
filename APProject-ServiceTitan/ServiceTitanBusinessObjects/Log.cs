@@ -35,7 +35,7 @@ namespace ServiceTitanBusinessObjects
         public string Type { get; set; }
 
         [Required]
-        public User User { get; set; }
+        public User? User { get; set; }
 
     }
 }
