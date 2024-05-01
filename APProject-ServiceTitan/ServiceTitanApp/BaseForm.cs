@@ -6,7 +6,7 @@ namespace ServiceTitanApp
         public BaseForm()
         {
             InitializeComponent();
-            GoToForm(new Login(this));
+            GoToForm(new MainMenu(this));
         }
 
         public void GoToForm(Form destinationForm)

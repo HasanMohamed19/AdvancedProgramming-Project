@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ServiceTitanBusinessObjects;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,10 +14,12 @@ namespace ServiceTitanApp
     public partial class Login : Form
     {
         private BaseForm parentForm;
+        private ServiceTitanDBContext context;
         public Login(BaseForm parent)
         {
             InitializeComponent();
             this.parentForm = parent;
+            this.context = new ServiceTitanDBContext();
         }
     }
 }
