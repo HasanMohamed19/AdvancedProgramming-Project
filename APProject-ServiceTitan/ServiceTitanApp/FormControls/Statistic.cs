@@ -31,11 +31,6 @@ namespace ServiceTitanApp.FormControls
             picImage.Image = GetImage(imgNum);
         }
 
-        public void updateValues(string newValue)
-        {
-            this.lblValue.Text = newValue;
-        }
-
         private Image? GetImage(StatImages imgNum)
         {
             return Image.FromFile("Images\\"+imgNum.ToString()+".png");
