@@ -114,6 +114,7 @@
             Margin = new Padding(5, 6, 5, 6);
             Name = "MainMenu";
             Text = "MainMenu";
+            Load += MainMenu_Load;
             tblSide.ResumeLayout(false);
             ResumeLayout(false);
         }
