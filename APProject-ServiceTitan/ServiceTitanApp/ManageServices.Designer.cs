@@ -100,6 +100,7 @@
             btnRefresh.TabIndex = 3;
             btnRefresh.Text = "Refresh";
             btnRefresh.UseVisualStyleBackColor = true;
+            btnRefresh.Click += btnRefresh_Click;
             // 
             // btnSearch
             // 
@@ -111,6 +112,7 @@
             btnSearch.TabIndex = 2;
             btnSearch.Text = "Search";
             btnSearch.UseVisualStyleBackColor = true;
+            btnSearch.Click += btnSearch_Click;
             // 
             // txtSearch
             // 
@@ -160,6 +162,7 @@
             btnAddService.TabIndex = 3;
             btnAddService.Text = "Add Service";
             btnAddService.UseVisualStyleBackColor = true;
+            btnAddService.Click += btnAddService_Click;
             // 
             // btnEditService
             // 
@@ -171,6 +174,7 @@
             btnEditService.TabIndex = 4;
             btnEditService.Text = "Edit Service";
             btnEditService.UseVisualStyleBackColor = true;
+            btnEditService.Click += btnEditService_Click;
             // 
             // btnViewRequests
             // 
@@ -193,6 +197,7 @@
             btnDelete.TabIndex = 6;
             btnDelete.Text = "Delete";
             btnDelete.UseVisualStyleBackColor = true;
+            btnDelete.Click += btnDelete_Click;
             // 
             // btnBack
             // 

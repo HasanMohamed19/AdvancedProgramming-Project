@@ -29,34 +29,34 @@
         private void InitializeComponent()
         {
             tblForm = new TableLayoutPanel();
-            pnlTop = new Panel();
-            tblBottom = new TableLayoutPanel();
-            lblTitle = new Label();
-            tblID = new TableLayoutPanel();
-            lblServiceID = new Label();
-            txtServiceID = new TextBox();
-            tblName = new TableLayoutPanel();
-            lblName = new Label();
-            txtName = new TextBox();
-            tblCategory = new TableLayoutPanel();
-            lblCategory = new Label();
-            txtCategory = new TextBox();
+            lblDescription = new Label();
+            lblTechnicians = new Label();
             tblPrice = new TableLayoutPanel();
             lblPrice = new Label();
             txtPrice = new TextBox();
-            lblTechnicians = new Label();
-            lblDescription = new Label();
+            tblCategory = new TableLayoutPanel();
+            lblCategory = new Label();
+            txtCategory = new TextBox();
+            tblName = new TableLayoutPanel();
+            lblName = new Label();
+            txtName = new TextBox();
+            tblID = new TableLayoutPanel();
+            lblServiceID = new Label();
+            txtServiceID = new TextBox();
             chklistTechnicians = new CheckedListBox();
             txtDescription = new TextBox();
-            btnCancel = new Button();
+            pnlTop = new Panel();
+            lblTitle = new Label();
+            tblBottom = new TableLayoutPanel();
             btnSave = new Button();
+            btnCancel = new Button();
             tblForm.SuspendLayout();
+            tblPrice.SuspendLayout();
+            tblCategory.SuspendLayout();
+            tblName.SuspendLayout();
+            tblID.SuspendLayout();
             pnlTop.SuspendLayout();
             tblBottom.SuspendLayout();
-            tblID.SuspendLayout();
-            tblName.SuspendLayout();
-            tblCategory.SuspendLayout();
-            tblPrice.SuspendLayout();
             SuspendLayout();
             // 
             // tblForm
@@ -85,148 +85,27 @@
             tblForm.Size = new Size(644, 350);
             tblForm.TabIndex = 0;
             // 
-            // pnlTop
+            // lblDescription
             // 
-            pnlTop.Controls.Add(lblTitle);
-            pnlTop.Dock = DockStyle.Top;
-            pnlTop.Location = new Point(0, 0);
-            pnlTop.Name = "pnlTop";
-            pnlTop.Size = new Size(644, 42);
-            pnlTop.TabIndex = 0;
+            lblDescription.Dock = DockStyle.Fill;
+            lblDescription.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
+            lblDescription.Location = new Point(325, 92);
+            lblDescription.Name = "lblDescription";
+            lblDescription.Size = new Size(306, 46);
+            lblDescription.TabIndex = 6;
+            lblDescription.Text = "Description:";
+            lblDescription.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // tblBottom
+            // lblTechnicians
             // 
-            tblBottom.ColumnCount = 2;
-            tblBottom.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tblBottom.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tblBottom.Controls.Add(btnSave, 0, 0);
-            tblBottom.Controls.Add(btnCancel, 0, 0);
-            tblBottom.Dock = DockStyle.Bottom;
-            tblBottom.Location = new Point(0, 392);
-            tblBottom.Name = "tblBottom";
-            tblBottom.RowCount = 1;
-            tblBottom.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tblBottom.Size = new Size(644, 73);
-            tblBottom.TabIndex = 0;
-            // 
-            // lblTitle
-            // 
-            lblTitle.AutoSize = true;
-            lblTitle.Location = new Point(10, 6);
-            lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(121, 30);
-            lblTitle.TabIndex = 0;
-            lblTitle.Text = "Service Info";
-            // 
-            // tblID
-            // 
-            tblID.ColumnCount = 2;
-            tblID.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 34.782608F));
-            tblID.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 65.21739F));
-            tblID.Controls.Add(lblServiceID, 0, 0);
-            tblID.Controls.Add(txtServiceID, 1, 0);
-            tblID.Dock = DockStyle.Fill;
-            tblID.Location = new Point(10, 0);
-            tblID.Margin = new Padding(0);
-            tblID.Name = "tblID";
-            tblID.RowCount = 1;
-            tblID.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tblID.Size = new Size(312, 46);
-            tblID.TabIndex = 0;
-            // 
-            // lblServiceID
-            // 
-            lblServiceID.Dock = DockStyle.Fill;
-            lblServiceID.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            lblServiceID.Location = new Point(3, 0);
-            lblServiceID.Name = "lblServiceID";
-            lblServiceID.Size = new Size(102, 46);
-            lblServiceID.TabIndex = 0;
-            lblServiceID.Text = "Service ID:";
-            lblServiceID.TextAlign = ContentAlignment.MiddleRight;
-            // 
-            // txtServiceID
-            // 
-            txtServiceID.Anchor = AnchorStyles.None;
-            txtServiceID.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            txtServiceID.Location = new Point(111, 6);
-            txtServiceID.Name = "txtServiceID";
-            txtServiceID.ReadOnly = true;
-            txtServiceID.Size = new Size(198, 33);
-            txtServiceID.TabIndex = 1;
-            // 
-            // tblName
-            // 
-            tblName.ColumnCount = 2;
-            tblName.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 34.782608F));
-            tblName.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 65.21739F));
-            tblName.Controls.Add(lblName, 0, 0);
-            tblName.Controls.Add(txtName, 1, 0);
-            tblName.Dock = DockStyle.Fill;
-            tblName.Location = new Point(322, 0);
-            tblName.Margin = new Padding(0);
-            tblName.Name = "tblName";
-            tblName.RowCount = 1;
-            tblName.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tblName.Size = new Size(312, 46);
-            tblName.TabIndex = 2;
-            // 
-            // lblName
-            // 
-            lblName.Dock = DockStyle.Fill;
-            lblName.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            lblName.Location = new Point(3, 0);
-            lblName.Name = "lblName";
-            lblName.Size = new Size(102, 46);
-            lblName.TabIndex = 0;
-            lblName.Text = "Name:";
-            lblName.TextAlign = ContentAlignment.MiddleRight;
-            // 
-            // txtName
-            // 
-            txtName.Anchor = AnchorStyles.None;
-            txtName.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            txtName.Location = new Point(111, 6);
-            txtName.Name = "txtName";
-            txtName.Size = new Size(198, 33);
-            txtName.TabIndex = 2;
-            // 
-            // tblCategory
-            // 
-            tblCategory.ColumnCount = 2;
-            tblCategory.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 34.782608F));
-            tblCategory.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 65.21739F));
-            tblCategory.Controls.Add(lblCategory, 0, 0);
-            tblCategory.Controls.Add(txtCategory, 1, 0);
-            tblCategory.Dock = DockStyle.Fill;
-            tblCategory.Location = new Point(10, 46);
-            tblCategory.Margin = new Padding(0);
-            tblCategory.Name = "tblCategory";
-            tblCategory.RowCount = 1;
-            tblCategory.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tblCategory.Size = new Size(312, 46);
-            tblCategory.TabIndex = 3;
-            // 
-            // lblCategory
-            // 
-            lblCategory.Dock = DockStyle.Fill;
-            lblCategory.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            lblCategory.Location = new Point(3, 0);
-            lblCategory.Name = "lblCategory";
-            lblCategory.Size = new Size(102, 46);
-            lblCategory.TabIndex = 0;
-            lblCategory.Text = "Category:";
-            lblCategory.TextAlign = ContentAlignment.MiddleRight;
-            // 
-            // txtCategory
-            // 
-            txtCategory.Anchor = AnchorStyles.None;
-            txtCategory.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            txtCategory.Location = new Point(111, 6);
-            txtCategory.Name = "txtCategory";
-            txtCategory.ReadOnly = true;
-            txtCategory.Size = new Size(198, 33);
-            txtCategory.TabIndex = 3;
+            lblTechnicians.Dock = DockStyle.Fill;
+            lblTechnicians.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
+            lblTechnicians.Location = new Point(13, 92);
+            lblTechnicians.Name = "lblTechnicians";
+            lblTechnicians.Size = new Size(306, 46);
+            lblTechnicians.TabIndex = 5;
+            lblTechnicians.Text = "Technicians (Multiselect):";
+            lblTechnicians.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // tblPrice
             // 
@@ -259,32 +138,120 @@
             // 
             txtPrice.Anchor = AnchorStyles.None;
             txtPrice.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            txtPrice.Location = new Point(111, 6);
+            txtPrice.Location = new Point(111, 3);
             txtPrice.Name = "txtPrice";
-            txtPrice.Size = new Size(198, 33);
+            txtPrice.Size = new Size(198, 39);
             txtPrice.TabIndex = 4;
             // 
-            // lblTechnicians
+            // tblCategory
             // 
-            lblTechnicians.Dock = DockStyle.Fill;
-            lblTechnicians.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            lblTechnicians.Location = new Point(13, 92);
-            lblTechnicians.Name = "lblTechnicians";
-            lblTechnicians.Size = new Size(306, 46);
-            lblTechnicians.TabIndex = 5;
-            lblTechnicians.Text = "Technicians (Multiselect):";
-            lblTechnicians.TextAlign = ContentAlignment.MiddleLeft;
+            tblCategory.ColumnCount = 2;
+            tblCategory.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 34.782608F));
+            tblCategory.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 65.21739F));
+            tblCategory.Controls.Add(lblCategory, 0, 0);
+            tblCategory.Controls.Add(txtCategory, 1, 0);
+            tblCategory.Dock = DockStyle.Fill;
+            tblCategory.Location = new Point(10, 46);
+            tblCategory.Margin = new Padding(0);
+            tblCategory.Name = "tblCategory";
+            tblCategory.RowCount = 1;
+            tblCategory.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tblCategory.Size = new Size(312, 46);
+            tblCategory.TabIndex = 3;
             // 
-            // lblDescription
+            // lblCategory
             // 
-            lblDescription.Dock = DockStyle.Fill;
-            lblDescription.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            lblDescription.Location = new Point(325, 92);
-            lblDescription.Name = "lblDescription";
-            lblDescription.Size = new Size(306, 46);
-            lblDescription.TabIndex = 6;
-            lblDescription.Text = "Description:";
-            lblDescription.TextAlign = ContentAlignment.MiddleLeft;
+            lblCategory.Dock = DockStyle.Fill;
+            lblCategory.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
+            lblCategory.Location = new Point(3, 0);
+            lblCategory.Name = "lblCategory";
+            lblCategory.Size = new Size(102, 46);
+            lblCategory.TabIndex = 0;
+            lblCategory.Text = "Category:";
+            lblCategory.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // txtCategory
+            // 
+            txtCategory.Anchor = AnchorStyles.None;
+            txtCategory.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
+            txtCategory.Location = new Point(111, 3);
+            txtCategory.Name = "txtCategory";
+            txtCategory.ReadOnly = true;
+            txtCategory.Size = new Size(198, 39);
+            txtCategory.TabIndex = 3;
+            // 
+            // tblName
+            // 
+            tblName.ColumnCount = 2;
+            tblName.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 34.782608F));
+            tblName.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 65.21739F));
+            tblName.Controls.Add(lblName, 0, 0);
+            tblName.Controls.Add(txtName, 1, 0);
+            tblName.Dock = DockStyle.Fill;
+            tblName.Location = new Point(322, 0);
+            tblName.Margin = new Padding(0);
+            tblName.Name = "tblName";
+            tblName.RowCount = 1;
+            tblName.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tblName.Size = new Size(312, 46);
+            tblName.TabIndex = 2;
+            // 
+            // lblName
+            // 
+            lblName.Dock = DockStyle.Fill;
+            lblName.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
+            lblName.Location = new Point(3, 0);
+            lblName.Name = "lblName";
+            lblName.Size = new Size(102, 46);
+            lblName.TabIndex = 0;
+            lblName.Text = "Name:";
+            lblName.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // txtName
+            // 
+            txtName.Anchor = AnchorStyles.None;
+            txtName.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
+            txtName.Location = new Point(111, 3);
+            txtName.Name = "txtName";
+            txtName.Size = new Size(198, 39);
+            txtName.TabIndex = 2;
+            // 
+            // tblID
+            // 
+            tblID.ColumnCount = 2;
+            tblID.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 34.782608F));
+            tblID.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 65.21739F));
+            tblID.Controls.Add(lblServiceID, 0, 0);
+            tblID.Controls.Add(txtServiceID, 1, 0);
+            tblID.Dock = DockStyle.Fill;
+            tblID.Location = new Point(10, 0);
+            tblID.Margin = new Padding(0);
+            tblID.Name = "tblID";
+            tblID.RowCount = 1;
+            tblID.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tblID.Size = new Size(312, 46);
+            tblID.TabIndex = 0;
+            // 
+            // lblServiceID
+            // 
+            lblServiceID.Dock = DockStyle.Fill;
+            lblServiceID.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
+            lblServiceID.Location = new Point(3, 0);
+            lblServiceID.Name = "lblServiceID";
+            lblServiceID.Size = new Size(102, 46);
+            lblServiceID.TabIndex = 0;
+            lblServiceID.Text = "Service ID:";
+            lblServiceID.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // txtServiceID
+            // 
+            txtServiceID.Anchor = AnchorStyles.None;
+            txtServiceID.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
+            txtServiceID.Location = new Point(111, 3);
+            txtServiceID.Name = "txtServiceID";
+            txtServiceID.ReadOnly = true;
+            txtServiceID.Size = new Size(198, 39);
+            txtServiceID.TabIndex = 1;
             // 
             // chklistTechnicians
             // 
@@ -306,16 +273,38 @@
             txtDescription.Size = new Size(306, 206);
             txtDescription.TabIndex = 7;
             // 
-            // btnCancel
+            // pnlTop
             // 
-            btnCancel.Anchor = AnchorStyles.None;
-            btnCancel.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            btnCancel.Location = new Point(74, 15);
-            btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(173, 43);
-            btnCancel.TabIndex = 4;
-            btnCancel.Text = "Cancel";
-            btnCancel.UseVisualStyleBackColor = true;
+            pnlTop.Controls.Add(lblTitle);
+            pnlTop.Dock = DockStyle.Top;
+            pnlTop.Location = new Point(0, 0);
+            pnlTop.Name = "pnlTop";
+            pnlTop.Size = new Size(644, 42);
+            pnlTop.TabIndex = 0;
+            // 
+            // lblTitle
+            // 
+            lblTitle.AutoSize = true;
+            lblTitle.Location = new Point(10, 6);
+            lblTitle.Name = "lblTitle";
+            lblTitle.Size = new Size(153, 37);
+            lblTitle.TabIndex = 0;
+            lblTitle.Text = "Service Info";
+            // 
+            // tblBottom
+            // 
+            tblBottom.ColumnCount = 2;
+            tblBottom.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tblBottom.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tblBottom.Controls.Add(btnSave, 0, 0);
+            tblBottom.Controls.Add(btnCancel, 0, 0);
+            tblBottom.Dock = DockStyle.Bottom;
+            tblBottom.Location = new Point(0, 392);
+            tblBottom.Name = "tblBottom";
+            tblBottom.RowCount = 1;
+            tblBottom.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tblBottom.Size = new Size(644, 73);
+            tblBottom.TabIndex = 0;
             // 
             // btnSave
             // 
@@ -328,9 +317,20 @@
             btnSave.Text = "Save";
             btnSave.UseVisualStyleBackColor = true;
             // 
+            // btnCancel
+            // 
+            btnCancel.Anchor = AnchorStyles.None;
+            btnCancel.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
+            btnCancel.Location = new Point(74, 15);
+            btnCancel.Name = "btnCancel";
+            btnCancel.Size = new Size(173, 43);
+            btnCancel.TabIndex = 4;
+            btnCancel.Text = "Cancel";
+            btnCancel.UseVisualStyleBackColor = true;
+            // 
             // AddEditService
             // 
-            AutoScaleDimensions = new SizeF(12F, 30F);
+            AutoScaleDimensions = new SizeF(14F, 36F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(644, 465);
             Controls.Add(tblForm);
@@ -340,19 +340,20 @@
             Margin = new Padding(5, 6, 5, 6);
             Name = "AddEditService";
             Text = "Add Service";
+            Load += AddEditService_Load;
             tblForm.ResumeLayout(false);
             tblForm.PerformLayout();
+            tblPrice.ResumeLayout(false);
+            tblPrice.PerformLayout();
+            tblCategory.ResumeLayout(false);
+            tblCategory.PerformLayout();
+            tblName.ResumeLayout(false);
+            tblName.PerformLayout();
+            tblID.ResumeLayout(false);
+            tblID.PerformLayout();
             pnlTop.ResumeLayout(false);
             pnlTop.PerformLayout();
             tblBottom.ResumeLayout(false);
-            tblID.ResumeLayout(false);
-            tblID.PerformLayout();
-            tblName.ResumeLayout(false);
-            tblName.PerformLayout();
-            tblCategory.ResumeLayout(false);
-            tblCategory.PerformLayout();
-            tblPrice.ResumeLayout(false);
-            tblPrice.PerformLayout();
             ResumeLayout(false);
         }
 
