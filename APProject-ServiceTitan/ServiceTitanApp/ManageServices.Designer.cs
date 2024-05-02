@@ -29,19 +29,19 @@
         private void InitializeComponent()
         {
             tblTop = new TableLayoutPanel();
-            tblSide = new TableLayoutPanel();
-            dgvServices = new DataGridView();
-            btnSearch = new Button();
-            btnRefresh = new Button();
-            txtSearch = new TextBox();
-            lblSearch = new Label();
-            comboCategory = new ComboBox();
             lblCategory = new Label();
+            lblSearch = new Label();
+            btnRefresh = new Button();
+            btnSearch = new Button();
+            txtSearch = new TextBox();
+            comboCategory = new ComboBox();
+            tblSide = new TableLayoutPanel();
             btnAddService = new Button();
             btnEditService = new Button();
             btnViewRequests = new Button();
             btnDelete = new Button();
             btnBack = new Button();
+            dgvServices = new DataGridView();
             tblTop.SuspendLayout();
             tblSide.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvServices).BeginInit();
@@ -70,6 +70,63 @@
             tblTop.Size = new Size(1000, 43);
             tblTop.TabIndex = 0;
             // 
+            // lblCategory
+            // 
+            lblCategory.Dock = DockStyle.Fill;
+            lblCategory.Location = new Point(3, 0);
+            lblCategory.Name = "lblCategory";
+            lblCategory.Size = new Size(164, 43);
+            lblCategory.TabIndex = 7;
+            lblCategory.Text = "Category Filter:";
+            lblCategory.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // lblSearch
+            // 
+            lblSearch.Dock = DockStyle.Fill;
+            lblSearch.Location = new Point(355, 0);
+            lblSearch.Name = "lblSearch";
+            lblSearch.Size = new Size(96, 43);
+            lblSearch.TabIndex = 5;
+            lblSearch.Text = "Search:";
+            lblSearch.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // btnRefresh
+            // 
+            btnRefresh.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            btnRefresh.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
+            btnRefresh.Location = new Point(881, 3);
+            btnRefresh.Name = "btnRefresh";
+            btnRefresh.Size = new Size(116, 37);
+            btnRefresh.TabIndex = 3;
+            btnRefresh.Text = "Refresh";
+            btnRefresh.UseVisualStyleBackColor = true;
+            // 
+            // btnSearch
+            // 
+            btnSearch.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            btnSearch.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
+            btnSearch.Location = new Point(762, 3);
+            btnSearch.Name = "btnSearch";
+            btnSearch.Size = new Size(113, 37);
+            btnSearch.TabIndex = 2;
+            btnSearch.Text = "Search";
+            btnSearch.UseVisualStyleBackColor = true;
+            // 
+            // txtSearch
+            // 
+            txtSearch.Location = new Point(457, 3);
+            txtSearch.Name = "txtSearch";
+            txtSearch.Size = new Size(299, 42);
+            txtSearch.TabIndex = 4;
+            // 
+            // comboCategory
+            // 
+            comboCategory.FormattingEnabled = true;
+            comboCategory.Location = new Point(173, 3);
+            comboCategory.Name = "comboCategory";
+            comboCategory.Size = new Size(176, 44);
+            comboCategory.TabIndex = 6;
+            // 
             // tblSide
             // 
             tblSide.ColumnCount = 1;
@@ -92,73 +149,6 @@
             tblSide.RowStyles.Add(new RowStyle(SizeType.Percent, 14.2857141F));
             tblSide.Size = new Size(209, 457);
             tblSide.TabIndex = 1;
-            // 
-            // dgvServices
-            // 
-            dgvServices.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvServices.Dock = DockStyle.Fill;
-            dgvServices.Location = new Point(209, 43);
-            dgvServices.Name = "dgvServices";
-            dgvServices.RowTemplate.Height = 25;
-            dgvServices.Size = new Size(791, 457);
-            dgvServices.TabIndex = 2;
-            // 
-            // btnSearch
-            // 
-            btnSearch.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            btnSearch.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            btnSearch.Location = new Point(762, 3);
-            btnSearch.Name = "btnSearch";
-            btnSearch.Size = new Size(113, 37);
-            btnSearch.TabIndex = 2;
-            btnSearch.Text = "Search";
-            btnSearch.UseVisualStyleBackColor = true;
-            // 
-            // btnRefresh
-            // 
-            btnRefresh.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            btnRefresh.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            btnRefresh.Location = new Point(881, 3);
-            btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(116, 37);
-            btnRefresh.TabIndex = 3;
-            btnRefresh.Text = "Refresh";
-            btnRefresh.UseVisualStyleBackColor = true;
-            // 
-            // txtSearch
-            // 
-            txtSearch.Location = new Point(457, 3);
-            txtSearch.Name = "txtSearch";
-            txtSearch.Size = new Size(299, 35);
-            txtSearch.TabIndex = 4;
-            // 
-            // lblSearch
-            // 
-            lblSearch.Dock = DockStyle.Fill;
-            lblSearch.Location = new Point(355, 0);
-            lblSearch.Name = "lblSearch";
-            lblSearch.Size = new Size(96, 43);
-            lblSearch.TabIndex = 5;
-            lblSearch.Text = "Search:";
-            lblSearch.TextAlign = ContentAlignment.MiddleRight;
-            // 
-            // comboCategory
-            // 
-            comboCategory.FormattingEnabled = true;
-            comboCategory.Location = new Point(173, 3);
-            comboCategory.Name = "comboCategory";
-            comboCategory.Size = new Size(176, 38);
-            comboCategory.TabIndex = 6;
-            // 
-            // lblCategory
-            // 
-            lblCategory.Dock = DockStyle.Fill;
-            lblCategory.Location = new Point(3, 0);
-            lblCategory.Name = "lblCategory";
-            lblCategory.Size = new Size(164, 43);
-            lblCategory.TabIndex = 7;
-            lblCategory.Text = "Category Filter:";
-            lblCategory.TextAlign = ContentAlignment.MiddleRight;
             // 
             // btnAddService
             // 
@@ -215,9 +205,20 @@
             btnBack.Text = "Back";
             btnBack.UseVisualStyleBackColor = true;
             // 
+            // dgvServices
+            // 
+            dgvServices.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvServices.Dock = DockStyle.Fill;
+            dgvServices.Location = new Point(209, 43);
+            dgvServices.Name = "dgvServices";
+            dgvServices.RowHeadersWidth = 51;
+            dgvServices.RowTemplate.Height = 25;
+            dgvServices.Size = new Size(791, 457);
+            dgvServices.TabIndex = 2;
+            // 
             // ManageServices
             // 
-            AutoScaleDimensions = new SizeF(12F, 30F);
+            AutoScaleDimensions = new SizeF(14F, 36F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1000, 500);
             Controls.Add(dgvServices);

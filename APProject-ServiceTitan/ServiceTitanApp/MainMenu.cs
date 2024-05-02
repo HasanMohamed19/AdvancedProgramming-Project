@@ -39,5 +39,17 @@ namespace ServiceTitanApp
             tblMain.Controls.Add(new Statistic("Top Selling Service", "100", Statistic.StatImages.topService));
             tblMain.Controls.Add(new Statistic("Total Sales", "100", Statistic.StatImages.sales));
         }
+
+        private void btnViewCategories_Click(object sender, EventArgs e)
+        {
+            CategoryDashboard categoryDashboard = new CategoryDashboard(parentForm);
+            parentForm.GoToForm(categoryDashboard);
+        }
+
+        private void btnManageServices_Click(object sender, EventArgs e)
+        {
+            ManageServices manageServices = new ManageServices(parentForm);
+            parentForm.GoToForm(manageServices);
+        }
     }
 }

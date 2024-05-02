@@ -74,6 +74,7 @@
             btnManageServices.TabIndex = 1;
             btnManageServices.Text = "Manage Services";
             btnManageServices.UseVisualStyleBackColor = true;
+            btnManageServices.Click += btnManageServices_Click;
             // 
             // btnViewCategories
             // 
@@ -84,6 +85,7 @@
             btnViewCategories.TabIndex = 2;
             btnViewCategories.Text = "View Categories";
             btnViewCategories.UseVisualStyleBackColor = true;
+            btnViewCategories.Click += btnViewCategories_Click;
             // 
             // tblMain
             // 
@@ -102,7 +104,7 @@
             // 
             // MainMenu
             // 
-            AutoScaleDimensions = new SizeF(12F, 30F);
+            AutoScaleDimensions = new SizeF(14F, 36F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1000, 500);
             Controls.Add(tblMain);
