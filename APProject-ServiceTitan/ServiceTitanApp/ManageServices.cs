@@ -56,7 +56,7 @@ namespace ServiceTitanApp
                 Id = service.ServiceID,
                 Name = service.ServiceName,
                 Category = service.Category.CategoryName,
-                Price = service.ServiceType,
+                Price = service.ServicePrice,
                 NoOfTechnicans = service.Technicians.Count()
             }).ToList();
             // display a message to the user if nothing was found

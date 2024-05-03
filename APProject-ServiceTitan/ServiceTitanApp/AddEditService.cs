@@ -40,7 +40,7 @@ namespace ServiceTitanApp
                 txtServiceID.Text = service.ServiceID.ToString();
                 txtCategory.Text = service.Category.CategoryName;
                 txtName.Text = service.ServiceName;
-                txtPrice.Text = service.ServiceType.ToString("0.000");
+                txtPrice.Text = service.ServicePrice.ToString("0.000");
                 txtDescription.Text = service.ServiceDescription;
             }
         }

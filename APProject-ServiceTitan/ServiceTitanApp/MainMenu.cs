@@ -29,25 +29,26 @@ namespace ServiceTitanApp
 
         private void CreateStatistics()
         {
+
             string totalServices = context.Services.Count().ToString();
             string totalServiceRequests = context.ServiceRequests.Count().ToString();
 
             string totalClients = context.Users
-                .Include(user => user.RoleID)
-                .Where(user => user.RoleID.RoleID == 3).Count().ToString();
+                .Where(user => user.RoleId == 3).Count().ToString();
 
             // we used.Include for eager loading here, since we want the categoryName and it is a navigationalProperty
             string topsSellingCategory =
-                context.ServiceRequests
-                .Include(service => service.Service.Category)
-                .OrderByDescending(sr => sr.Service.ServiceRequests.Sum(sr => sr.RequestPrice))
-                .FirstOrDefault()
-                .Service.Category.CategoryName.ToString();
-            
-            string topSellingService = context.Services
-                .OrderByDescending(service => service.ServiceRequests.Sum(sr => sr.RequestPrice))
-                .FirstOrDefault()
-                .ServiceName.ToString();
+            context.ServiceRequests
+            .Include(service => service.Service.Category)
+            .OrderByDescending(sr => sr.Service.ServiceRequests.Sum(sr => sr.RequestPrice))
+            .FirstOrDefault()
+            .Service.Category.CategoryName.ToString();
+
+            string topSellingService =
+            context.Services
+            .OrderByDescending(service => service.ServiceRequests.Sum(sr => sr.RequestPrice))
+            .FirstOrDefault()
+            .ServiceName.ToString();
 
             //  format the float to include 3 decimal points
             string totalSales = context.ServiceRequests
