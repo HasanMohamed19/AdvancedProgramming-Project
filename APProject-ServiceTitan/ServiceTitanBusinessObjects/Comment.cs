@@ -24,11 +24,12 @@ namespace ServiceTitanBusinessObjects
         [Column("comment_date")]
         public DateTime CommentDate { get; set; }
 
+        public int? UserId { get; set; }
         // comments should stay if user gets deleted,
         // hence the optional
         public User? User { get; set; }
 
-        [Required]
+        public int? ServiceRequestId {  get; set; }
         public ServiceRequest ServiceRequest { get; set; }
     }
 }

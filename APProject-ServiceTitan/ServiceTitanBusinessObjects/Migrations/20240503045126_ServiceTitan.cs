@@ -57,17 +57,16 @@ namespace ServiceTitanBusinessObjects.Migrations
                     UserName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     UserEmail = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Password = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    RoleID1 = table.Column<int>(type: "int", nullable: false)
+                    RoleId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.user_id);
                     table.ForeignKey(
-                        name: "FK_Users_UserRoles_RoleID1",
-                        column: x => x.RoleID1,
+                        name: "FK_Users_UserRoles_RoleId",
+                        column: x => x.RoleId,
                         principalTable: "UserRoles",
-                        principalColumn: "role_id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "role_id");
                 });
 
             migrationBuilder.CreateTable(
@@ -78,14 +77,14 @@ namespace ServiceTitanBusinessObjects.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     category_name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     category_description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CategoryManagerUserID = table.Column<int>(type: "int", nullable: true)
+                    CategoryManagerId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.category_id);
                     table.ForeignKey(
-                        name: "FK_Categories_Users_CategoryManagerUserID",
-                        column: x => x.CategoryManagerUserID,
+                        name: "FK_Categories_Users_CategoryManagerId",
+                        column: x => x.CategoryManagerId,
                         principalTable: "Users",
                         principalColumn: "user_id");
                 });
@@ -100,17 +99,16 @@ namespace ServiceTitanBusinessObjects.Migrations
                     document_upload_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     document_type = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     document_path = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserID = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Documents", x => x.document_id);
                     table.ForeignKey(
-                        name: "FK_Documents_Users_UserID",
-                        column: x => x.UserID,
+                        name: "FK_Documents_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "user_id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "user_id");
                 });
 
             migrationBuilder.CreateTable(
@@ -125,17 +123,16 @@ namespace ServiceTitanBusinessObjects.Migrations
                     original_value = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     current_value = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    UserID = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Logs", x => x.log_id);
                     table.ForeignKey(
-                        name: "FK_Logs_Users_UserID",
-                        column: x => x.UserID,
+                        name: "FK_Logs_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "user_id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "user_id");
                 });
 
             migrationBuilder.CreateTable(
@@ -147,18 +144,23 @@ namespace ServiceTitanBusinessObjects.Migrations
                     notification_message = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     notification_title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     notification_type = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
-                    notification_status = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
-                    UserID = table.Column<int>(type: "int", nullable: false)
+                    NotificationStatusId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Notifications", x => x.notification_id);
                     table.ForeignKey(
-                        name: "FK_Notifications_Users_UserID",
-                        column: x => x.UserID,
-                        principalTable: "Users",
-                        principalColumn: "user_id",
+                        name: "FK_Notifications_NotificationStatus_NotificationStatusId",
+                        column: x => x.NotificationStatusId,
+                        principalTable: "NotificationStatus",
+                        principalColumn: "notification_status_id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Notifications_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "user_id");
                 });
 
             migrationBuilder.CreateTable(
@@ -169,18 +171,17 @@ namespace ServiceTitanBusinessObjects.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     service_name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     service_description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    service_price = table.Column<float>(type: "real", nullable: false),
-                    CategoryID = table.Column<int>(type: "int", nullable: false)
+                    service_price = table.Column<decimal>(type: "decimal(10,3)", precision: 10, scale: 3, nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Services", x => x.service_id);
                     table.ForeignKey(
-                        name: "FK_Services_Categories_CategoryID",
-                        column: x => x.CategoryID,
+                        name: "FK_Services_Categories_CategoryId",
+                        column: x => x.CategoryId,
                         principalTable: "Categories",
-                        principalColumn: "category_id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "category_id");
                 });
 
             migrationBuilder.CreateTable(
@@ -190,33 +191,30 @@ namespace ServiceTitanBusinessObjects.Migrations
                     request_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     request_description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    request_price = table.Column<int>(type: "int", nullable: false),
+                    request_price = table.Column<decimal>(type: "decimal(10,3)", precision: 10, scale: 3, nullable: false),
                     request_date_needed = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserID = table.Column<int>(type: "int", nullable: false),
-                    ServiceID = table.Column<int>(type: "int", nullable: false),
-                    StatusID = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: true),
+                    ServiceId = table.Column<int>(type: "int", nullable: true),
+                    StatusId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ServiceRequests", x => x.request_id);
                     table.ForeignKey(
-                        name: "FK_ServiceRequests_RequestStatus_StatusID",
-                        column: x => x.StatusID,
+                        name: "FK_ServiceRequests_RequestStatus_StatusId",
+                        column: x => x.StatusId,
                         principalTable: "RequestStatus",
-                        principalColumn: "request_status_id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "request_status_id");
                     table.ForeignKey(
-                        name: "FK_ServiceRequests_Services_ServiceID",
-                        column: x => x.ServiceID,
+                        name: "FK_ServiceRequests_Services_ServiceId",
+                        column: x => x.ServiceId,
                         principalTable: "Services",
-                        principalColumn: "service_id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "service_id");
                     table.ForeignKey(
-                        name: "FK_ServiceRequests_Users_UserID",
-                        column: x => x.UserID,
+                        name: "FK_ServiceRequests_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "user_id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "user_id");
                 });
 
             migrationBuilder.CreateTable(
@@ -251,74 +249,78 @@ namespace ServiceTitanBusinessObjects.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     comment_text = table.Column<string>(type: "nvarchar(max)", maxLength: 2147483647, nullable: false),
                     comment_date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserID = table.Column<int>(type: "int", nullable: true),
-                    ServiceRequestRequestID = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: true),
+                    ServiceRequestId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Comments", x => x.comment_id);
                     table.ForeignKey(
-                        name: "FK_Comments_ServiceRequests_ServiceRequestRequestID",
-                        column: x => x.ServiceRequestRequestID,
+                        name: "FK_Comments_ServiceRequests_ServiceRequestId",
+                        column: x => x.ServiceRequestId,
                         principalTable: "ServiceRequests",
-                        principalColumn: "request_id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "request_id");
                     table.ForeignKey(
-                        name: "FK_Comments_Users_UserID",
-                        column: x => x.UserID,
+                        name: "FK_Comments_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "user_id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Categories_CategoryManagerUserID",
+                name: "IX_Categories_CategoryManagerId",
                 table: "Categories",
-                column: "CategoryManagerUserID");
+                column: "CategoryManagerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_ServiceRequestRequestID",
+                name: "IX_Comments_ServiceRequestId",
                 table: "Comments",
-                column: "ServiceRequestRequestID");
+                column: "ServiceRequestId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_UserID",
+                name: "IX_Comments_UserId",
                 table: "Comments",
-                column: "UserID");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Documents_UserID",
+                name: "IX_Documents_UserId",
                 table: "Documents",
-                column: "UserID");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Logs_UserID",
+                name: "IX_Logs_UserId",
                 table: "Logs",
-                column: "UserID");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Notifications_UserID",
+                name: "IX_Notifications_NotificationStatusId",
                 table: "Notifications",
-                column: "UserID");
+                column: "NotificationStatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ServiceRequests_ServiceID",
+                name: "IX_Notifications_UserId",
+                table: "Notifications",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ServiceRequests_ServiceId",
                 table: "ServiceRequests",
-                column: "ServiceID");
+                column: "ServiceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ServiceRequests_StatusID",
+                name: "IX_ServiceRequests_StatusId",
                 table: "ServiceRequests",
-                column: "StatusID");
+                column: "StatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ServiceRequests_UserID",
+                name: "IX_ServiceRequests_UserId",
                 table: "ServiceRequests",
-                column: "UserID");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Services_CategoryID",
+                name: "IX_Services_CategoryId",
                 table: "Services",
-                column: "CategoryID");
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ServiceUser_TechniciansUserID",
@@ -326,9 +328,9 @@ namespace ServiceTitanBusinessObjects.Migrations
                 column: "TechniciansUserID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_RoleID1",
+                name: "IX_Users_RoleId",
                 table: "Users",
-                column: "RoleID1");
+                column: "RoleId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -346,13 +348,13 @@ namespace ServiceTitanBusinessObjects.Migrations
                 name: "Notifications");
 
             migrationBuilder.DropTable(
-                name: "NotificationStatus");
-
-            migrationBuilder.DropTable(
                 name: "ServiceUser");
 
             migrationBuilder.DropTable(
                 name: "ServiceRequests");
+
+            migrationBuilder.DropTable(
+                name: "NotificationStatus");
 
             migrationBuilder.DropTable(
                 name: "RequestStatus");

@@ -28,13 +28,15 @@ namespace ServiceTitanBusinessObjects
         [Column("notification_type")]
         public string NotificationType { get; set; }
 
+
+        public int? NotificationStatusId { get; set; }
         [Required]
         [MaxLength(15)]
         [Column("notification_status")]
-        public string NotificationStatus { get; set; }
+        public NotificationStatus NotificationStatus { get; set; }
 
-        [Required]
-        [Column("user_id")]
+
+        public int? UserId { get; set; }
         public User User { get; set; }
     }
 }

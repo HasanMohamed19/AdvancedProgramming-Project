@@ -37,6 +37,18 @@ namespace ServiceTitanBusinessObjects
                 .HasOne(e => e.User)
                 .WithMany(e => e.Comments)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            // set decimal precision and scale
+            var decimalProps = modelBuilder.Model
+                .GetEntityTypes()
+                .SelectMany(t => t.GetProperties())
+                .Where(p => (System.Nullable.GetUnderlyingType(p.ClrType) ?? p.ClrType) == typeof(decimal));
+
+            foreach (var property in decimalProps)
+            {
+                property.SetPrecision(10);
+                property.SetScale(3);
+            }
         }
     }
 }
