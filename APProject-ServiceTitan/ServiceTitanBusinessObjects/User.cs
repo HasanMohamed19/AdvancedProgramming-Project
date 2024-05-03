@@ -35,7 +35,8 @@ namespace ServiceTitanBusinessObjects
 
         public ICollection<Service> Services { get; set; }
 
-        public ICollection<ServiceRequest> ServiceRequests { get; set; }
+        public ICollection<ServiceRequest> ClientServiceRequests { get; set; }
+        public ICollection<ServiceRequest> TechnicianServiceRequests { get; set; }
 
         public ICollection<Notification> Notifications { get; set; }
 

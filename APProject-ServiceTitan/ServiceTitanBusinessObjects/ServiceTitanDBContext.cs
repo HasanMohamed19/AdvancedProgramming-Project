@@ -44,6 +44,20 @@ namespace ServiceTitanBusinessObjects
                 .SelectMany(t => t.GetProperties())
                 .Where(p => (System.Nullable.GetUnderlyingType(p.ClrType) ?? p.ClrType) == typeof(decimal));
 
+            // for technicain and client
+            modelBuilder.Entity<ServiceRequest>()
+           .HasOne(u => u.Technician)
+           .WithMany(a => a.TechnicianServiceRequests)
+           .HasForeignKey(i => i.TechnicianId)
+           .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<ServiceRequest>()
+           .HasOne(i => i.Client)
+           .WithMany(u => u.ClientServiceRequests)
+           .HasForeignKey(i => i.ClientId)
+           .OnDelete(DeleteBehavior.NoAction);
+
+
             foreach (var property in decimalProps)
             {
                 property.SetPrecision(10);
