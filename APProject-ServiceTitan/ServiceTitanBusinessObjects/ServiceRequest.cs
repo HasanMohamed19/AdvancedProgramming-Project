@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -21,21 +22,21 @@ namespace ServiceTitanBusinessObjects
 
         [Required]
         [Column("request_price")]
-        public int RequestPrice { get; set; }
+        public decimal RequestPrice { get; set; }
 
         [Required]
         [Column("request_date_needed")]
         public DateTime RequestDateNeeded { get; set; }
 
-        [Required]
+        public int? UserId { get; set; }
         public User User { get; set; }
 
         public ICollection<Comment> Comments { get; set; }
 
-        [Required]
+        public int? ServiceId { get; set; }
         public Service Service { get; set; }
 
-        [Required]
+        public int? StatusId { get; set; }
         public RequestStatus Status { get; set; }
 
 

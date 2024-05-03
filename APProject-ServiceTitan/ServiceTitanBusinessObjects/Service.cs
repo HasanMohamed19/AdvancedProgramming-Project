@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -26,9 +27,9 @@ namespace ServiceTitanBusinessObjects
 
         [Required]
         [Column("service_price")]
-        public float ServiceType { get; set; }
+        public decimal ServicePrice { get; set; }
 
-        [Required]
+        public int? CategoryId { get; set; }
         public Category Category { get; set; }
 
         public ICollection<User> Technicians { get; set; }

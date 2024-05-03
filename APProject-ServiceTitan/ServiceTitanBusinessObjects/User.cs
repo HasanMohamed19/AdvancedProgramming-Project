@@ -28,8 +28,8 @@ namespace ServiceTitanBusinessObjects
         [MaxLength(50)]
         public string Password { get; set; }
 
-        [Required]
-        public UserRole RoleID { get; set; }
+        public int? RoleId { get; set; }
+        public UserRole Role { get; set; }
 
         public ICollection<Category> Categories { get; set; }
 

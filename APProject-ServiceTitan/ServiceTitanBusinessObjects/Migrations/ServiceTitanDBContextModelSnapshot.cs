@@ -35,7 +35,7 @@ namespace ServiceTitanBusinessObjects.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("category_description");
 
-                    b.Property<int?>("CategoryManagerUserID")
+                    b.Property<int?>("CategoryManagerId")
                         .HasColumnType("int");
 
                     b.Property<string>("CategoryName")
@@ -46,7 +46,7 @@ namespace ServiceTitanBusinessObjects.Migrations
 
                     b.HasKey("CategoryID");
 
-                    b.HasIndex("CategoryManagerUserID");
+                    b.HasIndex("CategoryManagerId");
 
                     b.ToTable("Categories");
                 });
@@ -70,17 +70,17 @@ namespace ServiceTitanBusinessObjects.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("comment_text");
 
-                    b.Property<int>("ServiceRequestRequestID")
+                    b.Property<int?>("ServiceRequestId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserID")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("CommentID");
 
-                    b.HasIndex("ServiceRequestRequestID");
+                    b.HasIndex("ServiceRequestId");
 
-                    b.HasIndex("UserID");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Comments");
                 });
@@ -115,12 +115,12 @@ namespace ServiceTitanBusinessObjects.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("document_upload_date");
 
-                    b.Property<int>("UserID")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("DocumentID");
 
-                    b.HasIndex("UserID");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Documents");
                 });
@@ -161,12 +161,12 @@ namespace ServiceTitanBusinessObjects.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
-                    b.Property<int>("UserID")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("LogID");
 
-                    b.HasIndex("UserID");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Logs");
                 });
@@ -185,11 +185,9 @@ namespace ServiceTitanBusinessObjects.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("notification_message");
 
-                    b.Property<string>("NotificationStatus")
+                    b.Property<int?>("NotificationStatusId")
                         .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)")
-                        .HasColumnName("notification_status");
+                        .HasColumnType("int");
 
                     b.Property<string>("NotificationTitle")
                         .IsRequired()
@@ -203,12 +201,14 @@ namespace ServiceTitanBusinessObjects.Migrations
                         .HasColumnType("nvarchar(15)")
                         .HasColumnName("notification_type");
 
-                    b.Property<int>("UserID")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("NotificationID");
 
-                    b.HasIndex("UserID");
+                    b.HasIndex("NotificationStatusId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Notifications");
                 });
@@ -261,7 +261,7 @@ namespace ServiceTitanBusinessObjects.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ServiceID"), 1L, 1);
 
-                    b.Property<int>("CategoryID")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("ServiceDescription")
@@ -275,13 +275,14 @@ namespace ServiceTitanBusinessObjects.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("service_name");
 
-                    b.Property<float>("ServiceType")
-                        .HasColumnType("real")
+                    b.Property<decimal>("ServicePrice")
+                        .HasPrecision(10, 3)
+                        .HasColumnType("decimal(10,3)")
                         .HasColumnName("service_price");
 
                     b.HasKey("ServiceID");
 
-                    b.HasIndex("CategoryID");
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Services");
                 });
@@ -304,26 +305,27 @@ namespace ServiceTitanBusinessObjects.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("request_description");
 
-                    b.Property<int>("RequestPrice")
-                        .HasColumnType("int")
+                    b.Property<decimal>("RequestPrice")
+                        .HasPrecision(10, 3)
+                        .HasColumnType("decimal(10,3)")
                         .HasColumnName("request_price");
 
-                    b.Property<int>("ServiceID")
+                    b.Property<int?>("ServiceId")
                         .HasColumnType("int");
 
-                    b.Property<int>("StatusID")
+                    b.Property<int?>("StatusId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserID")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("RequestID");
 
-                    b.HasIndex("ServiceID");
+                    b.HasIndex("ServiceId");
 
-                    b.HasIndex("StatusID");
+                    b.HasIndex("StatusId");
 
-                    b.HasIndex("UserID");
+                    b.HasIndex("UserId");
 
                     b.ToTable("ServiceRequests");
                 });
@@ -342,7 +344,7 @@ namespace ServiceTitanBusinessObjects.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("RoleID1")
+                    b.Property<int?>("RoleId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserEmail")
@@ -357,7 +359,7 @@ namespace ServiceTitanBusinessObjects.Migrations
 
                     b.HasKey("UserID");
 
-                    b.HasIndex("RoleID1");
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
                 });
@@ -400,7 +402,7 @@ namespace ServiceTitanBusinessObjects.Migrations
                 {
                     b.HasOne("ServiceTitanBusinessObjects.User", "CategoryManager")
                         .WithMany("Categories")
-                        .HasForeignKey("CategoryManagerUserID");
+                        .HasForeignKey("CategoryManagerId");
 
                     b.Navigation("CategoryManager");
                 });
@@ -409,13 +411,11 @@ namespace ServiceTitanBusinessObjects.Migrations
                 {
                     b.HasOne("ServiceTitanBusinessObjects.ServiceRequest", "ServiceRequest")
                         .WithMany("Comments")
-                        .HasForeignKey("ServiceRequestRequestID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ServiceRequestId");
 
                     b.HasOne("ServiceTitanBusinessObjects.User", "User")
                         .WithMany("Comments")
-                        .HasForeignKey("UserID")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("ServiceRequest");
@@ -427,9 +427,7 @@ namespace ServiceTitanBusinessObjects.Migrations
                 {
                     b.HasOne("ServiceTitanBusinessObjects.User", "User")
                         .WithMany("Documents")
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -438,20 +436,24 @@ namespace ServiceTitanBusinessObjects.Migrations
                 {
                     b.HasOne("ServiceTitanBusinessObjects.User", "User")
                         .WithMany("Logs")
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
 
             modelBuilder.Entity("ServiceTitanBusinessObjects.Notification", b =>
                 {
-                    b.HasOne("ServiceTitanBusinessObjects.User", "User")
-                        .WithMany("Notifications")
-                        .HasForeignKey("UserID")
+                    b.HasOne("ServiceTitanBusinessObjects.NotificationStatus", "NotificationStatus")
+                        .WithMany()
+                        .HasForeignKey("NotificationStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("ServiceTitanBusinessObjects.User", "User")
+                        .WithMany("Notifications")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("NotificationStatus");
 
                     b.Navigation("User");
                 });
@@ -460,9 +462,7 @@ namespace ServiceTitanBusinessObjects.Migrations
                 {
                     b.HasOne("ServiceTitanBusinessObjects.Category", "Category")
                         .WithMany("Services")
-                        .HasForeignKey("CategoryID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
                     b.Navigation("Category");
                 });
@@ -471,21 +471,15 @@ namespace ServiceTitanBusinessObjects.Migrations
                 {
                     b.HasOne("ServiceTitanBusinessObjects.Service", "Service")
                         .WithMany("ServiceRequests")
-                        .HasForeignKey("ServiceID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ServiceId");
 
                     b.HasOne("ServiceTitanBusinessObjects.RequestStatus", "Status")
                         .WithMany("ServiceRequests")
-                        .HasForeignKey("StatusID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StatusId");
 
                     b.HasOne("ServiceTitanBusinessObjects.User", "User")
                         .WithMany("ServiceRequests")
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Service");
 
@@ -496,13 +490,11 @@ namespace ServiceTitanBusinessObjects.Migrations
 
             modelBuilder.Entity("ServiceTitanBusinessObjects.User", b =>
                 {
-                    b.HasOne("ServiceTitanBusinessObjects.UserRole", "RoleID")
+                    b.HasOne("ServiceTitanBusinessObjects.UserRole", "Role")
                         .WithMany()
-                        .HasForeignKey("RoleID1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RoleId");
 
-                    b.Navigation("RoleID");
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("ServiceUser", b =>
