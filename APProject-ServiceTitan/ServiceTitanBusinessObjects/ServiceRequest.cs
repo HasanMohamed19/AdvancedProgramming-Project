@@ -28,8 +28,11 @@ namespace ServiceTitanBusinessObjects
         [Column("request_date_needed")]
         public DateTime RequestDateNeeded { get; set; }
 
-        public int? UserId { get; set; }
-        public User User { get; set; }
+        public int? ClientId { get; set; }
+        public User Client { get; set; }
+
+        public int? TechnicianId { get; set; }
+        public User Technician { get; set; }
 
         public ICollection<Comment> Comments { get; set; }
 
