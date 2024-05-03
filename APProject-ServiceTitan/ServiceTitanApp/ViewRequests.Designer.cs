@@ -42,6 +42,8 @@
             comboService = new ComboBox();
             lblService = new Label();
             btnBack = new Button();
+            lblTechnician = new Label();
+            comboTechnician = new ComboBox();
             tblTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvRequests).BeginInit();
             tblSide.SuspendLayout();
@@ -112,7 +114,7 @@
             lblCategory.Dock = DockStyle.Fill;
             lblCategory.Location = new Point(3, 0);
             lblCategory.Name = "lblCategory";
-            lblCategory.Size = new Size(203, 45);
+            lblCategory.Size = new Size(203, 48);
             lblCategory.TabIndex = 7;
             lblCategory.Text = "Category Filter:";
             lblCategory.TextAlign = ContentAlignment.MiddleLeft;
@@ -121,7 +123,7 @@
             // 
             comboCategory.Dock = DockStyle.Fill;
             comboCategory.FormattingEnabled = true;
-            comboCategory.Location = new Point(3, 48);
+            comboCategory.Location = new Point(3, 51);
             comboCategory.Name = "comboCategory";
             comboCategory.Size = new Size(203, 38);
             comboCategory.TabIndex = 6;
@@ -141,24 +143,28 @@
             // 
             tblSide.ColumnCount = 1;
             tblSide.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tblSide.Controls.Add(comboTechnician, 0, 7);
+            tblSide.Controls.Add(lblTechnician, 0, 6);
             tblSide.Controls.Add(comboClient, 0, 5);
             tblSide.Controls.Add(lblClient, 0, 4);
             tblSide.Controls.Add(comboService, 0, 3);
             tblSide.Controls.Add(lblService, 0, 2);
             tblSide.Controls.Add(lblCategory, 0, 0);
-            tblSide.Controls.Add(btnBack, 0, 6);
             tblSide.Controls.Add(comboCategory, 0, 1);
+            tblSide.Controls.Add(btnBack, 0, 8);
             tblSide.Dock = DockStyle.Left;
             tblSide.Location = new Point(0, 0);
             tblSide.Name = "tblSide";
-            tblSide.RowCount = 7;
-            tblSide.RowStyles.Add(new RowStyle(SizeType.Percent, 9.115374F));
-            tblSide.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1410122F));
-            tblSide.RowStyles.Add(new RowStyle(SizeType.Percent, 9.115374F));
-            tblSide.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1410122F));
-            tblSide.RowStyles.Add(new RowStyle(SizeType.Percent, 9.115374F));
-            tblSide.RowStyles.Add(new RowStyle(SizeType.Percent, 35.9030037F));
-            tblSide.RowStyles.Add(new RowStyle(SizeType.Percent, 14.4688463F));
+            tblSide.RowCount = 9;
+            tblSide.RowStyles.Add(new RowStyle(SizeType.Percent, 9.684605F));
+            tblSide.RowStyles.Add(new RowStyle(SizeType.Percent, 11.8367376F));
+            tblSide.RowStyles.Add(new RowStyle(SizeType.Percent, 9.684605F));
+            tblSide.RowStyles.Add(new RowStyle(SizeType.Percent, 11.8367414F));
+            tblSide.RowStyles.Add(new RowStyle(SizeType.Percent, 9.684605F));
+            tblSide.RowStyles.Add(new RowStyle(SizeType.Percent, 11.8341093F));
+            tblSide.RowStyles.Add(new RowStyle(SizeType.Percent, 9.687544F));
+            tblSide.RowStyles.Add(new RowStyle(SizeType.Percent, 11.8341093F));
+            tblSide.RowStyles.Add(new RowStyle(SizeType.Percent, 13.91695F));
             tblSide.Size = new Size(209, 500);
             tblSide.TabIndex = 4;
             // 
@@ -166,7 +172,7 @@
             // 
             comboClient.Dock = DockStyle.Fill;
             comboClient.FormattingEnabled = true;
-            comboClient.Location = new Point(3, 248);
+            comboClient.Location = new Point(3, 265);
             comboClient.Name = "comboClient";
             comboClient.Size = new Size(203, 38);
             comboClient.TabIndex = 11;
@@ -174,9 +180,9 @@
             // lblClient
             // 
             lblClient.Dock = DockStyle.Fill;
-            lblClient.Location = new Point(3, 200);
+            lblClient.Location = new Point(3, 214);
             lblClient.Name = "lblClient";
-            lblClient.Size = new Size(203, 45);
+            lblClient.Size = new Size(203, 48);
             lblClient.TabIndex = 10;
             lblClient.Text = "Client Filter:";
             lblClient.TextAlign = ContentAlignment.MiddleLeft;
@@ -185,7 +191,7 @@
             // 
             comboService.Dock = DockStyle.Fill;
             comboService.FormattingEnabled = true;
-            comboService.Location = new Point(3, 148);
+            comboService.Location = new Point(3, 158);
             comboService.Name = "comboService";
             comboService.Size = new Size(203, 38);
             comboService.TabIndex = 9;
@@ -193,9 +199,9 @@
             // lblService
             // 
             lblService.Dock = DockStyle.Fill;
-            lblService.Location = new Point(3, 100);
+            lblService.Location = new Point(3, 107);
             lblService.Name = "lblService";
-            lblService.Size = new Size(203, 45);
+            lblService.Size = new Size(203, 48);
             lblService.TabIndex = 8;
             lblService.Text = "Service Filter:";
             lblService.TextAlign = ContentAlignment.MiddleLeft;
@@ -204,12 +210,31 @@
             // 
             btnBack.Anchor = AnchorStyles.None;
             btnBack.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            btnBack.Location = new Point(18, 440);
+            btnBack.Location = new Point(18, 442);
             btnBack.Name = "btnBack";
             btnBack.Size = new Size(173, 43);
             btnBack.TabIndex = 7;
             btnBack.Text = "Back";
             btnBack.UseVisualStyleBackColor = true;
+            // 
+            // lblTechnician
+            // 
+            lblTechnician.Dock = DockStyle.Fill;
+            lblTechnician.Location = new Point(3, 321);
+            lblTechnician.Name = "lblTechnician";
+            lblTechnician.Size = new Size(203, 48);
+            lblTechnician.TabIndex = 12;
+            lblTechnician.Text = "Technician Filter:";
+            lblTechnician.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // comboTechnician
+            // 
+            comboTechnician.Dock = DockStyle.Fill;
+            comboTechnician.FormattingEnabled = true;
+            comboTechnician.Location = new Point(3, 372);
+            comboTechnician.Name = "comboTechnician";
+            comboTechnician.Size = new Size(203, 38);
+            comboTechnician.TabIndex = 13;
             // 
             // ViewRequests
             // 
@@ -247,5 +272,7 @@
         private ComboBox comboService;
         private Label lblService;
         private Button btnBack;
+        private ComboBox comboTechnician;
+        private Label lblTechnician;
     }
 }
