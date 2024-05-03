@@ -1,4 +1,5 @@
-﻿using ServiceTitanApp.FormControls;
+﻿using Microsoft.EntityFrameworkCore;
+using ServiceTitanApp.FormControls;
 using ServiceTitanBusinessObjects;
 using System;
 using System.Collections.Generic;
@@ -22,14 +23,55 @@ namespace ServiceTitanApp
             InitializeComponent();
             this.parentForm = parent;
             this.context = new ServiceTitanDBContext();
+            //CreateStatistics();
+        }
+
+        private void CategoryDashboard_Load(object sender, EventArgs e)
+        {
+            comboCategory.DataSource = context.Categories.ToList();
+            comboCategory.DisplayMember = "CategoryName";
+            comboCategory.ValueMember = "CategoryID";
+            // select a category once loaded since this is for categories
+            comboCategory.SelectedItem = comboCategory.Items[3];
+
             CreateStatistics();
         }
 
         private void CreateStatistics()
         {
-            tblStats.Controls.Add(new Statistic("Total Sales", "150.450 BHD", Statistic.StatImages.sales));
-            tblStats.Controls.Add(new Statistic("Pending Requests", "6", Statistic.StatImages.requests));
-            tblStats.Controls.Add(new Statistic("Top Selling Service", "Wall Painting", Statistic.StatImages.topService));
+
+            // relative to the selected category, this can be refactored to use as querable (todo: later)
+
+            string totalSales = context.ServiceRequests
+                .Where(s => s.Service.CategoryId == Convert.ToInt32(comboCategory.SelectedValue))
+                .Sum(sr => sr.RequestPrice).ToString("0.000") + "BHD";
+
+            string topSellingService = context.Services
+                .Where(s => s.CategoryId == Convert.ToInt32(comboCategory.SelectedValue))
+                .OrderByDescending(service => service.ServiceRequests.Sum(sr => sr.RequestPrice))
+                .FirstOrDefault()
+                .ServiceName.ToString();
+
+            string pendingRequests = context.ServiceRequests
+                .Where(sr => sr.StatusId == 2 && sr.Service.CategoryId == Convert.ToInt32(comboCategory.SelectedValue))
+                .Count().ToString();
+
+            tblStats.Controls.Add(new Statistic("Total Sales", totalSales, Statistic.StatImages.sales));
+            tblStats.Controls.Add(new Statistic("Pending Requests", pendingRequests, Statistic.StatImages.requests));
+            tblStats.Controls.Add(new Statistic("Top Selling Service", topSellingService, Statistic.StatImages.topService));
         }
+
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+            MainMenu mainMenu = new MainMenu(parentForm);
+            parentForm.GoToForm(mainMenu);
+        }
+
+        private void btnCategories_Click(object sender, EventArgs e)
+        {
+            ManageCategories manageCategories = new ManageCategories(parentForm);
+            parentForm.GoToForm(manageCategories);
+        }
+
     }
 }

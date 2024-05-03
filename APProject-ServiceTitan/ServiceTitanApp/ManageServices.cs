@@ -21,10 +21,8 @@ namespace ServiceTitanApp
             InitializeComponent();
             this.parentForm = parent;
             this.context = new ServiceTitanDBContext();
-            ManageServicesLoad();
         }
-
-        private void ManageServicesLoad()
+        private void ManageServices_Load(object sender, EventArgs e)
         {
             comboCategory.DataSource = context.Categories.ToList();
             comboCategory.DisplayMember = "CategoryName";
@@ -115,6 +113,12 @@ namespace ServiceTitanApp
         private void btnSearch_Click(object sender, EventArgs e)
         {
             RefreshServicesDGV();
+        }
+
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+            MainMenu mainMenu = new MainMenu(parentForm);
+            parentForm.GoToForm(mainMenu);
         }
     }
 }

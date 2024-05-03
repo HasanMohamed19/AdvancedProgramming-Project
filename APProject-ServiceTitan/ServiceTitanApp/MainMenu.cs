@@ -78,7 +78,14 @@ namespace ServiceTitanApp
 
         private void MainMenu_Load(object sender, EventArgs e)
         {
-            
+
+        }
+
+        private void btnManageCategories_Click(object sender, EventArgs e)
+        {
+            ManageCategories manageCategories = new ManageCategories(parentForm);
+            parentForm.GoToForm(manageCategories);
         }
     }
+    
 }
