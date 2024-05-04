@@ -16,11 +16,123 @@ namespace ServiceTitanApp
     {
         private BaseForm parentForm;
         private ServiceTitanDBContext context;
+        private Service service;
         public ViewRequests(BaseForm parent)
         {
             InitializeComponent();
             this.parentForm = parent;
             this.context = new ServiceTitanDBContext();
+            service = new Service();
+        }
+
+        public ViewRequests(BaseForm parent, Service service)
+        {
+            InitializeComponent();
+            this.parentForm = parent;
+            this.context = new ServiceTitanDBContext();
+            this.service = service;
+        }
+
+        private void ViewRequests_Load(object sender, EventArgs e)
+        {
+            // load category combobox
+            comboCategory.DataSource = context.Categories.ToList();
+            comboCategory.DisplayMember = "CategoryName";
+            comboCategory.ValueMember = "CategoryId";
+
+            // load client combobox
+            comboClient.DataSource = context.Users.Where(u => u.RoleId == 4).ToList();
+            comboClient.DisplayMember = "UserName";
+            comboClient.ValueMember = "UserID";
+
+            // load service combobox
+            comboService.DataSource = context.Services.ToList();
+            comboService.DisplayMember = "ServiceName";
+            comboService.ValueMember = "ServiceID";
+
+            // load technicans combobox
+            comboTechnician.DataSource = context.Users.Where(u => u.RoleId == 3).ToList();
+            comboTechnician.DisplayMember = "UserName";
+            comboTechnician.ValueMember = "UserID";
+
+            // if viewing for a specific service set the selected items in comboboxes
+            if (service.ServiceID > 0)
+            {
+                comboCategory.SelectedValue = this.service.CategoryId;
+                comboService.SelectedValue = this.service.ServiceID;
+                comboService.Enabled = false;
+                comboCategory.Enabled = false;
+            }
+
+            RefreshRequestsDGV();
+
+        }
+
+        private void RefreshRequestsDGV()
+        {
+
+            dgvRequests.DataSource = null;
+
+            var requestsToShow = context.ServiceRequests.AsQueryable();
+
+            if (txtSearch.Text != "")
+            {
+                requestsToShow = requestsToShow.Where(request => request.Service.ServiceName.Contains(txtSearch.Text) || request.Service.Category.CategoryName.Contains(txtSearch.Text));
+            }
+            else if (comboCategory.SelectedValue != null)
+            {
+                requestsToShow = requestsToShow.Where(request => request.Service.CategoryId == Convert.ToInt32(comboCategory.SelectedValue));
+            }
+            else if (comboService.SelectedValue != null)
+            {
+                requestsToShow = requestsToShow.Where(request => request.ServiceId ==  Convert.ToInt32(comboService.SelectedValue));
+            }
+            else if (comboTechnician.SelectedValue != null)
+            {
+                requestsToShow = requestsToShow.Where(request => request.TechnicianId == Convert.ToInt32(comboTechnician.SelectedValue));
+            }
+            else if (comboClient.SelectedValue != null)
+            {
+                requestsToShow = requestsToShow.Where(request => request.ClientId ==  Convert.ToInt32(comboClient.SelectedValue));
+            }
+
+            dgvRequests.DataSource = requestsToShow.Select(request => new
+            {
+                Id = request.RequestID,
+                Name = request.Service.ServiceName,
+                Category = request.Service.Category.CategoryName,
+                Price = request.RequestPrice.ToString("0.000"),
+                Technician = request.Technician.UserName,
+                Client = request.Client.UserName,
+                Status = request.Status.Status
+            }).ToList();
+            // display a message to the user if nothing was found
+            if (requestsToShow.ToList().Count == 0)
+            {
+                MessageBox.Show("No requests were found mathcing your search criteria. Please try again.", "No services found!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
+        }
+
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+            MainMenu mainMenu = new MainMenu(parentForm);
+            parentForm.GoToForm(mainMenu);
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            RefreshRequestsDGV();
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            txtSearch.Text = "";
+            comboCategory.SelectedItem = null;
+            comboClient.SelectedItem = null;
+            comboTechnician.SelectedItem = null;
+            comboService.SelectedItem = null;
+            RefreshRequestsDGV();
         }
     }
 }

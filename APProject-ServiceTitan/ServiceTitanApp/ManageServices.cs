@@ -120,5 +120,25 @@ namespace ServiceTitanApp
             MainMenu mainMenu = new MainMenu(parentForm);
             parentForm.GoToForm(mainMenu);
         }
+
+        private void btnViewRequests_Click(object sender, EventArgs e)
+        {
+
+            if (dgvServices.SelectedCells.Count > 0)
+            {
+                // get the service selected
+                int selectedServiceId = Convert.ToInt32(dgvServices.SelectedCells[0].OwningRow.Cells[0].Value);
+                Service selectedService = context.Services.Single(service => service.ServiceID == selectedServiceId);
+
+                ViewRequests viewRequests = new ViewRequests(parentForm, selectedService);
+                parentForm.GoToForm(viewRequests);
+            }
+            else
+            {
+                ViewRequests viewRequests = new ViewRequests(parentForm);
+                parentForm.GoToForm(viewRequests);
+            }
+
+        }
     }
 }

@@ -36,7 +36,7 @@
             txtPrice=new TextBox();
             tblCategory=new TableLayoutPanel();
             lblCategory=new Label();
-            txtCategory=new TextBox();
+            comboCategory=new ComboBox();
             tblName=new TableLayoutPanel();
             lblName=new Label();
             txtName=new TextBox();
@@ -149,7 +149,7 @@
             tblCategory.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 34.782608F));
             tblCategory.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 65.21739F));
             tblCategory.Controls.Add(lblCategory, 0, 0);
-            tblCategory.Controls.Add(txtCategory, 1, 0);
+            tblCategory.Controls.Add(comboCategory, 1, 0);
             tblCategory.Dock=DockStyle.Fill;
             tblCategory.Location=new Point(10, 46);
             tblCategory.Margin=new Padding(0);
@@ -170,15 +170,13 @@
             lblCategory.Text="Category:";
             lblCategory.TextAlign=ContentAlignment.MiddleRight;
             // 
-            // txtCategory
+            // comboCategory
             // 
-            txtCategory.Anchor=AnchorStyles.None;
-            txtCategory.Font=new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            txtCategory.Location=new Point(111, 6);
-            txtCategory.Name="txtCategory";
-            txtCategory.ReadOnly=true;
-            txtCategory.Size=new Size(198, 33);
-            txtCategory.TabIndex=3;
+            comboCategory.FormattingEnabled=true;
+            comboCategory.Location=new Point(111, 3);
+            comboCategory.Name="comboCategory";
+            comboCategory.Size=new Size(198, 38);
+            comboCategory.TabIndex=1;
             // 
             // tblName
             // 
@@ -328,6 +326,7 @@
             btnCancel.TabIndex=4;
             btnCancel.Text="Cancel";
             btnCancel.UseVisualStyleBackColor=true;
+            btnCancel.Click+=btnCancel_Click;
             // 
             // AddEditService
             // 
@@ -347,7 +346,6 @@
             tblPrice.ResumeLayout(false);
             tblPrice.PerformLayout();
             tblCategory.ResumeLayout(false);
-            tblCategory.PerformLayout();
             tblName.ResumeLayout(false);
             tblName.PerformLayout();
             tblID.ResumeLayout(false);
@@ -372,7 +370,6 @@
         private TextBox txtPrice;
         private TableLayoutPanel tblCategory;
         private Label lblCategory;
-        private TextBox txtCategory;
         private TableLayoutPanel tblName;
         private Label lblName;
         private TextBox txtName;
@@ -382,5 +379,6 @@
         private TextBox txtDescription;
         private Button btnCancel;
         private Button btnSave;
+        private ComboBox comboCategory;
     }
 }

@@ -186,6 +186,7 @@
             btnViewRequests.TabIndex=5;
             btnViewRequests.Text="View Requests";
             btnViewRequests.UseVisualStyleBackColor=true;
+            btnViewRequests.Click+=btnViewRequests_Click;
             // 
             // btnDelete
             // 

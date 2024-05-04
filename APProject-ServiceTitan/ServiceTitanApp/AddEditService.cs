@@ -34,18 +34,23 @@ namespace ServiceTitanApp
         private void AddEditService_Load(object sender, EventArgs e)
         {
             // change this later placeholder
-            txtCategory.Text = context.Categories.ToList()[0].ToString();
+            comboCategory.DataSource = context.Categories.ToList();
+            comboCategory.DisplayMember = "CategoryName";
+            comboCategory.ValueMember = "CategoryID";
+
+            comboCategory.SelectedItem = comboCategory.Items[0];
 
             // if edit
             if (service.ServiceID > 0)
             {
                 txtServiceID.Text = service.ServiceID.ToString();
-                txtCategory.Text = service.Category.CategoryName;
+                comboCategory.SelectedValue = service.CategoryId;
                 txtName.Text = service.ServiceName;
                 txtPrice.Text = service.ServicePrice.ToString("0.000");
                 txtDescription.Text = service.ServiceDescription;
                 PopulateTechnicans(true);
-            } else
+            }
+            else
             {
                 PopulateTechnicans(false);
             }
@@ -89,7 +94,9 @@ namespace ServiceTitanApp
             try
             {
                 service.Category = null; service.ServiceRequests = null;
-                
+                service.ServiceName = txtName.Text;
+                service.ServicePrice = Convert.ToDecimal(txtPrice.Text);
+
 
                 if (service.ServiceID > 0)
                 {
@@ -107,10 +114,16 @@ namespace ServiceTitanApp
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.InnerException.ToString());
             }
 
 
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
         }
     }
 }
