@@ -2,16 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ServiceTitanBusinessObjects;
 
 namespace ServiceTitanWebApp.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class CategoryController : ControllerBase
+    public class CategoryController : Controller
     {
         private readonly ServiceTitanDBContext _context;
 
@@ -20,104 +18,150 @@ namespace ServiceTitanWebApp.Controllers
             _context = context;
         }
 
-        // GET: api/Category
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
+        // GET: Category
+        public async Task<IActionResult> Index()
         {
-          if (_context.Categories == null)
-          {
-              return NotFound();
-          }
-            return await _context.Categories.ToListAsync();
+            var serviceTitanDBContext = _context.Categories.Include(c => c.CategoryManager);
+            return View(await serviceTitanDBContext.ToListAsync());
         }
 
-        // GET: api/Category/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Category>> GetCategory(int id)
+        // GET: Category/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
-          if (_context.Categories == null)
-          {
-              return NotFound();
-          }
-            var category = await _context.Categories.FindAsync(id);
+            if (id == null || _context.Categories == null)
+            {
+                return NotFound();
+            }
 
+            var category = await _context.Categories
+                .Include(c => c.CategoryManager)
+                .FirstOrDefaultAsync(m => m.CategoryID == id);
             if (category == null)
             {
                 return NotFound();
             }
 
-            return category;
+            return View(category);
         }
 
-        // PUT: api/Category/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory(int id, Category category)
+        // GET: Category/Create
+        public IActionResult Create()
+        {
+            ViewData["CategoryManagerId"] = new SelectList(_context.Users, "UserID", "Password");
+            return View();
+        }
+
+        // POST: Category/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("CategoryID,CategoryName,CategoryDescription,CategoryManagerId")] Category category)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(category);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["CategoryManagerId"] = new SelectList(_context.Users, "UserID", "Password", category.CategoryManagerId);
+            return View(category);
+        }
+
+        // GET: Category/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null || _context.Categories == null)
+            {
+                return NotFound();
+            }
+
+            var category = await _context.Categories.FindAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            ViewData["CategoryManagerId"] = new SelectList(_context.Users, "UserID", "Password", category.CategoryManagerId);
+            return View(category);
+        }
+
+        // POST: Category/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("CategoryID,CategoryName,CategoryDescription,CategoryManagerId")] Category category)
         {
             if (id != category.CategoryID)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(category).State = EntityState.Modified;
-
-            try
+            if (ModelState.IsValid)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CategoryExists(id))
+                try
                 {
-                    return NotFound();
+                    _context.Update(category);
+                    await _context.SaveChangesAsync();
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                    if (!CategoryExists(category.CategoryID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
+                return RedirectToAction(nameof(Index));
             }
-
-            return NoContent();
+            ViewData["CategoryManagerId"] = new SelectList(_context.Users, "UserID", "Password", category.CategoryManagerId);
+            return View(category);
         }
 
-        // POST: api/Category
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Category>> PostCategory(Category category)
+        // GET: Category/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
-          if (_context.Categories == null)
-          {
-              return Problem("Entity set 'ServiceTitanDBContext.Categories'  is null.");
-          }
-            _context.Categories.Add(category);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetCategory", new { id = category.CategoryID }, category);
-        }
-
-        // DELETE: api/Category/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory(int id)
-        {
-            if (_context.Categories == null)
+            if (id == null || _context.Categories == null)
             {
                 return NotFound();
             }
-            var category = await _context.Categories.FindAsync(id);
+
+            var category = await _context.Categories
+                .Include(c => c.CategoryManager)
+                .FirstOrDefaultAsync(m => m.CategoryID == id);
             if (category == null)
             {
                 return NotFound();
             }
 
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
+            return View(category);
+        }
 
-            return NoContent();
+        // POST: Category/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            if (_context.Categories == null)
+            {
+                return Problem("Entity set 'ServiceTitanDBContext.Categories'  is null.");
+            }
+            var category = await _context.Categories.FindAsync(id);
+            if (category != null)
+            {
+                _context.Categories.Remove(category);
+            }
+            
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         private bool CategoryExists(int id)
         {
-            return (_context.Categories?.Any(e => e.CategoryID == id)).GetValueOrDefault();
+          return (_context.Categories?.Any(e => e.CategoryID == id)).GetValueOrDefault();
         }
     }
 }

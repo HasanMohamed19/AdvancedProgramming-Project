@@ -1,0 +1,49 @@
+@model ServiceTitanBusinessObjects.Notification
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Notification</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="NotificationMessage" class="control-label"></label>
+                <input asp-for="NotificationMessage" class="form-control" />
+                <span asp-validation-for="NotificationMessage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NotificationTitle" class="control-label"></label>
+                <input asp-for="NotificationTitle" class="form-control" />
+                <span asp-validation-for="NotificationTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NotificationType" class="control-label"></label>
+                <input asp-for="NotificationType" class="form-control" />
+                <span asp-validation-for="NotificationType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NotificationStatusId" class="control-label"></label>
+                <select asp-for="NotificationStatusId" class ="form-control" asp-items="ViewBag.NotificationStatusId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserId" class="control-label"></label>
+                <select asp-for="UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

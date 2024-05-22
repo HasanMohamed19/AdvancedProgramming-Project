@@ -2,16 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ServiceTitanBusinessObjects;
 
 namespace ServiceTitanWebApp.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class LogController : ControllerBase
+    public class LogController : Controller
     {
         private readonly ServiceTitanDBContext _context;
 
@@ -20,104 +18,150 @@ namespace ServiceTitanWebApp.Controllers
             _context = context;
         }
 
-        // GET: api/Log
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Log>>> GetLogs()
+        // GET: Log
+        public async Task<IActionResult> Index()
         {
-          if (_context.Logs == null)
-          {
-              return NotFound();
-          }
-            return await _context.Logs.ToListAsync();
+            var serviceTitanDBContext = _context.Logs.Include(l => l.User);
+            return View(await serviceTitanDBContext.ToListAsync());
         }
 
-        // GET: api/Log/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Log>> GetLog(int id)
+        // GET: Log/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
-          if (_context.Logs == null)
-          {
-              return NotFound();
-          }
-            var log = await _context.Logs.FindAsync(id);
+            if (id == null || _context.Logs == null)
+            {
+                return NotFound();
+            }
 
+            var log = await _context.Logs
+                .Include(l => l.User)
+                .FirstOrDefaultAsync(m => m.LogID == id);
             if (log == null)
             {
                 return NotFound();
             }
 
-            return log;
+            return View(log);
         }
 
-        // PUT: api/Log/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutLog(int id, Log log)
+        // GET: Log/Create
+        public IActionResult Create()
+        {
+            ViewData["UserId"] = new SelectList(_context.Users, "UserID", "Password");
+            return View();
+        }
+
+        // POST: Log/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("LogID,Source,Time,Message,OriginalValue,CurrentValue,Type,UserId")] Log log)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(log);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["UserId"] = new SelectList(_context.Users, "UserID", "Password", log.UserId);
+            return View(log);
+        }
+
+        // GET: Log/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null || _context.Logs == null)
+            {
+                return NotFound();
+            }
+
+            var log = await _context.Logs.FindAsync(id);
+            if (log == null)
+            {
+                return NotFound();
+            }
+            ViewData["UserId"] = new SelectList(_context.Users, "UserID", "Password", log.UserId);
+            return View(log);
+        }
+
+        // POST: Log/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("LogID,Source,Time,Message,OriginalValue,CurrentValue,Type,UserId")] Log log)
         {
             if (id != log.LogID)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(log).State = EntityState.Modified;
-
-            try
+            if (ModelState.IsValid)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!LogExists(id))
+                try
                 {
-                    return NotFound();
+                    _context.Update(log);
+                    await _context.SaveChangesAsync();
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                    if (!LogExists(log.LogID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
+                return RedirectToAction(nameof(Index));
             }
-
-            return NoContent();
+            ViewData["UserId"] = new SelectList(_context.Users, "UserID", "Password", log.UserId);
+            return View(log);
         }
 
-        // POST: api/Log
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Log>> PostLog(Log log)
+        // GET: Log/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
-          if (_context.Logs == null)
-          {
-              return Problem("Entity set 'ServiceTitanDBContext.Logs'  is null.");
-          }
-            _context.Logs.Add(log);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetLog", new { id = log.LogID }, log);
-        }
-
-        // DELETE: api/Log/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteLog(int id)
-        {
-            if (_context.Logs == null)
+            if (id == null || _context.Logs == null)
             {
                 return NotFound();
             }
-            var log = await _context.Logs.FindAsync(id);
+
+            var log = await _context.Logs
+                .Include(l => l.User)
+                .FirstOrDefaultAsync(m => m.LogID == id);
             if (log == null)
             {
                 return NotFound();
             }
 
-            _context.Logs.Remove(log);
-            await _context.SaveChangesAsync();
+            return View(log);
+        }
 
-            return NoContent();
+        // POST: Log/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            if (_context.Logs == null)
+            {
+                return Problem("Entity set 'ServiceTitanDBContext.Logs'  is null.");
+            }
+            var log = await _context.Logs.FindAsync(id);
+            if (log != null)
+            {
+                _context.Logs.Remove(log);
+            }
+            
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         private bool LogExists(int id)
         {
-            return (_context.Logs?.Any(e => e.LogID == id)).GetValueOrDefault();
+          return (_context.Logs?.Any(e => e.LogID == id)).GetValueOrDefault();
         }
     }
 }

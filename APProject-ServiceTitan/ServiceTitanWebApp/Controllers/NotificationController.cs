@@ -2,16 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ServiceTitanBusinessObjects;
 
 namespace ServiceTitanWebApp.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class NotificationController : ControllerBase
+    public class NotificationController : Controller
     {
         private readonly ServiceTitanDBContext _context;
 
@@ -20,104 +18,156 @@ namespace ServiceTitanWebApp.Controllers
             _context = context;
         }
 
-        // GET: api/Notification
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Notification>>> GetNotifications()
+        // GET: Notification
+        public async Task<IActionResult> Index()
         {
-          if (_context.Notifications == null)
-          {
-              return NotFound();
-          }
-            return await _context.Notifications.ToListAsync();
+            var serviceTitanDBContext = _context.Notifications.Include(n => n.NotificationStatus).Include(n => n.User);
+            return View(await serviceTitanDBContext.ToListAsync());
         }
 
-        // GET: api/Notification/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Notification>> GetNotification(int id)
+        // GET: Notification/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
-          if (_context.Notifications == null)
-          {
-              return NotFound();
-          }
-            var notification = await _context.Notifications.FindAsync(id);
+            if (id == null || _context.Notifications == null)
+            {
+                return NotFound();
+            }
 
+            var notification = await _context.Notifications
+                .Include(n => n.NotificationStatus)
+                .Include(n => n.User)
+                .FirstOrDefaultAsync(m => m.NotificationID == id);
             if (notification == null)
             {
                 return NotFound();
             }
 
-            return notification;
+            return View(notification);
         }
 
-        // PUT: api/Notification/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutNotification(int id, Notification notification)
+        // GET: Notification/Create
+        public IActionResult Create()
+        {
+            ViewData["NotificationStatusId"] = new SelectList(_context.NotificationStatus, "NotificationStatusID", "NotificationStatusName");
+            ViewData["UserId"] = new SelectList(_context.Users, "UserID", "Password");
+            return View();
+        }
+
+        // POST: Notification/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("NotificationID,NotificationMessage,NotificationTitle,NotificationType,NotificationStatusId,UserId")] Notification notification)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(notification);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["NotificationStatusId"] = new SelectList(_context.NotificationStatus, "NotificationStatusID", "NotificationStatusName", notification.NotificationStatusId);
+            ViewData["UserId"] = new SelectList(_context.Users, "UserID", "Password", notification.UserId);
+            return View(notification);
+        }
+
+        // GET: Notification/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null || _context.Notifications == null)
+            {
+                return NotFound();
+            }
+
+            var notification = await _context.Notifications.FindAsync(id);
+            if (notification == null)
+            {
+                return NotFound();
+            }
+            ViewData["NotificationStatusId"] = new SelectList(_context.NotificationStatus, "NotificationStatusID", "NotificationStatusName", notification.NotificationStatusId);
+            ViewData["UserId"] = new SelectList(_context.Users, "UserID", "Password", notification.UserId);
+            return View(notification);
+        }
+
+        // POST: Notification/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("NotificationID,NotificationMessage,NotificationTitle,NotificationType,NotificationStatusId,UserId")] Notification notification)
         {
             if (id != notification.NotificationID)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(notification).State = EntityState.Modified;
-
-            try
+            if (ModelState.IsValid)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!NotificationExists(id))
+                try
                 {
-                    return NotFound();
+                    _context.Update(notification);
+                    await _context.SaveChangesAsync();
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                    if (!NotificationExists(notification.NotificationID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
+                return RedirectToAction(nameof(Index));
             }
-
-            return NoContent();
+            ViewData["NotificationStatusId"] = new SelectList(_context.NotificationStatus, "NotificationStatusID", "NotificationStatusName", notification.NotificationStatusId);
+            ViewData["UserId"] = new SelectList(_context.Users, "UserID", "Password", notification.UserId);
+            return View(notification);
         }
 
-        // POST: api/Notification
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Notification>> PostNotification(Notification notification)
+        // GET: Notification/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
-          if (_context.Notifications == null)
-          {
-              return Problem("Entity set 'ServiceTitanDBContext.Notifications'  is null.");
-          }
-            _context.Notifications.Add(notification);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetNotification", new { id = notification.NotificationID }, notification);
-        }
-
-        // DELETE: api/Notification/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteNotification(int id)
-        {
-            if (_context.Notifications == null)
+            if (id == null || _context.Notifications == null)
             {
                 return NotFound();
             }
-            var notification = await _context.Notifications.FindAsync(id);
+
+            var notification = await _context.Notifications
+                .Include(n => n.NotificationStatus)
+                .Include(n => n.User)
+                .FirstOrDefaultAsync(m => m.NotificationID == id);
             if (notification == null)
             {
                 return NotFound();
             }
 
-            _context.Notifications.Remove(notification);
-            await _context.SaveChangesAsync();
+            return View(notification);
+        }
 
-            return NoContent();
+        // POST: Notification/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            if (_context.Notifications == null)
+            {
+                return Problem("Entity set 'ServiceTitanDBContext.Notifications'  is null.");
+            }
+            var notification = await _context.Notifications.FindAsync(id);
+            if (notification != null)
+            {
+                _context.Notifications.Remove(notification);
+            }
+            
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         private bool NotificationExists(int id)
         {
-            return (_context.Notifications?.Any(e => e.NotificationID == id)).GetValueOrDefault();
+          return (_context.Notifications?.Any(e => e.NotificationID == id)).GetValueOrDefault();
         }
     }
 }
