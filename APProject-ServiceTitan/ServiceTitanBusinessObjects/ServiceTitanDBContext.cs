@@ -24,6 +24,7 @@ namespace ServiceTitanBusinessObjects
         public DbSet<Log> Logs { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<NotificationStatus> NotificationStatus { get; set; }
+        public DbSet<AppUsers> AppUsers { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
