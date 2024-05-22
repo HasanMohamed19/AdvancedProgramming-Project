@@ -9,7 +9,8 @@ namespace ServiceTitanBusinessObjects
 {
     public class AppUsers : IdentityUser
     {
-        public string? Email { get; set; }
+        public string? UserEmail { get; set; }
         public UserRole? Role { get; set; }
+
     }
 }

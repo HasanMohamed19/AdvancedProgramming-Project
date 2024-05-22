@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ServiceTitanBusinessObjects
 {
-    public class IdentityContext : IdentityDbContext<IdentityUser>
+    public class IdentityContext : IdentityDbContext<AppUsers>
     {
         public IdentityContext()
         {
@@ -37,6 +37,6 @@ namespace ServiceTitanBusinessObjects
             // Add your customizations after calling base.OnModelCreating(builder);
         }
 
-        DbSet<IdentityUser> AppUsers { get; set; }
+        DbSet<AppUsers> AppUsers { get; set; }
     }
 }

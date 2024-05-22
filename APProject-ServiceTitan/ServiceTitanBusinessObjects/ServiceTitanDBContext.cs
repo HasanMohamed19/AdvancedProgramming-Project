@@ -9,9 +9,13 @@ namespace ServiceTitanBusinessObjects
 {
     public class ServiceTitanDBContext : DbContext
     {
-        public ServiceTitanDBContext() : base()
+
+        public ServiceTitanDBContext(DbContextOptions<ServiceTitanDBContext> options) : base(options)
         {
+            
         }
+
+
 
         public DbSet<User> Users { get; set; }
         public DbSet<Service> Services { get; set; }
@@ -28,7 +32,7 @@ namespace ServiceTitanBusinessObjects
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=(localDB)\MSSQLLocalDB;Initial Catalog=ServiceTitanDB;Trusted_Connection=True;");
+            //optionsBuilder.UseSqlServer(@"Server=(localDB)\MSSQLLocalDB;Initial Catalog=ServiceTitanDB;Trusted_Connection=True;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -46,6 +46,7 @@ namespace ServiceTitanBusinessObjects
 
         public ICollection<Log> Logs { get; set; }
 
+
         public override string? ToString()
         {
             return UserName;
