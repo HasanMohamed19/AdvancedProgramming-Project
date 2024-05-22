@@ -1,4 +1,4 @@
-namespace ServiceTitanWebApp.Models
+namespace ServiceTitanBusinessObjects
 {
     public class ErrorViewModel
     {

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ServiceTitanWebApp.Models;
+using ServiceTitanBusinessObjects;
 using System.Diagnostics;
 
 namespace ServiceTitanWebApp.Controllers
