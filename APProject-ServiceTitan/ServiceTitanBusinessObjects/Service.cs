@@ -32,7 +32,11 @@ namespace ServiceTitanBusinessObjects
         public int? CategoryId { get; set; }
         public Category Category { get; set; }
 
-        public ICollection<User> Technicians { get; set; }
+        private ICollection<User> _technicians;
+        public virtual ICollection<User> Technicians { 
+            get { return this._technicians ?? (this._technicians = new List<User>()); }
+            set { this._technicians = value; }
+        }
 
         public ICollection<ServiceRequest> ServiceRequests { get; set; }
     }

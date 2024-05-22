@@ -48,27 +48,25 @@ namespace ServiceTitanApp
                 txtName.Text = service.ServiceName;
                 txtPrice.Text = service.ServicePrice.ToString("0.000");
                 txtDescription.Text = service.ServiceDescription;
-                PopulateTechnicans(true);
             }
-            else
-            {
-                PopulateTechnicans(false);
-            }
+            PopulateTechnicans();
         }
 
-        private void PopulateTechnicans(bool isFiltered)
+        private void PopulateTechnicans()
         {
             var technicans = context.Users.Where(u => u.RoleId == 3).AsQueryable();
             List<User> technicansToShow = new List<User>();
-            if (isFiltered)
-            {
-                technicans = technicans.Where(u => u.Services.Contains(service));
-            }
             technicansToShow = technicans.ToList();
+            IQueryable<User> selectedTechnicians = Enumerable.Empty<User>().AsQueryable();
+            if (service != null)
+            {
+                selectedTechnicians = technicans.Where(u => u.Services.Contains(service));
+            }
 
             foreach (User user in technicansToShow)
             {
-                chklistTechnicians.Items.Add(user, isFiltered);
+                bool techSelected = selectedTechnicians.Contains(user);
+                chklistTechnicians.Items.Add(user, techSelected);
             }
 
         }
@@ -81,7 +79,6 @@ namespace ServiceTitanApp
             //service.ServicePrice = Convert.ToDecimal(123.21);
             //service.CategoryId = 1;
             //service.ServiceDescription = "sdsdfd";
-            service.Technicians = new List<User>();
             //User tech = new User();
             //tech.UserEmail = "asds";
             //tech.UserName = "sadsad";
@@ -93,9 +90,67 @@ namespace ServiceTitanApp
             //context.SaveChanges();
             try
             {
+                MessageBox.Show(service.Technicians.Count().ToString());
+
+                Service dbService = context.Services.Find(service.ServiceID);
+
                 service.Category = null; service.ServiceRequests = null;
                 service.ServiceName = txtName.Text;
                 service.ServicePrice = Convert.ToDecimal(txtPrice.Text);
+                service.ServiceDescription = txtDescription.Text;
+                service.Category = (Category)comboCategory.SelectedItem;
+
+                for (int i=0;i<chklistTechnicians.Items.Count; i++)
+                {
+                    User tech = (User)chklistTechnicians.Items[i];
+                    if (!chklistTechnicians.GetItemChecked(i))
+                    {
+                        if (dbService.Technicians.Contains(tech))
+                        {
+                            dbService.Technicians.Remove(tech);
+                        }
+                    }
+                }
+                context.SaveChanges();
+
+                for (int i = 0; i < chklistTechnicians.Items.Count; i++)
+                {
+                    User tech = (User)chklistTechnicians.Items[i];
+                    if (chklistTechnicians.GetItemChecked(i))
+                    {
+                        if (!dbService.Technicians.Contains(tech))
+                        {
+                            dbService.Technicians.Add(tech);
+                        }
+                    }
+                }
+
+                //foreach (User tech in chklistTechnicians.Items)
+                //{
+                //    if (chklistTechnicians.CheckedItems.Contains(tech))
+                //    {
+                //        if (!dbService.Technicians.Contains(tech))
+                //        {
+                //            dbService.Technicians.Add(tech);
+                //        }
+                //    } else
+                //    {
+                //        if (dbService.Technicians.Contains(tech))
+                //            dbService.Technicians.Remove(tech);
+                //    }
+                //}
+
+                //foreach (User tech in chklistTechnicians.CheckedItems)
+                //{
+                //    if (service != null)
+                //    {
+                //        if (!context.Services.Find(service.ServiceID).Technicians.Contains(tech))
+                //            service.Technicians.Add(tech);
+                //    } else
+                //    {
+                //        service.Technicians.Add(tech);
+                //    }
+                //}
 
 
                 if (service.ServiceID > 0)
@@ -114,7 +169,9 @@ namespace ServiceTitanApp
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.InnerException.ToString());
+                if (ex.InnerException != null)
+                    MessageBox.Show(ex.InnerException.ToString());
+                else MessageBox.Show(ex.ToString());
             }
 
 

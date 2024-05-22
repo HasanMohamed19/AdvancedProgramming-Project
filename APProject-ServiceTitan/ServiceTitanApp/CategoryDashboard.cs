@@ -32,7 +32,10 @@ namespace ServiceTitanApp
             comboCategory.DisplayMember = "CategoryName";
             comboCategory.ValueMember = "CategoryID";
             // select a category once loaded since this is for categories
-            comboCategory.SelectedItem = comboCategory.Items[3];
+            if (comboCategory.Items.Count > 0 )
+            {
+                comboCategory.SelectedItem = comboCategory.Items[0];
+            }
 
             CreateStatistics();
         }
@@ -46,11 +49,15 @@ namespace ServiceTitanApp
                 .Where(s => s.Service.CategoryId == Convert.ToInt32(comboCategory.SelectedValue))
                 .Sum(sr => sr.RequestPrice).ToString("0.000") + "BHD";
 
-            string topSellingService = context.Services
+            Service topService = context.Services
                 .Where(s => s.CategoryId == Convert.ToInt32(comboCategory.SelectedValue))
                 .OrderByDescending(service => service.ServiceRequests.Sum(sr => sr.RequestPrice))
-                .FirstOrDefault()
-                .ServiceName.ToString();
+                .FirstOrDefault();
+            string topSellingService = null;
+            if (topService != null)
+            {
+                topSellingService = topService.ServiceName.ToString();
+            }
 
             string pendingRequests = context.ServiceRequests
                 .Where(sr => sr.StatusId == 2 && sr.Service.CategoryId == Convert.ToInt32(comboCategory.SelectedValue))
@@ -58,7 +65,10 @@ namespace ServiceTitanApp
 
             tblStats.Controls.Add(new Statistic("Total Sales", totalSales, Statistic.StatImages.sales));
             tblStats.Controls.Add(new Statistic("Pending Requests", pendingRequests, Statistic.StatImages.requests));
-            tblStats.Controls.Add(new Statistic("Top Selling Service", topSellingService, Statistic.StatImages.topService));
+            if (topSellingService != null)
+            {
+                tblStats.Controls.Add(new Statistic("Top Selling Service", topSellingService, Statistic.StatImages.topService));
+            }
         }
 
         private void btnBack_Click(object sender, EventArgs e)

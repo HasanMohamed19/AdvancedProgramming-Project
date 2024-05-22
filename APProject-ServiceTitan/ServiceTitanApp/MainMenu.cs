@@ -37,18 +37,23 @@ namespace ServiceTitanApp
                 .Where(user => user.RoleId == 3).Count().ToString();
 
             // we used.Include for eager loading here, since we want the categoryName and it is a navigationalProperty
-            string topsSellingCategory =
-            context.ServiceRequests
+            ServiceRequest topRequest = context.ServiceRequests
             .Include(service => service.Service.Category)
             .OrderByDescending(sr => sr.Service.ServiceRequests.Sum(sr => sr.RequestPrice))
-            .FirstOrDefault()
-            .Service.Category.CategoryName.ToString();
+            .FirstOrDefault();
+            string topSellingCategory = null;
+            if (topRequest != null)
+            {
+                topSellingCategory = topRequest.Service.Category.CategoryName.ToString();
+            }
 
-            string topSellingService =
-            context.Services
+            Service topService = context.Services
             .OrderByDescending(service => service.ServiceRequests.Sum(sr => sr.RequestPrice))
-            .FirstOrDefault()
-            .ServiceName.ToString();
+            .FirstOrDefault();
+            string topSellingService = null;
+            if (topService != null) { 
+                topSellingService = topService.ServiceName.ToString();
+            }
 
             //  format the float to include 3 decimal points
             string totalSales = context.ServiceRequests
@@ -59,8 +64,14 @@ namespace ServiceTitanApp
             tblMain.Controls.Add(new Statistic("Total Services", totalServices, Statistic.StatImages.services));
             tblMain.Controls.Add(new Statistic("Total Service Requests", totalServiceRequests, Statistic.StatImages.requests));
             tblMain.Controls.Add(new Statistic("Total Clients", totalClients, Statistic.StatImages.clients));
-            tblMain.Controls.Add(new Statistic("Top Selling Category", topsSellingCategory, Statistic.StatImages.topCategory));
-            tblMain.Controls.Add(new Statistic("Top Selling Service", topSellingService, Statistic.StatImages.topService));
+            if (topSellingCategory != null)
+            {
+                tblMain.Controls.Add(new Statistic("Top Selling Category", topSellingCategory, Statistic.StatImages.topCategory));
+            }
+            if (topSellingService != null)
+            {
+                tblMain.Controls.Add(new Statistic("Top Selling Service", topSellingService, Statistic.StatImages.topService));
+            }
             tblMain.Controls.Add(new Statistic("Total Sales", totalSales, Statistic.StatImages.sales));
         }
 
