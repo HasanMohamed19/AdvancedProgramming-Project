@@ -21,7 +21,7 @@ namespace ServiceTitanBusinessObjects
 
         [Required]
         [MaxLength(50)]
-        [RegularExpression("#emailregexgoeshere")]
+        [RegularExpression("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")]
         public string UserEmail { get; set; }
 
         [Required]
