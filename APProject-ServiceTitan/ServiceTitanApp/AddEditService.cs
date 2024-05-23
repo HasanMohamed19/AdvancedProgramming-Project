@@ -90,40 +90,32 @@ namespace ServiceTitanApp
             //context.SaveChanges();
             try
             {
-                MessageBox.Show(service.Technicians.Count().ToString());
+                MessageBox.Show("Passed Service has technicians: "+service.Technicians.Count().ToString());
 
-                Service dbService = context.Services.Find(service.ServiceID);
+                //MessageBox.Show("Database Service has technicians: "+dbService.Technicians.Count().ToString());
 
-                service.Category = null; service.ServiceRequests = null;
+                //service.ServiceRequests = null;
                 service.ServiceName = txtName.Text;
                 service.ServicePrice = Convert.ToDecimal(txtPrice.Text);
                 service.ServiceDescription = txtDescription.Text;
                 service.Category = (Category)comboCategory.SelectedItem;
 
-                for (int i=0;i<chklistTechnicians.Items.Count; i++)
+                service.Technicians.Clear();
+                foreach (User tech in chklistTechnicians.CheckedItems)
                 {
-                    User tech = (User)chklistTechnicians.Items[i];
-                    if (!chklistTechnicians.GetItemChecked(i))
-                    {
-                        if (dbService.Technicians.Contains(tech))
-                        {
-                            dbService.Technicians.Remove(tech);
-                        }
-                    }
+                    service.Technicians.Add(tech);
                 }
-                context.SaveChanges();
 
-                for (int i = 0; i < chklistTechnicians.Items.Count; i++)
+                if (service.ServiceID > 0)
                 {
-                    User tech = (User)chklistTechnicians.Items[i];
-                    if (chklistTechnicians.GetItemChecked(i))
-                    {
-                        if (!dbService.Technicians.Contains(tech))
-                        {
-                            dbService.Technicians.Add(tech);
-                        }
-                    }
+                    context.Services.Update(service);
                 }
+                else
+                {
+                    context.Services.Add(service);
+                }
+
+                
 
                 //foreach (User tech in chklistTechnicians.Items)
                 //{
@@ -153,14 +145,6 @@ namespace ServiceTitanApp
                 //}
 
 
-                if (service.ServiceID > 0)
-                {
-                    context.Services.Update(service);
-                }
-                else
-                {
-                    context.Services.Add(service);
-                }
 
                 context.SaveChanges();
                 this.DialogResult = DialogResult.OK;
