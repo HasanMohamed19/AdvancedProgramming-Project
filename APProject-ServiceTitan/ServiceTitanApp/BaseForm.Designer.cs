@@ -45,6 +45,7 @@
             // 
             // header
             // 
+            header.BackColor = SystemColors.ControlLight;
             header.Dock = DockStyle.Fill;
             header.Location = new Point(0, 0);
             header.Margin = new Padding(0);

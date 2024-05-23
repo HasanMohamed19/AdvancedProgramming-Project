@@ -24,7 +24,11 @@ namespace ServiceTitanApp
             this.parentForm = parent;
             this.context = new ServiceTitanDBContext();
             CreateStatistics();
-            //
+            // authorization
+            if (Global.RoleName.Equals("Admin"))
+            {
+                btnManageCategories.Enabled = true;
+            }
         }
 
         private void CreateStatistics()
@@ -51,7 +55,8 @@ namespace ServiceTitanApp
             .OrderByDescending(service => service.ServiceRequests.Sum(sr => sr.RequestPrice))
             .FirstOrDefault();
             string topSellingService = null;
-            if (topService != null) { 
+            if (topService != null)
+            {
                 topSellingService = topService.ServiceName.ToString();
             }
 
@@ -98,5 +103,5 @@ namespace ServiceTitanApp
             parentForm.GoToForm(manageCategories);
         }
     }
-    
+
 }

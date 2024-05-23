@@ -17,5 +17,17 @@ namespace ServiceTitanApp
         public static IEnumerable<IdentityUser> AllTechnicicans;
         public static IEnumerable<IdentityUser> AllManagers;
         public static IEnumerable<IdentityUser> AllUsers;
+
+        public static void SignOut()
+        {
+            User = null;
+            RoleName = null;
+
+            AllAdmins = null;
+            AllTechnicicans = null;
+            AllManagers = null;
+            AllUsers = null;
+        }
     }
+
 }

@@ -28,7 +28,7 @@ namespace ServiceTitanApp
         {
             InitializeComponent();
             context = new ServiceTitanDBContext();
-            this.service = service;
+            this.service = context.Services.Find(service.ServiceID);
         }
 
         private void AddEditService_Load(object sender, EventArgs e)

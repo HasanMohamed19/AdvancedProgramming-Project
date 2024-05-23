@@ -12,6 +12,7 @@ namespace ServiceTitanApp
 {
     public partial class Header : UserControl
     {
+        public BaseForm parentForm;
         public Header()
         {
             InitializeComponent();
@@ -20,6 +21,14 @@ namespace ServiceTitanApp
         public void ShowSignOut(bool visible)
         {
             btnSignOut.Visible = visible;
+        }
+
+        private void btnSignOut_Click(object sender, EventArgs e)
+        {
+            if (parentForm != null)
+            {
+                parentForm.SignOut();
+            }
         }
     }
 }
