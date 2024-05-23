@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ServiceTitanBusinessObjects;
 
@@ -11,9 +12,10 @@ using ServiceTitanBusinessObjects;
 namespace ServiceTitanBusinessObjects.Migrations
 {
     [DbContext(typeof(ServiceTitanDBContext))]
-    partial class ServiceTitanDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240523075814_Added foreign keys")]
+    partial class Addedforeignkeys
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -396,13 +398,21 @@ namespace ServiceTitanBusinessObjects.Migrations
 
             modelBuilder.Entity("ServiceTitanBusinessObjects.ServiceTechnician", b =>
                 {
+                    b.Property<int>("ServiceTechniciansId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ServiceTechniciansId"), 1L, 1);
+
                     b.Property<int>("ServicesId")
                         .HasColumnType("int");
 
                     b.Property<int>("TechniciansId")
                         .HasColumnType("int");
 
-                    b.HasKey("ServicesId", "TechniciansId");
+                    b.HasKey("ServiceTechniciansId");
+
+                    b.HasIndex("ServicesId");
 
                     b.HasIndex("TechniciansId");
 

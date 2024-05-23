@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ServiceTitanBusinessObjects;
 
@@ -11,9 +12,10 @@ using ServiceTitanBusinessObjects;
 namespace ServiceTitanBusinessObjects.Migrations
 {
     [DbContext(typeof(ServiceTitanDBContext))]
-    partial class ServiceTitanDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240523073032_Added composite entity ServiceTechnicians")]
+    partial class AddedcompositeentityServiceTechnicians
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -396,15 +398,29 @@ namespace ServiceTitanBusinessObjects.Migrations
 
             modelBuilder.Entity("ServiceTitanBusinessObjects.ServiceTechnician", b =>
                 {
+                    b.Property<int>("ServiceTechniciansId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ServiceTechniciansId"), 1L, 1);
+
+                    b.Property<int>("ServiceID")
+                        .HasColumnType("int");
+
                     b.Property<int>("ServicesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TechnicianUserID")
                         .HasColumnType("int");
 
                     b.Property<int>("TechniciansId")
                         .HasColumnType("int");
 
-                    b.HasKey("ServicesId", "TechniciansId");
+                    b.HasKey("ServiceTechniciansId");
 
-                    b.HasIndex("TechniciansId");
+                    b.HasIndex("ServiceID");
+
+                    b.HasIndex("TechnicianUserID");
 
                     b.ToTable("ServiceTechnicians");
                 });
@@ -590,13 +606,13 @@ namespace ServiceTitanBusinessObjects.Migrations
                 {
                     b.HasOne("ServiceTitanBusinessObjects.Service", "Service")
                         .WithMany("ServiceTechnicians")
-                        .HasForeignKey("ServicesId")
+                        .HasForeignKey("ServiceID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ServiceTitanBusinessObjects.User", "Technician")
                         .WithMany("ServiceTechnicians")
-                        .HasForeignKey("TechniciansId")
+                        .HasForeignKey("TechnicianUserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

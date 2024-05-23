@@ -33,7 +33,8 @@ namespace ServiceTitanBusinessObjects
 
         public ICollection<Category> Categories { get; set; }
 
-        public ICollection<Service> Services { get; set; }
+        public ICollection<ServiceTechnician> ServiceTechnicians { get; } = new HashSet<ServiceTechnician>();
+        public ICollection<Service> Services { get; } = new HashSet<Service>();
 
         public ICollection<ServiceRequest> ClientServiceRequests { get; set; }
         public ICollection<ServiceRequest> TechnicianServiceRequests { get; set; }

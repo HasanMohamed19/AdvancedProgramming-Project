@@ -32,12 +32,9 @@ namespace ServiceTitanBusinessObjects
         public int? CategoryId { get; set; }
         public Category Category { get; set; }
 
-        private ICollection<User> _technicians;
-        public virtual ICollection<User> Technicians { 
-            get { return this._technicians ?? (this._technicians = new List<User>()); }
-            set { this._technicians = value; }
-        }
+        public ICollection<ServiceTechnician> ServiceTechnicians { get;} = new HashSet<ServiceTechnician>();
+        public ICollection<User> Technicians { get;} = new HashSet<User>();
 
-        public ICollection<ServiceRequest> ServiceRequests { get; set; }
+        public ICollection<ServiceRequest> ServiceRequests { get; } = new HashSet<ServiceRequest>();
     }
 }

@@ -60,7 +60,8 @@ namespace ServiceTitanApp
             IQueryable<User> selectedTechnicians = Enumerable.Empty<User>().AsQueryable();
             if (service != null)
             {
-                selectedTechnicians = technicans.Where(u => u.Services.Contains(service));
+                selectedTechnicians = technicans.Where(u => u.ServiceTechnicians
+                .Select(s => s.ServicesId == service.ServiceID).Any());
             }
 
             foreach (User user in technicansToShow)
@@ -90,20 +91,34 @@ namespace ServiceTitanApp
             //context.SaveChanges();
             try
             {
-                MessageBox.Show("Passed Service has technicians: "+service.Technicians.Count().ToString());
 
                 //MessageBox.Show("Database Service has technicians: "+dbService.Technicians.Count().ToString());
 
-                //service.ServiceRequests = null;
                 service.ServiceName = txtName.Text;
                 service.ServicePrice = Convert.ToDecimal(txtPrice.Text);
                 service.ServiceDescription = txtDescription.Text;
                 service.Category = (Category)comboCategory.SelectedItem;
 
-                service.Technicians.Clear();
-                foreach (User tech in chklistTechnicians.CheckedItems)
+                for (int i=0; i< chklistTechnicians.Items.Count; i++)
                 {
-                    service.Technicians.Add(tech);
+                    User tech = (User)chklistTechnicians.Items[i];
+                    bool relationshipExists = context.ServiceTechnicians
+                        .Any(st => st.TechniciansId == tech.UserID
+                        && st.ServicesId == service.ServiceID);
+
+                    if (chklistTechnicians.GetItemChecked(i)
+                        && !relationshipExists)
+                    {
+                        ServiceTechnician serviceTechnician = new ServiceTechnician();
+                        serviceTechnician.TechniciansId = tech.UserID;
+                        serviceTechnician.ServicesId = service.ServiceID;
+                        context.ServiceTechnicians.Add(serviceTechnician);
+                    } else if (!chklistTechnicians.GetItemChecked(i) && relationshipExists)
+                    {
+                        ServiceTechnician serviceTechnician = context.ServiceTechnicians
+                            .Single(x => x.TechniciansId == tech.UserID && x.ServicesId == service.ServiceID);
+                        context.ServiceTechnicians.Remove(serviceTechnician);
+                    }
                 }
 
                 if (service.ServiceID > 0)
