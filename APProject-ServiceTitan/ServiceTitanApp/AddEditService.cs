@@ -28,7 +28,7 @@ namespace ServiceTitanApp
         {
             InitializeComponent();
             context = new ServiceTitanDBContext();
-            this.service = service;
+            this.service = context.Services.Find(service.ServiceID);
         }
 
         private void AddEditService_Load(object sender, EventArgs e)
@@ -60,7 +60,8 @@ namespace ServiceTitanApp
             IQueryable<User> selectedTechnicians = Enumerable.Empty<User>().AsQueryable();
             if (service != null)
             {
-                selectedTechnicians = technicans.Where(u => u.Services.Contains(service));
+                selectedTechnicians = technicans.Where(u => u.ServiceTechnicians
+                .Select(s => s.ServicesId == service.ServiceID).Any());
             }
 
             foreach (User user in technicansToShow)
@@ -90,40 +91,46 @@ namespace ServiceTitanApp
             //context.SaveChanges();
             try
             {
-                MessageBox.Show(service.Technicians.Count().ToString());
 
-                Service dbService = context.Services.Find(service.ServiceID);
+                //MessageBox.Show("Database Service has technicians: "+dbService.Technicians.Count().ToString());
 
-                service.Category = null; service.ServiceRequests = null;
                 service.ServiceName = txtName.Text;
                 service.ServicePrice = Convert.ToDecimal(txtPrice.Text);
                 service.ServiceDescription = txtDescription.Text;
                 service.Category = (Category)comboCategory.SelectedItem;
 
-                for (int i=0;i<chklistTechnicians.Items.Count; i++)
+                for (int i=0; i< chklistTechnicians.Items.Count; i++)
                 {
                     User tech = (User)chklistTechnicians.Items[i];
-                    if (!chklistTechnicians.GetItemChecked(i))
-                    {
-                        if (dbService.Technicians.Contains(tech))
-                        {
-                            dbService.Technicians.Remove(tech);
-                        }
-                    }
-                }
-                context.SaveChanges();
+                    bool relationshipExists = context.ServiceTechnicians
+                        .Any(st => st.TechniciansId == tech.UserID
+                        && st.ServicesId == service.ServiceID);
 
-                for (int i = 0; i < chklistTechnicians.Items.Count; i++)
-                {
-                    User tech = (User)chklistTechnicians.Items[i];
-                    if (chklistTechnicians.GetItemChecked(i))
+                    if (chklistTechnicians.GetItemChecked(i)
+                        && !relationshipExists)
                     {
-                        if (!dbService.Technicians.Contains(tech))
-                        {
-                            dbService.Technicians.Add(tech);
-                        }
+                        ServiceTechnician serviceTechnician = new ServiceTechnician();
+                        serviceTechnician.TechniciansId = tech.UserID;
+                        serviceTechnician.ServicesId = service.ServiceID;
+                        context.ServiceTechnicians.Add(serviceTechnician);
+                    } else if (!chklistTechnicians.GetItemChecked(i) && relationshipExists)
+                    {
+                        ServiceTechnician serviceTechnician = context.ServiceTechnicians
+                            .Single(x => x.TechniciansId == tech.UserID && x.ServicesId == service.ServiceID);
+                        context.ServiceTechnicians.Remove(serviceTechnician);
                     }
                 }
+
+                if (service.ServiceID > 0)
+                {
+                    context.Services.Update(service);
+                }
+                else
+                {
+                    context.Services.Add(service);
+                }
+
+                
 
                 //foreach (User tech in chklistTechnicians.Items)
                 //{
@@ -153,14 +160,6 @@ namespace ServiceTitanApp
                 //}
 
 
-                if (service.ServiceID > 0)
-                {
-                    context.Services.Update(service);
-                }
-                else
-                {
-                    context.Services.Add(service);
-                }
 
                 context.SaveChanges();
                 this.DialogResult = DialogResult.OK;

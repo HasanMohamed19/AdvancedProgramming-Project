@@ -7,6 +7,7 @@ namespace ServiceTitanApp
         {
             InitializeComponent();
             GoToForm(new Login(this));
+            header.parentForm = this;
         }
 
         public void GoToForm(Form destinationForm)
@@ -17,6 +18,12 @@ namespace ServiceTitanApp
         public void ShowSignOut(bool visible)
         {
             header.ShowSignOut(visible);
+        }
+
+        public void SignOut()
+        {
+            Global.SignOut();
+            GoToForm(new Login(this));
         }
     }
 }

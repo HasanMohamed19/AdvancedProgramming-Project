@@ -29,6 +29,6 @@ namespace ServiceTitanBusinessObjects
         [Column("category_manager_id")]
         public User? CategoryManager { get; set; }
 
-        public ICollection<Service> Services { get; set; }
+        public ICollection<Service> Services { get; } = new HashSet<Service>();
     }
 }

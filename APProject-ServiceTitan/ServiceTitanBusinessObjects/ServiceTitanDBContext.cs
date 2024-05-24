@@ -23,6 +23,7 @@ namespace ServiceTitanBusinessObjects
 
         public DbSet<User> Users { get; set; }
         public DbSet<Service> Services { get; set; }
+        public DbSet<ServiceTechnician> ServiceTechnicians { get; set; }
         public DbSet<ServiceRequest> ServiceRequests { get; set; }
         public DbSet<RequestStatus> RequestStatus { get; set; }
         public DbSet<Notification> Notifications { get; set; }
@@ -66,12 +67,26 @@ namespace ServiceTitanBusinessObjects
            .HasForeignKey(i => i.ClientId)
            .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<ServiceTechnician>()
+                .HasKey("ServicesId","TechniciansId");
+
+            modelBuilder.Entity<ServiceTechnician>()
+                .HasOne(i => i.Service)
+                .WithMany(u => u.ServiceTechnicians)
+                .HasForeignKey(f => f.ServicesId);
+
+            modelBuilder.Entity<ServiceTechnician>()
+                .HasOne(i => i.Technician)
+                .WithMany(u => u.ServiceTechnicians)
+                .HasForeignKey(f => f.TechniciansId);
 
             foreach (var property in decimalProps)
             {
                 property.SetPrecision(10);
                 property.SetScale(3);
             }
+
+            modelBuilder.Seed();
         }
     }
 }

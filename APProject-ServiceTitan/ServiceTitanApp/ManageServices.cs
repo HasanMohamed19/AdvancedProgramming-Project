@@ -55,7 +55,7 @@ namespace ServiceTitanApp
                 Name = service.ServiceName,
                 Category = service.Category.CategoryName,
                 Price = service.ServicePrice,
-                NoOfTechnicans = service.Technicians.Count()
+                NoOfTechnicans = service.ServiceTechnicians.Count()
             }).ToList();
             // display a message to the user if nothing was found
             if (servicesToShow.ToList().Count == 0)
@@ -78,7 +78,7 @@ namespace ServiceTitanApp
         private void btnEditService_Click(object sender, EventArgs e)
         {
             int selectedServiceId = Convert.ToInt32(dgvServices.SelectedCells[0].OwningRow.Cells[0].Value);
-            Service selectedService = context.Services.Find(selectedServiceId);
+            Service selectedService = context.Services.Single(s => s.ServiceID == selectedServiceId);
             AddEditService addEditService = new AddEditService(selectedService);
             addEditService.ShowDialog();
 

@@ -29,18 +29,18 @@ namespace ServiceTitanBusinessObjects
         public DateTime RequestDateNeeded { get; set; }
 
         public int? ClientId { get; set; }
-        public User Client { get; set; }
+        public User? Client { get; set; }
 
         public int? TechnicianId { get; set; }
-        public User Technician { get; set; }
+        public User? Technician { get; set; }
 
-        public ICollection<Comment> Comments { get; set; }
+        public ICollection<Comment> Comments { get; } = new HashSet<Comment>();
 
         public int? ServiceId { get; set; }
-        public Service Service { get; set; }
+        public Service? Service { get; set; }
 
         public int? StatusId { get; set; }
-        public RequestStatus Status { get; set; }
+        public RequestStatus? Status { get; set; }
 
 
     }

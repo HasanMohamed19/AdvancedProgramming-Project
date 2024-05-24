@@ -76,6 +76,7 @@
             btnSignOut.TabIndex = 4;
             btnSignOut.Text = "Sign Out";
             btnSignOut.UseVisualStyleBackColor = false;
+            btnSignOut.Click += btnSignOut_Click;
             // 
             // Header
             // 

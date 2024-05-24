@@ -35,8 +35,6 @@ namespace ServiceTitanApp
         {
             try
             {
-
-
                 var services = new ServiceCollection();
                 ConfigureServices(services);
                 serviceProvider = services.BuildServiceProvider();
@@ -53,10 +51,18 @@ namespace ServiceTitanApp
                     {
                         var roles = await userManager.GetRolesAsync(founduser);
 
+                        string roleName = roles.FirstOrDefault();
+
+                        if (roleName != "Admin"
+                            && roleName != "Manager")
+                        {
+                            return false;
+                        }
+
                         //save into global class
                         Global.User = founduser;
 
-                        Global.RoleName = roles.FirstOrDefault();
+                        Global.RoleName = roleName;
 
                         //Those are added as extra just to show how you can query all users in a certain role
                         Global.AllAdmins = await userManager.GetUsersInRoleAsync("Admin");
@@ -105,6 +111,7 @@ namespace ServiceTitanApp
                 //do something.. i.e. navigate to next forms
                 MainMenu mainMenu = new MainMenu(parentForm);
                 parentForm.GoToForm(mainMenu);
+                parentForm.ShowSignOut(true);
             }
             else
             {
