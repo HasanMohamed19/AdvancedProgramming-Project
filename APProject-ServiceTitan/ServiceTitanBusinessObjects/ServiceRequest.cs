@@ -29,10 +29,10 @@ namespace ServiceTitanBusinessObjects
         public DateTime RequestDateNeeded { get; set; }
 
         public int? ClientId { get; set; }
-        public User? Client { get; set; }
+        public ApplicationUser? Client { get; set; }
 
         public int? TechnicianId { get; set; }
-        public User? Technician { get; set; }
+        public ApplicationUser? Technician { get; set; }
 
         public ICollection<Comment> Comments { get; } = new HashSet<Comment>();
 

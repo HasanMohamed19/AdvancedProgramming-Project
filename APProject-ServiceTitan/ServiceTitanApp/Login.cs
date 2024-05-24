@@ -39,7 +39,7 @@ namespace ServiceTitanApp
                 ConfigureServices(services);
                 serviceProvider = services.BuildServiceProvider();
 
-                var userManager = serviceProvider.GetRequiredService<UserManager<AppUsers>>();
+                var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
                 var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 var founduser = await userManager.FindByEmailAsync(txtUsername.Text);
 
@@ -89,7 +89,7 @@ namespace ServiceTitanApp
                     .AddDbContext<IdentityContext>();
 
                 // Register UserManager & RoleManager
-                services.AddIdentity<AppUsers, IdentityRole>()
+                services.AddIdentity<IdentityUser, IdentityRole>()
                    .AddEntityFrameworkStores<IdentityContext>()
                    .AddDefaultTokenProviders();
 

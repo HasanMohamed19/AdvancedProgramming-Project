@@ -56,7 +56,7 @@ namespace ServiceTitanWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserID,UserName,UserEmail,Password,RoleId")] User user)
+        public async Task<IActionResult> Create([Bind("UserID,FirstName,LastName,Address,UserEmail,RoleId")] ApplicationUser user)
         {
             if (ModelState.IsValid)
             {
@@ -90,7 +90,7 @@ namespace ServiceTitanWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserID,UserName,UserEmail,Password,RoleId")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("UserID,FirstName,LastName,Address,UserEmail,RoleId")] ApplicationUser user)
         {
             if (id != user.UserID)
             {

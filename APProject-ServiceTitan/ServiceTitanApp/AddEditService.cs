@@ -55,16 +55,16 @@ namespace ServiceTitanApp
         private void PopulateTechnicans()
         {
             var technicans = context.Users.Where(u => u.RoleId == 3).AsQueryable();
-            List<User> technicansToShow = new List<User>();
+            List<ApplicationUser> technicansToShow = new List<ApplicationUser>();
             technicansToShow = technicans.ToList();
-            IQueryable<User> selectedTechnicians = Enumerable.Empty<User>().AsQueryable();
+            IQueryable<ApplicationUser> selectedTechnicians = Enumerable.Empty<ApplicationUser>().AsQueryable();
             if (service != null)
             {
                 selectedTechnicians = technicans.Where(u => u.ServiceTechnicians
                 .Select(s => s.ServicesId == service.ServiceID).Any());
             }
 
-            foreach (User user in technicansToShow)
+            foreach (ApplicationUser user in technicansToShow)
             {
                 bool techSelected = selectedTechnicians.Contains(user);
                 chklistTechnicians.Items.Add(user, techSelected);
@@ -101,7 +101,7 @@ namespace ServiceTitanApp
 
                 for (int i=0; i< chklistTechnicians.Items.Count; i++)
                 {
-                    User tech = (User)chklistTechnicians.Items[i];
+                    ApplicationUser tech = (ApplicationUser)chklistTechnicians.Items[i];
                     bool relationshipExists = context.ServiceTechnicians
                         .Any(st => st.TechniciansId == tech.UserID
                         && st.ServicesId == service.ServiceID);

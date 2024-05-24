@@ -6,6 +6,6 @@ namespace ServiceTitanWebApp.ViewModels
     {
         public Service Service { get; set; }
         public IEnumerable<Category> Categories { get; set; }
-        public IEnumerable<User> User { get; set; }
+        public IEnumerable<ApplicationUser> User { get; set; }
     }
 }

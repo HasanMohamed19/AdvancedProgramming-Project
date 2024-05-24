@@ -33,7 +33,7 @@ namespace ServiceTitanBusinessObjects
         public Category? Category { get; set; } = null!;
 
         public ICollection<ServiceTechnician> ServiceTechnicians { get;} = new HashSet<ServiceTechnician>();
-        public ICollection<User> Technicians { get;} = new HashSet<User>();
+        public ICollection<ApplicationUser> Technicians { get;} = new HashSet<ApplicationUser>();
 
         public ICollection<ServiceRequest> ServiceRequests { get; } = new HashSet<ServiceRequest>();
     }

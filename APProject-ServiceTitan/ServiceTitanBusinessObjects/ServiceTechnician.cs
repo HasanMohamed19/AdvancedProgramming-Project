@@ -13,6 +13,6 @@ namespace ServiceTitanBusinessObjects
         public int TechniciansId { get; set; }
         public int ServicesId { get; set; }
         public Service Service { get; set; } = null!;
-        public User Technician { get; set; } = null!;
+        public ApplicationUser Technician { get; set; } = null!;
     }
 }

@@ -78,7 +78,7 @@ namespace ServiceTitanApp
             {
                 Id = category.CategoryID,
                 Name = category.CategoryName,
-                ManagerName = category.CategoryManager.UserName,
+                ManagerName = category.CategoryManager.UserEmail,
                 NoOfServices = category.Services.Count(),
             }).ToList();
             // display a message to the user if nothing was found

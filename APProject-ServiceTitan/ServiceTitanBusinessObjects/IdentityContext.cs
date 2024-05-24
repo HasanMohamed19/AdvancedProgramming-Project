@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ServiceTitanBusinessObjects
 {
-    public class IdentityContext : IdentityDbContext<AppUsers>
+    public class IdentityContext : IdentityDbContext<IdentityUser>
     {
         public IdentityContext()
         {
@@ -36,7 +36,5 @@ namespace ServiceTitanBusinessObjects
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
         }
-
-        DbSet<AppUsers> AppUsers { get; set; }
     }
 }

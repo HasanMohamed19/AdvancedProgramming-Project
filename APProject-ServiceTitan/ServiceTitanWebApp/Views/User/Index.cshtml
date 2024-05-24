@@ -1,4 +1,4 @@
-@model IEnumerable<ServiceTitanBusinessObjects.User>
+@model IEnumerable<ServiceTitanBusinessObjects.ApplicationUser>
 
 @{
     ViewData["Title"] = "Index";
@@ -14,13 +14,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.UserName)
+                @Html.DisplayNameFor(model => model.UserEmail)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.UserEmail)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Password)
+                @Html.DisplayNameFor(model => model.UserEmail)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Role)
@@ -32,13 +32,13 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.UserName)
+                @Html.DisplayFor(modelItem => item.UserEmail)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.UserEmail)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Password)
+                @Html.DisplayFor(modelItem => item.UserEmail)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Role.RoleName)

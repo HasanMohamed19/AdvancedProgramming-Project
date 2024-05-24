@@ -102,8 +102,8 @@ namespace ServiceTitanApp
                 Name = request.Service.ServiceName,
                 Category = request.Service.Category.CategoryName,
                 Price = request.RequestPrice.ToString("0.000"),
-                Technician = request.Technician.UserName,
-                Client = request.Client.UserName,
+                Technician = request.Technician.UserEmail,
+                Client = request.Client.UserEmail,
                 Status = request.Status.Status
             }).ToList();
             // display a message to the user if nothing was found

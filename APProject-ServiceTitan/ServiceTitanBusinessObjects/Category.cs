@@ -24,10 +24,8 @@ namespace ServiceTitanBusinessObjects
         public string? CategoryDescription { get; set; }
 
         public int? CategoryManagerId { get; set; }
-        // if category manager gets deleted, category should not delete
-        // which makes manager optional
         [Column("category_manager_id")]
-        public User? CategoryManager { get; set; }
+        public ApplicationUser? CategoryManager { get; set; }
 
         public ICollection<Service> Services { get; } = new HashSet<Service>();
     }
