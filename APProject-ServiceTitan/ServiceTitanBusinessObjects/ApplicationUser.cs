@@ -25,6 +25,8 @@ namespace ServiceTitanBusinessObjects
         [MinLength(2)]
         public string? LastName { get; set; }
 
+        public string? FullName { get { return FirstName + " " + LastName; } }
+
         [Required]
         [MaxLength(50)]
         public string? Address { get; set; }
