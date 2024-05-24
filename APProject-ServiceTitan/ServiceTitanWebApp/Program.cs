@@ -1,9 +1,18 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ServiceTitanBusinessObjects;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<IdentityContext>(options => options.UseSqlServer(
+        builder.Configuration.GetConnectionString("IdentityContextConnection")
+    ));
+
+builder.Services.AddDefaultIdentity<IdentityUser>()
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<IdentityContext>();
 
 builder.Services.AddDbContext<ServiceTitanDBContext>(options => options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")
@@ -21,9 +30,12 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+app.UseAuthentication();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapRazorPages();
 
 app.Run();
