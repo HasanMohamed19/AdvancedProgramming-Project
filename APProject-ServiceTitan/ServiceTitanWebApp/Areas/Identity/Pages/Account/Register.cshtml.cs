@@ -107,7 +107,7 @@ namespace ProjectWebApp.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
-            public string Role { get; set; }
+            public string Role { get; set; } = "User";
             public int RoleId { get { switch (Role)
                     {
                         case "Admin":
@@ -135,9 +135,7 @@ namespace ProjectWebApp.Areas.Identity.Pages.Account
 
             [Required]
             public string Address { get; set;}
-            
-            [ValidateNever]
-            public IEnumerable<SelectListItem> RoleList { get; set; }   
+
         }
 
 
@@ -224,11 +222,6 @@ namespace ProjectWebApp.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-
-            Input = new InputModel()
-            {
-                RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem { Text = i, Value = i })
-            };
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -295,12 +288,6 @@ namespace ProjectWebApp.Areas.Identity.Pages.Account
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
-
-                    var Input = new InputModel()
-                    {
-                        RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem { Text = i, Value = i })
-                    };
-
                 }
             }
 
