@@ -47,7 +47,7 @@ namespace ServiceTitanWebApp.Controllers
         // GET: Category/Create
         public IActionResult Create()
         {
-            ViewData["CategoryManagerId"] = new SelectList(_context.Users, "UserID", "UserName");
+            ViewData["CategoryManagerId"] = new SelectList(_context.Users, "UserID", "UserEmail");
             return View();
         }
 
@@ -64,7 +64,7 @@ namespace ServiceTitanWebApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryManagerId"] = new SelectList(_context.Users, "UserID", "UserName", category.CategoryManagerId);
+            ViewData["CategoryManagerId"] = new SelectList(_context.Users, "UserID", "UserEmail", category.CategoryManagerId);
             return View(category);
         }
 
@@ -81,7 +81,7 @@ namespace ServiceTitanWebApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryManagerId"] = new SelectList(_context.Users, "UserID", "UserName", category.CategoryManagerId);
+            ViewData["CategoryManagerId"] = new SelectList(_context.Users, "UserID", "UserEmail", category.CategoryManagerId);
             return View(category);
         }
 
@@ -117,7 +117,7 @@ namespace ServiceTitanWebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryManagerId"] = new SelectList(_context.Users, "UserID", "UserName", category.CategoryManagerId);
+            ViewData["CategoryManagerId"] = new SelectList(_context.Users, "UserID", "UserEmail", category.CategoryManagerId);
             return View(category);
         }
 

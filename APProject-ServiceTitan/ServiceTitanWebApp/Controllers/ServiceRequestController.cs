@@ -2,28 +2,75 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using ServiceTitanBusinessObjects;
 
 namespace ServiceTitanWebApp.Controllers
 {
     public class ServiceRequestController : Controller
     {
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly ServiceTitanDBContext _context;
 
-        public ServiceRequestController(ServiceTitanDBContext context)
+        public ServiceRequestController(ServiceTitanDBContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: ServiceRequest
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var serviceTitanDBContext = _context.ServiceRequests.Include(s => s.Client).Include(s => s.Service).Include(s => s.Status).Include(s => s.Technician);
-            return View(await serviceTitanDBContext.ToListAsync());
+            string loggedInUserEmail = _userManager.GetUserName(User);
+            IEnumerable<ServiceRequest> requests = _context.ServiceRequests
+                .Include(s => s.Client)
+                .Include(s => s.Service)
+                .Include(s => s.Status)
+                .Include(s => s.Technician);
+            if (User.IsInRole(UserRole.GetRoleName(3)!))
+            {
+                requests = requests.Where(s => s.Technician.UserEmail == loggedInUserEmail);
+                return View(requests.ToList());
+            }
+            else if (User.IsInRole(UserRole.GetRoleName(4)!))
+            {
+                requests = requests.Where(s => s.Client.UserEmail == loggedInUserEmail);
+                return View(requests.ToList());
+            } else if (User.IsInRole(UserRole.GetRoleName(1)!) || User.IsInRole(UserRole.GetRoleName(2)!))
+            {
+                return View(requests.ToList());
+            }
+            // if none of the roles match, dont return anything
+            return View();
         }
+
+        // GET: ServiceRequest
+        //public IActionResult Index(string UserEmail)
+        //{
+        //    IEnumerable<ServiceRequest> requests = _context.ServiceRequests
+        //        .Include(s => s.Client)
+        //        .Include(s => s.Service)
+        //        .Include(s => s.Status)
+        //        .Include(s => s.Technician);
+        //    if (User.IsInRole(UserRole.GetRoleName(3)!))
+        //    {
+        //        requests = requests.Where(s => s.Technician.UserEmail == UserEmail);
+        //    } else if (User.IsInRole(UserRole.GetRoleName(4)!))
+        //    {
+        //        requests = requests.Where(s => s.Client.UserEmail == UserEmail);
+        //    } 
+        //    //else if (User.IsInRole(UserRole.GetRoleName(1)!) || User.IsInRole(UserRole.GetRoleName(2)!))
+        //    //{
+        //    //    requests = requests;
+        //    //}
+
+
+        //    return View(requests.ToList());
+        //}
 
         // GET: ServiceRequest/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -50,10 +97,9 @@ namespace ServiceTitanWebApp.Controllers
         // GET: ServiceRequest/Create
         public IActionResult Create()
         {
-            ViewData["ClientId"] = new SelectList(_context.Users, "UserID", "UserName");
             ViewData["ServiceId"] = new SelectList(_context.Services, "ServiceID", "ServiceName");
-            ViewData["StatusId"] = new SelectList(_context.RequestStatus, "StatusID", "Status");
-            ViewData["TechnicianId"] = new SelectList(_context.Users, "UserID", "UserName");
+            //ViewData["StatusId"] = new SelectList(_context.RequestStatus, "StatusID", "Status");
+            //ViewData["TechnicianId"] = new SelectList(_context.Users.Where(s => s.RoleId == 3), "UserID", "FullName");
             return View();
         }
 
@@ -62,18 +108,21 @@ namespace ServiceTitanWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("RequestID,RequestDescription,RequestPrice,RequestDateNeeded,ClientId,TechnicianId,ServiceId,StatusId")] ServiceRequest serviceRequest)
+        public async Task<IActionResult> Create([Bind("RequestID,RequestDescription,RequestDateNeeded,ServiceId")] ServiceRequest serviceRequest)
         {
+            serviceRequest.StatusId = 1; //pending
+            serviceRequest.ClientId = _context.Users.Single(s => s.UserEmail == _userManager.GetUserName(User)).UserID;
+            serviceRequest.RequestPrice = serviceRequest.Service.ServicePrice;
+
             if (ModelState.IsValid)
             {
                 _context.Add(serviceRequest);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ClientId"] = new SelectList(_context.Users, "UserID", "UserName", serviceRequest.ClientId);
             ViewData["ServiceId"] = new SelectList(_context.Services, "ServiceID", "ServiceName", serviceRequest.ServiceId);
-            ViewData["StatusId"] = new SelectList(_context.RequestStatus, "StatusID", "Status", serviceRequest.StatusId);
-            ViewData["TechnicianId"] = new SelectList(_context.Users, "UserID", "UserName", serviceRequest.TechnicianId);
+            //ViewData["StatusId"] = new SelectList(_context.RequestStatus, "StatusID", "Status", serviceRequest.StatusId);
+            //ViewData["TechnicianId"] = new SelectList(_context.Users, "UserID", "FullName", serviceRequest.TechnicianId);
             return View(serviceRequest);
         }
 
@@ -90,10 +139,10 @@ namespace ServiceTitanWebApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["ClientId"] = new SelectList(_context.Users, "UserID", "UserName", serviceRequest.ClientId);
+            ViewData["ClientId"] = new SelectList(_context.Users, "UserID", "FullName", serviceRequest.ClientId);
             ViewData["ServiceId"] = new SelectList(_context.Services, "ServiceID", "ServiceName", serviceRequest.ServiceId);
             ViewData["StatusId"] = new SelectList(_context.RequestStatus, "StatusID", "Status", serviceRequest.StatusId);
-            ViewData["TechnicianId"] = new SelectList(_context.Users, "UserID", "UserName", serviceRequest.TechnicianId);
+            ViewData["TechnicianId"] = new SelectList(_context.Users, "UserID", "FullName", serviceRequest.TechnicianId);
             return View(serviceRequest);
         }
 
@@ -129,10 +178,10 @@ namespace ServiceTitanWebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ClientId"] = new SelectList(_context.Users, "UserID", "UserName", serviceRequest.ClientId);
+            ViewData["ClientId"] = new SelectList(_context.Users, "UserID", "FullName", serviceRequest.ClientId);
             ViewData["ServiceId"] = new SelectList(_context.Services, "ServiceID", "ServiceName", serviceRequest.ServiceId);
             ViewData["StatusId"] = new SelectList(_context.RequestStatus, "StatusID", "Status", serviceRequest.StatusId);
-            ViewData["TechnicianId"] = new SelectList(_context.Users, "UserID", "UserName", serviceRequest.TechnicianId);
+            ViewData["TechnicianId"] = new SelectList(_context.Users, "UserID", "FullName", serviceRequest.TechnicianId);
             return View(serviceRequest);
         }
 
