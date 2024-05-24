@@ -30,6 +30,6 @@ namespace ServiceTitanBusinessObjects
         public User? User { get; set; }
 
         public int? ServiceRequestId {  get; set; }
-        public ServiceRequest ServiceRequest { get; set; }
+        public ServiceRequest? ServiceRequest { get; set; }
     }
 }

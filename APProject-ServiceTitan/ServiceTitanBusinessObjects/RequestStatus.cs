@@ -20,6 +20,6 @@ namespace ServiceTitanBusinessObjects
         [Column("request_status")]
         public string Status { get; set; }
 
-        public ICollection<ServiceRequest> ServiceRequests { get; set; }
+        public ICollection<ServiceRequest> ServiceRequests { get; } = new HashSet<ServiceRequest>();
     }
 }

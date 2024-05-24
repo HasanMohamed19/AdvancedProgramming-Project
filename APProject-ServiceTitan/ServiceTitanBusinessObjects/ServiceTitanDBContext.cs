@@ -77,6 +77,8 @@ namespace ServiceTitanBusinessObjects
                 property.SetPrecision(10);
                 property.SetScale(3);
             }
+
+            modelBuilder.Seed();
         }
     }
 }

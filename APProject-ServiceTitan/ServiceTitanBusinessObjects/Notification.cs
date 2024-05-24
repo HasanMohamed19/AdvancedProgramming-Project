@@ -33,10 +33,10 @@ namespace ServiceTitanBusinessObjects
         [Required]
         [MaxLength(15)]
         [Column("notification_status")]
-        public NotificationStatus NotificationStatus { get; set; }
+        public NotificationStatus? NotificationStatus { get; set; }
 
 
         public int? UserId { get; set; }
-        public User User { get; set; }
+        public User? User { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ServiceTitanBusinessObjects;
 
@@ -11,9 +12,10 @@ using ServiceTitanBusinessObjects;
 namespace ServiceTitanBusinessObjects.Migrations
 {
     [DbContext(typeof(ServiceTitanDBContext))]
-    partial class ServiceTitanDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240524032950_added seeding and nullability")]
+    partial class addedseedingandnullability
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

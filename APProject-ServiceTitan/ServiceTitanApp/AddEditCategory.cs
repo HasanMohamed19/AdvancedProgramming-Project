@@ -51,7 +51,7 @@ namespace ServiceTitanApp
         {
             try
             {
-                category.Services = null;
+                //category.Services = null;
                 category.CategoryManager = context.Users.Where(user => user.UserID == Convert.ToInt32(comboManager.SelectedValue)).FirstOrDefault();
                 category.CategoryName = txtName.Text;
                 category.CategoryDescription = txtDescription.Text;

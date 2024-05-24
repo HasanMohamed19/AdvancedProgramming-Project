@@ -29,23 +29,23 @@ namespace ServiceTitanBusinessObjects
         public string Password { get; set; }
 
         public int? RoleId { get; set; }
-        public UserRole Role { get; set; }
+        public UserRole? Role { get; set; }
 
-        public ICollection<Category> Categories { get; set; }
+        public ICollection<Category> Categories { get; } = new HashSet<Category>();
 
         public ICollection<ServiceTechnician> ServiceTechnicians { get; } = new HashSet<ServiceTechnician>();
         public ICollection<Service> Services { get; } = new HashSet<Service>();
 
-        public ICollection<ServiceRequest> ClientServiceRequests { get; set; }
-        public ICollection<ServiceRequest> TechnicianServiceRequests { get; set; }
+        public ICollection<ServiceRequest> ClientServiceRequests { get; } = new HashSet<ServiceRequest>();
+        public ICollection<ServiceRequest> TechnicianServiceRequests { get;} = new HashSet<ServiceRequest>();
 
-        public ICollection<Notification> Notifications { get; set; }
+        public ICollection<Notification> Notifications { get; } = new HashSet<Notification>();
 
-        public ICollection<Comment> Comments { get; set; }
+        public ICollection<Comment> Comments { get; } = new HashSet<Comment>();
 
-        public ICollection<Document> Documents { get; set; }
+        public ICollection<Document> Documents { get; } = new HashSet<Document>();
 
-        public ICollection<Log> Logs { get; set; }
+        public ICollection<Log> Logs { get; } = new HashSet<Log>();
 
         public override string? ToString()
         {

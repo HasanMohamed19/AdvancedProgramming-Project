@@ -30,7 +30,7 @@ namespace ServiceTitanBusinessObjects
         public decimal ServicePrice { get; set; }
 
         public int? CategoryId { get; set; }
-        public Category Category { get; set; }
+        public Category? Category { get; set; } = null!;
 
         public ICollection<ServiceTechnician> ServiceTechnicians { get;} = new HashSet<ServiceTechnician>();
         public ICollection<User> Technicians { get;} = new HashSet<User>();
