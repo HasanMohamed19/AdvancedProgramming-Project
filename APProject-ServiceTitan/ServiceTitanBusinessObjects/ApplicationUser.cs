@@ -8,21 +8,24 @@ using System.Threading.Tasks;
 
 namespace ServiceTitanBusinessObjects
 {
-    public class ApplicationUser : IValidatableObject
+    public class ApplicationUser
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("user_id")]
         public int UserID { get; set; }
 
+        [Required]
         [MaxLength(50)]
         [MinLength(2)]
         public string? FirstName { get; set; }
 
+        [Required]
         [MaxLength(50)]
         [MinLength(2)]
         public string? LastName { get; set; }
 
+        [Required]
         [MaxLength(50)]
         public string? Address { get; set; }
 
@@ -56,22 +59,22 @@ namespace ServiceTitanBusinessObjects
             return UserEmail;
         }
 
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            // validate firstname, lastname, and address for customers only
-            if (RoleId == 4)
-            {
-                if (FirstName == null)
-                {
-                    yield return new ValidationResult("First Name cannot be empty.", new[] { nameof(FirstName) });
-                } else if (LastName == null)
-                {
-                    yield return new ValidationResult("Last Name cannot be empty.", new[] { nameof(LastName) });
-                } else if (Address == null)
-                {
-                    yield return new ValidationResult("Address cannot be empty.", new[] { nameof(Address) });
-                }
-            }
-        }
+        //public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        //{
+        //    // validate firstname, lastname, and address for customers only
+        //    if (RoleId == 4)
+        //    {
+        //        if (FirstName == null)
+        //        {
+        //            yield return new ValidationResult("First Name cannot be empty.", new[] { nameof(FirstName) });
+        //        } else if (LastName == null)
+        //        {
+        //            yield return new ValidationResult("Last Name cannot be empty.", new[] { nameof(LastName) });
+        //        } else if (Address == null)
+        //        {
+        //            yield return new ValidationResult("Address cannot be empty.", new[] { nameof(Address) });
+        //        }
+        //    }
+        //}
     }
 }

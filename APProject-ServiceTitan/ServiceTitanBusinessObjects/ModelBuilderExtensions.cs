@@ -21,12 +21,12 @@ namespace ServiceTitanBusinessObjects
                 new NotificationStatus { NotificationStatusID = 1, NotificationStatusName = "Unread"},
                 new NotificationStatus { NotificationStatusID = 2, NotificationStatusName = "Read"}
             );
-            //modelBuilder.Entity<UserRole>().HasData(
-            //    new UserRole { RoleID = 1, RoleName = "Admin" },
-            //    new UserRole { RoleID = 2, RoleName = "Manager" },
-            //    new UserRole { RoleID = 3, RoleName = "Technician" },
-            //    new UserRole { RoleID = 4, RoleName = "Client" }
-            //);
+            modelBuilder.Entity<UserRole>().HasData(
+                new UserRole { RoleID = 1, RoleName = "Admin" },
+                new UserRole { RoleID = 2, RoleName = "Manager" },
+                new UserRole { RoleID = 3, RoleName = "Technician" },
+                new UserRole { RoleID = 4, RoleName = "User" }
+            );
 
         }
     }
