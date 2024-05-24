@@ -50,10 +50,10 @@ namespace ServiceTitanWebApp.Controllers
         // GET: ServiceRequest/Create
         public IActionResult Create()
         {
-            ViewData["ClientId"] = new SelectList(_context.Users, "UserID", "Password");
-            ViewData["ServiceId"] = new SelectList(_context.Services, "ServiceID", "ServiceDescription");
+            ViewData["ClientId"] = new SelectList(_context.Users, "UserID", "UserName");
+            ViewData["ServiceId"] = new SelectList(_context.Services, "ServiceID", "ServiceName");
             ViewData["StatusId"] = new SelectList(_context.RequestStatus, "StatusID", "Status");
-            ViewData["TechnicianId"] = new SelectList(_context.Users, "UserID", "Password");
+            ViewData["TechnicianId"] = new SelectList(_context.Users, "UserID", "UserName");
             return View();
         }
 
@@ -70,10 +70,10 @@ namespace ServiceTitanWebApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ClientId"] = new SelectList(_context.Users, "UserID", "Password", serviceRequest.ClientId);
-            ViewData["ServiceId"] = new SelectList(_context.Services, "ServiceID", "ServiceDescription", serviceRequest.ServiceId);
+            ViewData["ClientId"] = new SelectList(_context.Users, "UserID", "UserName", serviceRequest.ClientId);
+            ViewData["ServiceId"] = new SelectList(_context.Services, "ServiceID", "ServiceName", serviceRequest.ServiceId);
             ViewData["StatusId"] = new SelectList(_context.RequestStatus, "StatusID", "Status", serviceRequest.StatusId);
-            ViewData["TechnicianId"] = new SelectList(_context.Users, "UserID", "Password", serviceRequest.TechnicianId);
+            ViewData["TechnicianId"] = new SelectList(_context.Users, "UserID", "UserName", serviceRequest.TechnicianId);
             return View(serviceRequest);
         }
 
@@ -90,10 +90,10 @@ namespace ServiceTitanWebApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["ClientId"] = new SelectList(_context.Users, "UserID", "Password", serviceRequest.ClientId);
-            ViewData["ServiceId"] = new SelectList(_context.Services, "ServiceID", "ServiceDescription", serviceRequest.ServiceId);
+            ViewData["ClientId"] = new SelectList(_context.Users, "UserID", "UserName", serviceRequest.ClientId);
+            ViewData["ServiceId"] = new SelectList(_context.Services, "ServiceID", "ServiceName", serviceRequest.ServiceId);
             ViewData["StatusId"] = new SelectList(_context.RequestStatus, "StatusID", "Status", serviceRequest.StatusId);
-            ViewData["TechnicianId"] = new SelectList(_context.Users, "UserID", "Password", serviceRequest.TechnicianId);
+            ViewData["TechnicianId"] = new SelectList(_context.Users, "UserID", "UserName", serviceRequest.TechnicianId);
             return View(serviceRequest);
         }
 
@@ -129,10 +129,10 @@ namespace ServiceTitanWebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ClientId"] = new SelectList(_context.Users, "UserID", "Password", serviceRequest.ClientId);
-            ViewData["ServiceId"] = new SelectList(_context.Services, "ServiceID", "ServiceDescription", serviceRequest.ServiceId);
+            ViewData["ClientId"] = new SelectList(_context.Users, "UserID", "UserName", serviceRequest.ClientId);
+            ViewData["ServiceId"] = new SelectList(_context.Services, "ServiceID", "ServiceName", serviceRequest.ServiceId);
             ViewData["StatusId"] = new SelectList(_context.RequestStatus, "StatusID", "Status", serviceRequest.StatusId);
-            ViewData["TechnicianId"] = new SelectList(_context.Users, "UserID", "Password", serviceRequest.TechnicianId);
+            ViewData["TechnicianId"] = new SelectList(_context.Users, "UserID", "UserName", serviceRequest.TechnicianId);
             return View(serviceRequest);
         }
 
