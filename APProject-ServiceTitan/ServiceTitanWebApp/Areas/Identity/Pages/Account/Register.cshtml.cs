@@ -107,21 +107,8 @@ namespace ServiceTitanWebApp.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
-            public string Role { get; set; } = "User";
-            public int RoleId { get { switch (Role)
-                    {
-                        case "Admin":
-                            return 1;
-                        case "Manager":
-                            return 2;
-                        case "Technician":
-                            return 3;
-                        case "User":
-                            return 4;
-                        default:
-                            return 0;
-                    }
-                    }}
+            public string Role { get; set; } = UserRole.GetRoleName(4)!;
+            public int RoleId { get { return UserRole.GetRoleId(Role); } }
 
             [Required]
             [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
