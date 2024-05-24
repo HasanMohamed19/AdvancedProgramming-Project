@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
-namespace ProjectWebApp.Areas.Identity.Pages.Account.Manage
+namespace ServiceTitanWebApp.Areas.Identity.Pages.Account.Manage
 {
     public class PersonalDataModel : PageModel
     {

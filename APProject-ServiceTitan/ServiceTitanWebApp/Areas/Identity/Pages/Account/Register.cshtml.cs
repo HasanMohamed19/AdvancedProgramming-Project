@@ -23,7 +23,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using ServiceTitanBusinessObjects;
 
-namespace ProjectWebApp.Areas.Identity.Pages.Account
+namespace ServiceTitanWebApp.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
