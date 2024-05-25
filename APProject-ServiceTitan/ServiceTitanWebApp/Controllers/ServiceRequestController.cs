@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -24,6 +25,7 @@ namespace ServiceTitanWebApp.Controllers
         }
 
         // GET: ServiceRequest
+        [Authorize]
         public IActionResult Index()
         {
             string loggedInUserEmail = _userManager.GetUserName(User);
@@ -104,25 +106,20 @@ namespace ServiceTitanWebApp.Controllers
         //    return View();
         //}
 
+        [Authorize]
         public IActionResult Create(int? id)
         {
-            // if creating request without service as parameter, add service list
             if (id == null)
-            {
-                ViewData["ServiceId"] = new SelectList(_context.Services, "ServiceID", "ServiceName");
-                //ViewData["StatusId"] = new SelectList(_context.RequestStatus, "StatusID", "Status");
-                //ViewData["TechnicianId"] = new SelectList(_context.Users.Where(s => s.RoleId == 3), "UserID", "FullName");
-                return View();
-            }
+                return NotFound();
+
             Service? service = _context.Services.Find(id);
             if (service == null)
-            {
-                return BadRequest();
-            }
+                return NotFound();
+
             var viewModel = new CreateRequestViewModel
             {
-                Price = service.ServicePrice,
-                ServiceName = service.ServiceName,
+                Service = service,
+                Request = new ServiceRequest(),
                 ServiceId = id
             };
             return View(viewModel);
@@ -133,11 +130,19 @@ namespace ServiceTitanWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("RequestID,RequestDescription,RequestDateNeeded,ServiceId")] ServiceRequest serviceRequest)
+        [Authorize]
+        public async Task<IActionResult> Create([Bind("Service,Request,ServiceId")] CreateRequestViewModel newRequestVM)
         {
+            
+            ServiceRequest? serviceRequest = newRequestVM.Request;
+            if (serviceRequest == null) { return NotFound(); }
+            Service? service = _context.Services.Find(newRequestVM.ServiceId);
+            if (service == null) { return NotFound(); }
+
             serviceRequest.StatusId = 1; //pending
             serviceRequest.ClientId = _context.Users.Single(s => s.UserEmail == _userManager.GetUserName(User)).UserID;
-            serviceRequest.RequestPrice = serviceRequest.Service.ServicePrice;
+            serviceRequest.RequestPrice = service.ServicePrice;
+            serviceRequest.ServiceId = service.ServiceID;
 
             if (ModelState.IsValid)
             {
@@ -145,10 +150,13 @@ namespace ServiceTitanWebApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ServiceId"] = new SelectList(_context.Services, "ServiceID", "ServiceName", serviceRequest.ServiceId);
-            //ViewData["StatusId"] = new SelectList(_context.RequestStatus, "StatusID", "Status", serviceRequest.StatusId);
-            //ViewData["TechnicianId"] = new SelectList(_context.Users, "UserID", "FullName", serviceRequest.TechnicianId);
-            return View(serviceRequest);
+
+            var viewModel = new CreateRequestViewModel
+            {
+                Service = service,
+                Request = serviceRequest
+            };
+            return View(viewModel);
         }
 
         // GET: ServiceRequest/Edit/5

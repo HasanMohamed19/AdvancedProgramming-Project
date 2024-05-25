@@ -7,9 +7,9 @@
 
 <h1>Index</h1>
 
-<p>
+@* <p>
     <a asp-action="Create">Create New</a>
-</p>
+</p> *@
 <table class="table">
     <thead>
         <tr>
@@ -44,16 +44,16 @@
                 @Html.DisplayFor(modelItem => item.RequestDescription)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.RequestPrice)
+                @Html.DisplayFor(modelItem => item.RequestPrice) BHD
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.RequestDateNeeded)
             </td>
             <td>
-                    @Html.DisplayFor(modelItem => item.Client.UserEmail)
+                    @Html.DisplayFor(modelItem => item.Client.FullName)
             </td>
             <td>
-                    @Html.DisplayFor(modelItem => item.Technician.UserEmail)
+                    @Html.DisplayFor(modelItem => item.Technician.FullName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Service.ServiceDescription)
