@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ServiceTitanBusinessObjects;
+using ServiceTitanWebApp.ViewModels;
+
 
 namespace ServiceTitanWebApp.Controllers
 {
@@ -47,8 +49,17 @@ namespace ServiceTitanWebApp.Controllers
         // GET: User/Create
         public IActionResult Create()
         {
-            ViewData["RoleId"] = new SelectList(_context.UserRoles, "RoleID", "RoleName");
-            return View();
+            ViewData["RoleId"] = new SelectList(_context.UserRoles.Where(ur => ur.RoleID != 1), "RoleID", "RoleName");
+            var viewModel = new NewUserViewModel
+            {
+                NewUser = new(),
+                Categories = _context.Categories,
+                Services = _context.Services,
+                Users = _context.Users,
+                Category = new(),
+                Service = new()
+            };
+            return View(viewModel);
         }
 
         // POST: User/Create
@@ -56,16 +67,29 @@ namespace ServiceTitanWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserID,FirstName,LastName,Address,UserEmail,RoleId")] ApplicationUser user)
+        public IActionResult Create(NewUserViewModel newUser)
         {
+            ViewData["RoleId"] = new SelectList(_context.UserRoles.Where(ur => ur.RoleID != 1), "RoleID", "RoleName", newUser.NewUser.RoleId);
             if (ModelState.IsValid)
             {
-                _context.Add(user);
-                await _context.SaveChangesAsync();
+                _context.Add(newUser.NewUser);
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
+            } else
+            {
+                var viewModel = new NewUserViewModel
+                {
+                    NewUser = new(),
+                    Categories = _context.Categories,
+                    Services = _context.Services,
+                    Users = _context.Users,
+                    Category = newUser.Category,
+                    Service = newUser.Service
+                };
+                return View(viewModel);
             }
-            ViewData["RoleId"] = new SelectList(_context.UserRoles, "RoleID", "RoleName", user.RoleId);
-            return View(user);
+            //ViewData["RoleId"] = new SelectList(_context.UserRoles, "RoleID", "RoleName", user.RoleId);
+            //return View(user);
         }
 
         // GET: User/Edit/5
