@@ -1,4 +1,5 @@
-﻿using ServiceTitanBusinessObjects;
+﻿#nullable disable
+using ServiceTitanBusinessObjects;
 
 namespace ServiceTitanWebApp.ViewModels
 {
@@ -6,6 +7,6 @@ namespace ServiceTitanWebApp.ViewModels
     {
         public Service Service { get; set; }
         public IEnumerable<Category> Categories { get; set; }
-        public IEnumerable<ApplicationUser> User { get; set; }
+        public IEnumerable<ApplicationUser> Users { get; set; }
     }
 }

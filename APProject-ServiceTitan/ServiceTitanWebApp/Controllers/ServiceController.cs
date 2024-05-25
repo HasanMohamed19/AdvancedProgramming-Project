@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ServiceTitanBusinessObjects;
+using ServiceTitanWebApp.ViewModels;
 
 namespace ServiceTitanWebApp.Controllers
 {
@@ -18,24 +21,26 @@ namespace ServiceTitanWebApp.Controllers
             _context = context;
         }
 
+        [Authorize]
         // GET: Service
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var serviceTitanDBContext = _context.Services.Include(s => s.Category);
-            return View(await serviceTitanDBContext.ToListAsync());
+            var services = _context.Services.Include(s => s.Category);
+            return View(services);
         }
 
+        [Authorize]
         // GET: Service/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null || _context.Services == null)
             {
                 return NotFound();
             }
 
-            var service = await _context.Services
+            var service = _context.Services
                 .Include(s => s.Category)
-                .FirstOrDefaultAsync(m => m.ServiceID == id);
+                .FirstOrDefault(m => m.ServiceID == id);
             if (service == null)
             {
                 return NotFound();
@@ -44,30 +49,48 @@ namespace ServiceTitanWebApp.Controllers
             return View(service);
         }
 
+        [Authorize(Roles = "Admin,Manager")]
         // GET: Service/Create
         public IActionResult Create()
         {
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryID", "CategoryName");
-            return View();
+            //ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryID", "CategoryName");
+            var viewModel = new NewServiceViewModel
+            {
+                Service = new(),
+                Users = _context.Users.Where(u=> u.RoleId == 3),
+                Categories = _context.Categories
+            };
+            return View(viewModel);
         }
 
+        [Authorize(Roles = "Admin,Manager")]
         // POST: Service/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ServiceID,ServiceName,ServiceDescription,ServicePrice,CategoryId")] Service service)
+        public IActionResult Create(NewServiceViewModel newService)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(service);
-                await _context.SaveChangesAsync();
+                _context.Add(newService.Service);
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
+            } else
+            {
+                var viewModel = new NewServiceViewModel
+                {
+                    Service = new(),
+                    Users = _context.Users.Where(u => u.RoleId == 3),
+                    Categories = _context.Categories
+                };
+                return View(viewModel);
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryID", "CategoryName", service.CategoryId);
-            return View(service);
+            //ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryID", "CategoryName", service.CategoryId);
+            //return View(service);
         }
 
+        [Authorize(Roles = "Admin,Manager")]
         // GET: Service/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -85,6 +108,7 @@ namespace ServiceTitanWebApp.Controllers
             return View(service);
         }
 
+        [Authorize(Roles = "Admin,Manager")]
         // POST: Service/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -121,6 +145,7 @@ namespace ServiceTitanWebApp.Controllers
             return View(service);
         }
 
+        [Authorize(Roles = "Admin,Manager")]
         // GET: Service/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -140,6 +165,7 @@ namespace ServiceTitanWebApp.Controllers
             return View(service);
         }
 
+        [Authorize(Roles = "Admin,Manager")]
         // POST: Service/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
