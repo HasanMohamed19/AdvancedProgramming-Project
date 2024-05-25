@@ -44,6 +44,7 @@
                 @Html.DisplayFor(modelItem => item.Category.CategoryName)
             </td>
             <td>
+                <a asp-controller="ServiceRequest" asp-action="Create" asp-route-id="@item.ServiceID">Create Request</a> |
                 <a asp-action="Edit" asp-route-id="@item.ServiceID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ServiceID">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.ServiceID">Delete</a>
