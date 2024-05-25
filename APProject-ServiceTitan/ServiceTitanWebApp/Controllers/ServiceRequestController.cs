@@ -116,9 +116,11 @@ namespace ServiceTitanWebApp.Controllers
             if (service == null)
                 return NotFound();
 
+            ViewData["ServiceName"] = service.ServiceName;
+            ViewData["ServicePrice"] = service.ServicePrice;
+
             var viewModel = new CreateRequestViewModel
             {
-                Service = service,
                 Request = new ServiceRequest(),
                 ServiceId = id
             };
@@ -131,7 +133,7 @@ namespace ServiceTitanWebApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("Service,Request,ServiceId")] CreateRequestViewModel newRequestVM)
+        public async Task<IActionResult> Create([Bind("Request,ServiceId")] CreateRequestViewModel newRequestVM)
         {
             
             ServiceRequest? serviceRequest = newRequestVM.Request;
@@ -151,10 +153,13 @@ namespace ServiceTitanWebApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            ViewData["ServiceName"] = service.ServiceName;
+            ViewData["ServicePrice"] = service.ServicePrice;
+
             var viewModel = new CreateRequestViewModel
             {
-                Service = service,
-                Request = serviceRequest
+                Request = serviceRequest,
+                ServiceId = service.ServiceID
             };
             return View(viewModel);
         }
