@@ -41,7 +41,7 @@ namespace ServiceTitanApp
 
                 var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
                 var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                var founduser = await userManager.FindByEmailAsync(txtUsername.Text);
+                var founduser = await userManager.FindByEmailAsync(userName);
 
                 if (founduser != null)
                 {
