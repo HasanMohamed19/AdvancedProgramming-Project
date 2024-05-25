@@ -1,4 +1,4 @@
-@model ServiceTitanBusinessObjects.ServiceRequest
+@model ServiceTitanWebApp.ViewModels.CreateRequestViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -7,30 +7,46 @@
 
 <h1>Create</h1>
 
-<h4>ServiceRequest</h4>
+<h4>Service Request</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @{
+                if (Model != null)
+                {
+                    <div class="form-group">
+                        <h5>Service: @Model.ServiceName</h5>
+                        <h5>Price: @Model.Price BHD</h5>
+                    </div>
+                }
+            }
+            @{
+                if (ViewBag.ServiceId != null)
+                {
+                    <div class="form-group">
+                        <label asp-for="ServiceId" class="control-label"></label>
+                        <select asp-for="ServiceId" class="form-control" asp-items="ViewBag.ServiceId"></select>
+                    </div>
+                }
+            }
             <div class="form-group">
-                <label asp-for="RequestDescription" class="control-label"></label>
-                <input asp-for="RequestDescription" class="form-control" />
-                <span asp-validation-for="RequestDescription" class="text-danger"></span>
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="RequestDateNeeded" class="control-label"></label>
-                <input asp-for="RequestDateNeeded" class="form-control" />
-                <span asp-validation-for="RequestDateNeeded" class="text-danger"></span>
+                <label asp-for="Date" class="control-label"></label>
+                <input asp-for="Date" class="form-control" />
+                <span asp-validation-for="Date" class="text-danger"></span>
             </div>
             @* <div class="form-group">
                 <label asp-for="TechnicianId" class="control-label"></label>
                 <select asp-for="TechnicianId" class ="form-control" asp-items="ViewBag.TechnicianId"></select>
             </div> *@
-            <div class="form-group">
-                <label asp-for="ServiceId" class="control-label"></label>
-                <select asp-for="ServiceId" class ="form-control" asp-items="ViewBag.ServiceId"></select>
-            </div>
+            
+            
             @* <div class="form-group">
                 <label asp-for="StatusId" class="control-label"></label>
                 <select asp-for="StatusId" class ="form-control" asp-items="ViewBag.StatusId"></select>

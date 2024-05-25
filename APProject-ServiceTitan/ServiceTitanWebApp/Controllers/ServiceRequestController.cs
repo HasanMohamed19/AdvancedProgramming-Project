@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using ServiceTitanBusinessObjects;
+using ServiceTitanWebApp.ViewModels;
 
 namespace ServiceTitanWebApp.Controllers
 {
@@ -95,12 +96,36 @@ namespace ServiceTitanWebApp.Controllers
         }
 
         // GET: ServiceRequest/Create
-        public IActionResult Create()
+        //public IActionResult Create()
+        //{
+        //    ViewData["ServiceId"] = new SelectList(_context.Services, "ServiceID", "ServiceName");
+        //    //ViewData["StatusId"] = new SelectList(_context.RequestStatus, "StatusID", "Status");
+        //    //ViewData["TechnicianId"] = new SelectList(_context.Users.Where(s => s.RoleId == 3), "UserID", "FullName");
+        //    return View();
+        //}
+
+        public IActionResult Create(int? id)
         {
-            ViewData["ServiceId"] = new SelectList(_context.Services, "ServiceID", "ServiceName");
-            //ViewData["StatusId"] = new SelectList(_context.RequestStatus, "StatusID", "Status");
-            //ViewData["TechnicianId"] = new SelectList(_context.Users.Where(s => s.RoleId == 3), "UserID", "FullName");
-            return View();
+            // if creating request without service as parameter, add service list
+            if (id == null)
+            {
+                ViewData["ServiceId"] = new SelectList(_context.Services, "ServiceID", "ServiceName");
+                //ViewData["StatusId"] = new SelectList(_context.RequestStatus, "StatusID", "Status");
+                //ViewData["TechnicianId"] = new SelectList(_context.Users.Where(s => s.RoleId == 3), "UserID", "FullName");
+                return View();
+            }
+            Service? service = _context.Services.Find(id);
+            if (service == null)
+            {
+                return BadRequest();
+            }
+            var viewModel = new CreateRequestViewModel
+            {
+                Price = service.ServicePrice,
+                ServiceName = service.ServiceName,
+                ServiceId = id
+            };
+            return View(viewModel);
         }
 
         // POST: ServiceRequest/Create
