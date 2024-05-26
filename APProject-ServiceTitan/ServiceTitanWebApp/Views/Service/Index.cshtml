@@ -24,7 +24,7 @@
 
 
                 Category:
-                <select name="searchCategory" asp-for="Categories" asp-items="Model.Categories.Select(c => new SelectListItem{Text = c.CategoryName, Value = c.CategoryID.ToString()})">
+                <select name="searchCategory" asp-for="searchName" asp-items="Model.Categories.Select(c => new SelectListItem{Text = c.CategoryName, Value = c.CategoryID.ToString()})">
                     <option value="">All</option>
                 </select>
 
