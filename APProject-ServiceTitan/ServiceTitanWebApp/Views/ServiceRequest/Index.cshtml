@@ -62,9 +62,17 @@
                 @Html.DisplayFor(modelItem => item.Status.Status)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.RequestID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.RequestID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.RequestID">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.RequestID">Edit</a> <span> |</span>
+                    <a asp-action="Details" asp-route-id="@item.RequestID">Details</a> <span> |</span>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.RequestID">Delete</a> <span> |</span>
+                    }
+                    @if (item.StatusId != 4 && item.StatusId != 3)
+                    {
+                        // if request complete or cancelled then cannot cancel
+                        <a asp-action="Cancel" asp-route-id="@item.RequestID">Cancel</a>
+                    }
             </td>
         </tr>
 }

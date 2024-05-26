@@ -300,7 +300,76 @@ namespace ServiceTitanWebApp.Controllers
             return View(serviceRequest);
         }
 
+        [Authorize]
+        public async Task<IActionResult> Cancel(int? id)
+        {
+            if (id == null || _context.ServiceRequests == null)
+            {
+                return NotFound();
+            }
+
+            var serviceRequest = await _context.ServiceRequests
+                .Include(s => s.Service)
+                .Include(s => s.Status)
+                .Include(s => s.Technician)
+                .FirstOrDefaultAsync(m => m.RequestID == id);
+
+            if (serviceRequest == null) { return NotFound(); }
+
+            
+            if (serviceRequest == null)
+            {
+                return NotFound();
+            }
+
+            return View(serviceRequest);
+        }
+
+        // POST: ServiceRequest/Delete/5
+        [HttpPost, ActionName("Cancel")]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> CancelConfirmed(int id)
+        {
+            if (_context.ServiceRequests == null)
+            {
+                return Problem("Entity set 'ServiceTitanDBContext.ServiceRequests'  is null.");
+            }
+            var serviceRequest = await _context.ServiceRequests.FindAsync(id);
+            if (serviceRequest != null)
+            {
+                serviceRequest.StatusId = 4;
+
+                // update in db
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        _context.Update(serviceRequest);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!ServiceRequestExists(serviceRequest.RequestID))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        // Deleting requests only possible for admin
+
         // GET: ServiceRequest/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.ServiceRequests == null)
@@ -325,6 +394,7 @@ namespace ServiceTitanWebApp.Controllers
         // POST: ServiceRequest/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.ServiceRequests == null)
