@@ -24,12 +24,16 @@ namespace ServiceTitanWebApp.Controllers
         // GET: Category
         public IActionResult Index(string searchName, string searchManager)
         {
-            IQueryable<Category> categories = _context.Categories.Include(c => c.CategoryManager);
+            //IQueryable<Category> categories = _context.Categories.Include(c => c.CategoryManager);
+            IEnumerable<Category> categories;
+
+            // if no filter is used
+            categories = _context.Categories.Include(c => c.CategoryManager);
 
             // search for category name
             if (!String.IsNullOrEmpty(searchName))
             {
-                categories = categories.Where(c => c.CategoryName.Contains(searchName));
+                categories = categories.Where(c => c.CategoryName!.Contains(searchName));
             }
 
             // search for manager
@@ -38,10 +42,16 @@ namespace ServiceTitanWebApp.Controllers
                 categories = categories.Where(c => c.CategoryManagerId == Convert.ToInt32(searchManager));
             }
 
-            var managers = new SelectList(_context.Users.Where(u => u.RoleId == 2), "UserID", "FullName", searchManager);
-            ViewBag.managers = managers;
+            var categoryIndexVM = new CategoryIndexViewModel
+            {
+                Categories = categories,
+                Managers = _context.Users.Where(u => u.RoleId == 2)
+            };
 
-            return View(categories);
+            //var managers = new SelectList(_context.Users.Where(u => u.RoleId == 2), "UserID", "FullName", searchManager);
+            //ViewBag.managers = managers;
+
+            return View(categoryIndexVM);
         }
 
         [Authorize]
