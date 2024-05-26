@@ -23,10 +23,33 @@ namespace ServiceTitanWebApp.Controllers
 
         [Authorize]
         // GET: Service
-        public IActionResult Index()
+        public IActionResult Index(string searchName, string searchCategory)
         {
-            var services = _context.Services.Include(s => s.Category);
-            return View(services);
+
+            IEnumerable<Service> services;
+
+            services = _context.Services.Include(c => c.Category);
+
+            // search for service name
+            if (!String.IsNullOrEmpty(searchName))
+            {
+                services = services.Where(s => s.ServiceName!.Contains(searchName));
+            }
+
+            // filter by category
+            if (!String.IsNullOrEmpty(searchCategory))
+            {
+                services = services.Where(s => s.CategoryId == Convert.ToInt32(searchCategory));
+            }
+
+            var serviceIndexVM = new ServiceIndexViewModel
+            {
+                Services = services,
+                Categories = _context.Categories,
+            };
+
+            //var services = _context.Services.Include(s => s.Category);
+            return View(serviceIndexVM);
         }
 
         [Authorize]
