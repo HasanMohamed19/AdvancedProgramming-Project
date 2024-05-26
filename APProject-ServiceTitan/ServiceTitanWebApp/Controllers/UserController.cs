@@ -77,7 +77,7 @@ namespace ServiceTitanWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("NewUser")]NewUserViewModel userVM)
+        public async Task<IActionResult> Create(NewUserViewModel userVM)
         {
             
             if (ModelState.IsValid)
@@ -90,6 +90,15 @@ namespace ServiceTitanWebApp.Controllers
                 await _userStore.SetUserNameAsync(user, userVM.NewUser.UserEmail, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, userVM.NewUser.UserEmail, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, "Test@123");
+
+                if (userVM.NewUser.RoleId == 3)
+                {
+                    ServiceTechnician st = new ServiceTechnician();
+                    st.ServicesId = userVM.ServiceId;
+                    st.TechniciansId = userVM.NewUser.UserID;
+                    _context.ServiceTechnicians.Add(st);
+                    _context.SaveChanges();
+                }
 
                 return RedirectToAction(nameof(Index));
             } else
