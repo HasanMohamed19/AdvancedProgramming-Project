@@ -42,6 +42,11 @@ namespace ServiceTitanWebApp.Controllers
                 return NotFound();
             }
 
+            // update status to read
+            notification.NotificationStatusId = 2;
+            _context.Update(notification);
+            _context.SaveChanges();
+
             return View(notification);
         }
 

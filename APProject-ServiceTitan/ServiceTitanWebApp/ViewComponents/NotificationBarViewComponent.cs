@@ -19,7 +19,7 @@ namespace ServiceTitanWebApp.ViewComponents
         public async Task<IViewComponentResult> InvokeAsync()
         {
             string userEmail = User.Identity.Name;
-            int notificationCount = _context.Notifications.Where(u => u.User.UserEmail == userEmail).Count();
+            int notificationCount = _context.Notifications.Where(u => u.User.UserEmail == userEmail && u.NotificationStatusId == 1).Count();
 
             return View("Index", notificationCount);
         }
