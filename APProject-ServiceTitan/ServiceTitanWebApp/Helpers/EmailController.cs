@@ -2,7 +2,7 @@
 using System.Net;
 using System.Runtime.ConstrainedExecution;
 
-namespace ServiceTitanWebApp.Controllers
+namespace ServiceTitanWebApp.Helpers
 {
     public class EmailController
     {
@@ -47,14 +47,14 @@ namespace ServiceTitanWebApp.Controllers
             }
             catch (Exception ex)
             {
-                
+
             }
 
             // to relaease the resoruces used by the mail message
             msgMail.Dispose();
         }
 
-        
+
 
     }
 }
