@@ -82,7 +82,7 @@ namespace ServiceTitanWebApp.Controllers
                 var viewModel = new NewServiceViewModel
                 {
                     Service = new(),
-                    Users = _context.Users.Where(u => u.RoleId == 3),
+                    Technicians = _context.Users.Where(u => u.RoleId == 3),
                     Categories = _context.Categories.Where(m => m.CategoryManagerId == userID)
                 };
                 return View(viewModel);
@@ -91,7 +91,7 @@ namespace ServiceTitanWebApp.Controllers
                 var viewModel = new NewServiceViewModel
                 {
                     Service = new(),
-                    Users = _context.Users.Where(u => u.RoleId == 3),
+                    Technicians = _context.Users.Where(u => u.RoleId == 3),
                     Categories = _context.Categories
                 };
                 return View(viewModel);
@@ -124,7 +124,7 @@ namespace ServiceTitanWebApp.Controllers
                     var viewModel = new NewServiceViewModel
                     {
                         Service = new(),
-                        Users = _context.Users.Where(u => u.RoleId == 3),
+                        Technicians = _context.Users.Where(u => u.RoleId == 3),
                         Categories = _context.Categories.Where(m => m.CategoryManagerId == userID)
                     };
                     return View(viewModel);
@@ -133,7 +133,7 @@ namespace ServiceTitanWebApp.Controllers
                     var viewModel = new NewServiceViewModel
                     {
                         Service = new(),
-                        Users = _context.Users.Where(u => u.RoleId == 3),
+                        Technicians = _context.Users.Where(u => u.RoleId == 3),
                         Categories = _context.Categories
                     };
                     return View(viewModel);

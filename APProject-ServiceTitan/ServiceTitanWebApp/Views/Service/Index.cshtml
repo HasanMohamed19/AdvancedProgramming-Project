@@ -52,6 +52,9 @@
                         @*@Html.DisplayNameFor(model => model.CategoryManager)*@
                         Service Price
                     </th>
+                    <th>
+                        Number of Technicians
+                    </th>
                     <th></th>
                 </tr>
             </thead>
@@ -68,6 +71,10 @@
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => service.ServicePrice)
+                        </td>
+                        <td>
+                            @service.Technicians.Count()
+                            @* @Html.DisplayFor(modelItem => service.Technicians.Count()) *@
                         </td>
                         <td>
                             <a asp-action="Edit" asp-route-id="@service.ServiceID">Edit</a> |
