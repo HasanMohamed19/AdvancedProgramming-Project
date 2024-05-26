@@ -1,0 +1,55 @@
+﻿@model ServiceTitanWebApp.ViewModels.CreateRequestViewModel
+@{
+    ViewData["Title"] = "AdminCreate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>AdminCreate</h1>
+<h4>ServiceRequest</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AdminCreate">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Request.RequestID" />
+            <div class="form-group">
+                <label asp-for="Request.RequestDescription" class="control-label"></label>
+                <input asp-for="Request.RequestDescription" class="form-control" />
+                <span asp-validation-for="Request.RequestDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Request.RequestPrice" class="control-label"></label>
+                <input asp-for="Request.RequestPrice" class="form-control" />
+                <span asp-validation-for="Request.RequestPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Request.RequestDateNeeded" class="control-label"></label>
+                <input asp-for="Request.RequestDateNeeded" class="form-control" />
+                <span asp-validation-for="Request.RequestDateNeeded" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Request.ClientId" class="control-label"></label>
+                <select asp-for="Request.ClientId" class="form-control" asp-items="ViewBag.ClientId"></select>
+                <span asp-validation-for="Request.ClientId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Request.TechnicianId" class="control-label"></label>
+                <select asp-for="Request.TechnicianId" class="form-control" asp-items="ViewBag.TechnicianId"></select>
+                <span asp-validation-for="Request.TechnicianId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Request.ServiceId" class="control-label"></label>
+                <select asp-for="Request.ServiceId" class="form-control" asp-items="ViewBag.ServiceId"></select>
+                <span asp-validation-for="Request.ServiceId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Request.StatusId" class="control-label"></label>
+                <select asp-for="Request.StatusId" class="form-control" asp-items="ViewBag.StatusId"></select>
+                <span asp-validation-for="Request.StatusId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>

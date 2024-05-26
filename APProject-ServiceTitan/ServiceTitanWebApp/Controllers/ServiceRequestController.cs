@@ -163,6 +163,65 @@ namespace ServiceTitanWebApp.Controllers
             };
             return View(viewModel);
         }
+        [Authorize(Roles = "Admin")]
+        public IActionResult AdminCreate(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            Service? service = _context.Services.Find(id);
+            if (service == null)
+                return NotFound();
+
+            //ViewData["ServiceName"] = service.ServiceName;
+            //ViewData["ServicePrice"] = service.ServicePrice;
+            ViewData["ClientId"] = new SelectList(_context.Users.Where(u => u.RoleId == 4), "UserID", "FullName", 0);
+            ViewData["ServiceId"] = new SelectList(_context.Services, "ServiceID", "ServiceName", id);
+            ViewData["StatusId"] = new SelectList(_context.RequestStatus, "StatusID", "Status", 0);
+            ViewData["TechnicianId"] = new SelectList(_context.Users.Where(u => u.RoleId == 3), "UserID", "FullName", 0);
+
+            var viewModel = new CreateRequestViewModel
+            {
+                Request = new ServiceRequest(),
+                ServiceId = id
+            };
+            return View(viewModel);
+        }
+
+        // POST: ServiceRequest/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AdminCreate(CreateRequestViewModel requestVM)
+        {
+            ServiceRequest? serviceRequest = requestVM.Request;
+            if (serviceRequest == null) { return NotFound(); }
+            Service? service = _context.Services.Find(serviceRequest.ServiceId);
+            if (service == null) { return NotFound(); }
+
+            if (ModelState.IsValid)
+            {
+                _context.Add(serviceRequest);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            //ViewData["ServiceName"] = service.ServiceName;
+            //ViewData["ServicePrice"] = service.ServicePrice;
+            ViewData["ClientId"] = new SelectList(_context.Users.Where(u => u.RoleId == 4), "UserID", "FullName", serviceRequest.ClientId);
+            ViewData["ServiceId"] = new SelectList(_context.Services, "ServiceID", "ServiceName", serviceRequest.ServiceId);
+            ViewData["StatusId"] = new SelectList(_context.RequestStatus, "StatusID", "Status", serviceRequest.StatusId);
+            ViewData["TechnicianId"] = new SelectList(_context.Users.Where(u => u.RoleId == 3), "UserID", "FullName", serviceRequest.TechnicianId);
+
+            var viewModel = new CreateRequestViewModel
+            {
+                Request = serviceRequest,
+                ServiceId = serviceRequest.ServiceId
+            };
+            return View(viewModel);
+        }
 
         // GET: ServiceRequest/Edit/5
         public async Task<IActionResult> Edit(int? id)
