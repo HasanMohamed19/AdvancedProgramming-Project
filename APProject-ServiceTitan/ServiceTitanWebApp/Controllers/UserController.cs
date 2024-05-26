@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -16,10 +17,20 @@ namespace ServiceTitanWebApp.Controllers
     public class UserController : Controller
     {
         private readonly ServiceTitanDBContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IUserStore<IdentityUser> _userStore;
+        private readonly IUserEmailStore<IdentityUser> _emailStore;
 
-        public UserController(ServiceTitanDBContext context)
+        public UserController(ServiceTitanDBContext context, UserManager<IdentityUser> userManager,
+            IUserStore<IdentityUser> userStore)
         {
             _context = context;
+            //_userManager = new UserManager<IdentityUser>();
+            //_userStore = new IUserStore<IdentityUser>();
+            //_emailStore = new IUserEmailStore<IdentityUser>();
+            _userManager = userManager;
+            _userStore = userStore;
+            _emailStore = GetEmailStore();
         }
 
         // GET: User
@@ -66,13 +77,20 @@ namespace ServiceTitanWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("NewUser")]NewUserViewModel userVM)
+        public async Task<IActionResult> Create([Bind("NewUser")]NewUserViewModel userVM)
         {
             
             if (ModelState.IsValid)
             {
                 _context.Add(userVM.NewUser);
                 _context.SaveChanges();
+
+                var user = CreateUser();
+
+                await _userStore.SetUserNameAsync(user, userVM.NewUser.UserEmail, CancellationToken.None);
+                await _emailStore.SetEmailAsync(user, userVM.NewUser.UserEmail, CancellationToken.None);
+                var result = await _userManager.CreateAsync(user, "Test@123");
+
                 return RedirectToAction(nameof(Index));
             } else
             {
@@ -185,6 +203,29 @@ namespace ServiceTitanWebApp.Controllers
         private bool UserExists(int id)
         {
           return (_context.Users?.Any(e => e.UserID == id)).GetValueOrDefault();
+        }
+
+        private IdentityUser CreateUser()
+        {
+            try
+            {
+                return Activator.CreateInstance<IdentityUser>();
+            }
+            catch
+            {
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(IdentityUser)}'. " +
+                    $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
+            }
+        }
+
+        private IUserEmailStore<IdentityUser> GetEmailStore()
+        {
+            if (!_userManager.SupportsUserEmail)
+            {
+                throw new NotSupportedException("The default UI requires a user store with email support.");
+            }
+            return (IUserEmailStore<IdentityUser>)_userStore;
         }
     }
 }
