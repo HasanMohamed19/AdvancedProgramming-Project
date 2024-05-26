@@ -10,6 +10,21 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+<form asp-controller="Category" method="get" asp-action="Index">
+    Category Name: <input type="text" name="searchName" value="@Context.Request.Query["searchName"].ToString()" />
+    <input type="submit" value="Search" class="btn btn-secondary mx-2" />
+
+    Manager Name:
+    <select name="searchManager" asp-items="ViewBag.managers">
+        <option value="">All</option> 
+    </select>
+
+    <a asp-controller="Category" asp-action="Index" class="btn btn-outline-danger">
+        Clear
+    </a>
+</form>
+
 <table class="table">
     <thead>
         <tr>

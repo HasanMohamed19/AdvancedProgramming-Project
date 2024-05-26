@@ -22,9 +22,25 @@ namespace ServiceTitanWebApp.Controllers
 
         [Authorize]
         // GET: Category
-        public IActionResult Index()
+        public IActionResult Index(string searchName, string searchManager)
         {
-            IEnumerable<Category> categories = _context.Categories.Include(c => c.CategoryManager);
+            IQueryable<Category> categories = _context.Categories.Include(c => c.CategoryManager);
+
+            // search for category name
+            if (!String.IsNullOrEmpty(searchName))
+            {
+                categories = categories.Where(c => c.CategoryName.Contains(searchName));
+            }
+
+            // search for manager
+            if (!String.IsNullOrEmpty(searchManager))
+            {
+                categories = categories.Where(c => c.CategoryManagerId == Convert.ToInt32(searchManager));
+            }
+
+            var managers = new SelectList(_context.Users.Where(u => u.RoleId == 2), "UserID", "FullName", searchManager);
+            ViewBag.managers = managers;
+
             return View(categories);
         }
 
