@@ -31,4 +31,8 @@
     <Folder Include="Areas\Identity\Data\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\202101277\Documents\AdvancedProgramming-Project\APProject-ServiceTitan\ServiceTitanWebApp\.editorconfig" />
+  </ItemGroup>
+
 </Project>

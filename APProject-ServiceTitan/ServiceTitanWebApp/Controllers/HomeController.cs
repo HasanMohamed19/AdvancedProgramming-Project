@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ServiceTitanWebApp.Models;
 using System.Diagnostics;
+using System.Net.Mail;
 
 namespace ServiceTitanWebApp.Controllers
 {
@@ -15,6 +16,8 @@ namespace ServiceTitanWebApp.Controllers
 
         public IActionResult Index()
         {
+
+            //EmailController.Instance().SendAccountCreatedEmail("servicetitanbh@gmail.com", "username", "firstName", "lastName");
             return View();
         }
 
