@@ -2,13 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ServiceTitanBusinessObjects;
+using ServiceTitanWebApp.ViewModels;
 
 namespace ServiceTitanWebApp.Controllers
 {
+    [Authorize]
     public class CommentController : Controller
     {
         private readonly ServiceTitanDBContext _context;
@@ -19,10 +22,19 @@ namespace ServiceTitanWebApp.Controllers
         }
 
         // GET: Comment
-        public async Task<IActionResult> Index()
+        public IActionResult Index(int? requestId)
         {
-            var serviceTitanDBContext = _context.Comments.Include(c => c.ServiceRequest).Include(c => c.User);
-            return View(await serviceTitanDBContext.ToListAsync());
+            if (requestId == null) return NotFound();
+            var comments = _context.Comments
+                .Include(c => c.ServiceRequest)
+                .Include(c => c.User)
+                .Where(u => u.ServiceRequestId == requestId);
+            RequestCommentsViewModel commentsViewModel = new RequestCommentsViewModel
+            {
+                Comments = comments,
+                RequestId = requestId
+            };
+            return View(commentsViewModel);
         }
 
         // GET: Comment/Details/5
@@ -46,11 +58,12 @@ namespace ServiceTitanWebApp.Controllers
         }
 
         // GET: Comment/Create
-        public IActionResult Create()
+        public IActionResult Create(int? requestId)
         {
-            ViewData["ServiceRequestId"] = new SelectList(_context.ServiceRequests, "RequestID", "RequestID");
-            ViewData["UserId"] = new SelectList(_context.Users, "UserID", "Password");
-            return View();
+            if (requestId == null) return NotFound();
+            Comment comment = new Comment();
+            comment.ServiceRequestId = requestId;
+            return View(comment);
         }
 
         // POST: Comment/Create
@@ -58,16 +71,17 @@ namespace ServiceTitanWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CommentID,CommentText,CommentDate,UserId,ServiceRequestId")] Comment comment)
+        public async Task<IActionResult> Create([Bind("CommentID,CommentText,ServiceRequestId")] Comment comment)
         {
+            comment.UserId = _context.Users.Single(u => u.UserEmail == User.Identity.Name).UserID;
+            comment.CommentDate = DateTime.Now;
             if (ModelState.IsValid)
             {
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { requestId = comment.ServiceRequestId });
             }
-            ViewData["ServiceRequestId"] = new SelectList(_context.ServiceRequests, "RequestID", "RequestID", comment.ServiceRequestId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserID", "Password", comment.UserId);
+
             return View(comment);
         }
 
