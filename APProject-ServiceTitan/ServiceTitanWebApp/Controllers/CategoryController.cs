@@ -229,5 +229,27 @@ namespace ServiceTitanWebApp.Controllers
         {
           return (_context.Categories?.Any(e => e.CategoryID == id)).GetValueOrDefault();
         }
+
+        public IActionResult getAllRequests()
+        {
+            try
+            {
+                var requestsByCategories = _context.Categories.Select(c => new
+                {
+                    name = c.CategoryName,
+                    sales = _context.ServiceRequests.Include(s => s.Service).Where(sr => sr.Service.CategoryId == c.CategoryID).Sum(s=> s.RequestPrice)
+                });
+
+                return Json(requestsByCategories);
+            } catch
+            {
+                return BadRequest();
+            }
+        }
+
+        public IActionResult Dashboard()
+        {
+            return View("Dashboard");
+        }
     }
 }
