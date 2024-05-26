@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using ServiceTitanWebApp.ViewModels;
 
 namespace ServiceTitanWebApp.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
         private readonly ServiceTitanDBContext _context;
@@ -54,10 +56,7 @@ namespace ServiceTitanWebApp.Controllers
             {
                 NewUser = new ApplicationUser(),
                 Categories = _context.Categories,
-                Services = _context.Services,
-                Users = _context.Users,
-                Category = new(),
-                Service = new()
+                Services = _context.Services
             };
             return View(viewModel);
         }
@@ -67,12 +66,12 @@ namespace ServiceTitanWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("NewUser")]NewUserViewModel newUser)
+        public IActionResult Create([Bind("NewUser")]NewUserViewModel userVM)
         {
             
             if (ModelState.IsValid)
             {
-                _context.Add(newUser.NewUser);
+                _context.Add(userVM.NewUser);
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             } else
@@ -82,9 +81,8 @@ namespace ServiceTitanWebApp.Controllers
                     NewUser = new(),
                     Categories = _context.Categories,
                     Services = _context.Services,
-                    Users = _context.Users,
-                    Category = newUser.Category,
-                    Service = newUser.Service
+                    CategoryId = userVM.CategoryId,
+                    ServiceId = userVM.ServiceId
                 };
                 ViewData["RoleId"] = new SelectList(_context.UserRoles.Where(ur => ur.RoleID != 1), "RoleID", "RoleName", 4);
                 return View(viewModel);

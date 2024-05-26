@@ -14,7 +14,7 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @*<fieldset id="common-fields">*@
+            <fieldset id="common-fields">
                 <div id="user-email" class="form-group">
                     <label asp-for="NewUser.UserEmail" class="control-label"></label>
                     <input asp-for="NewUser.UserEmail" class="form-control" />
@@ -39,13 +39,13 @@
                     <label asp-for="NewUser.RoleId" class="control-label"></label>
                     <select id="role-combo" asp-for="NewUser.RoleId" class ="form-control" asp-items="ViewBag.RoleId"></select>
                 </div>
-            @*</fieldset>*@
+            </fieldset>
             
 
             <fieldset id="manager-fields" class="d-none">
                 <div class="form-group">
-                    <label asp-for="Category.CategoryID" class="control-label"></label>
-                    <select id="role-combo" asp-for="Category.CategoryID" class="form-control" asp-items="@Model.Categories.Select(                        
+                    <label asp-for="CategoryId" class="control-label"></label>
+                    <select id="role-combo" asp-for="CategoryId" class="form-control" asp-items="@Model.Categories.Select(
                             c => new SelectListItem{Text=c.CategoryName, Value=c.CategoryID.ToString()})">
                     </select>
                 </div>
@@ -54,8 +54,8 @@
 
             <fieldset id="technicans-fields" class="d-none">
                 <div class="form-group">
-                    <label asp-for="Service.ServiceID" class="control-label"></label>
-                    <select id="role-combo" asp-for="Service.ServiceID" class="form-control" asp-items="@Model.Services.Select(
+                    <label asp-for="ServiceId" class="control-label"></label>
+                    <select id="role-combo" asp-for="ServiceId" class="form-control" asp-items="@Model.Services.Select(
                             s => new SelectListItem{Text=s.ServiceName, Value=s.ServiceID.ToString()})">
                     </select>
                 </div>
