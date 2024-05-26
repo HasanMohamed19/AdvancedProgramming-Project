@@ -52,7 +52,7 @@ namespace ServiceTitanWebApp.Controllers
             ViewData["RoleId"] = new SelectList(_context.UserRoles.Where(ur => ur.RoleID != 1), "RoleID", "RoleName");
             var viewModel = new NewUserViewModel
             {
-                NewUser = new(),
+                NewUser = new ApplicationUser(),
                 Categories = _context.Categories,
                 Services = _context.Services,
                 Users = _context.Users,
@@ -67,9 +67,9 @@ namespace ServiceTitanWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(NewUserViewModel newUser)
+        public IActionResult Create([Bind("NewUser")]NewUserViewModel newUser)
         {
-            ViewData["RoleId"] = new SelectList(_context.UserRoles.Where(ur => ur.RoleID != 1), "RoleID", "RoleName", newUser.NewUser.RoleId);
+            
             if (ModelState.IsValid)
             {
                 _context.Add(newUser.NewUser);
@@ -86,6 +86,7 @@ namespace ServiceTitanWebApp.Controllers
                     Category = newUser.Category,
                     Service = newUser.Service
                 };
+                ViewData["RoleId"] = new SelectList(_context.UserRoles.Where(ur => ur.RoleID != 1), "RoleID", "RoleName", 4);
                 return View(viewModel);
             }
             //ViewData["RoleId"] = new SelectList(_context.UserRoles, "RoleID", "RoleName", user.RoleId);

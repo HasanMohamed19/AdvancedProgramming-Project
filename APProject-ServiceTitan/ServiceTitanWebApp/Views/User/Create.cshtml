@@ -14,7 +14,7 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <fieldset id="common-fields">
+            @*<fieldset id="common-fields">*@
                 <div id="user-email" class="form-group">
                     <label asp-for="NewUser.UserEmail" class="control-label"></label>
                     <input asp-for="NewUser.UserEmail" class="form-control" />
@@ -39,7 +39,7 @@
                     <label asp-for="NewUser.RoleId" class="control-label"></label>
                     <select id="role-combo" asp-for="NewUser.RoleId" class ="form-control" asp-items="ViewBag.RoleId"></select>
                 </div>
-            </fieldset>
+            @*</fieldset>*@
             
 
             <fieldset id="manager-fields" class="d-none">
