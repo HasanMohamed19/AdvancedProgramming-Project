@@ -76,14 +76,30 @@ namespace ServiceTitanWebApp.Controllers
         // GET: Service/Create
         public IActionResult Create()
         {
-            //ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryID", "CategoryName");
-            var viewModel = new NewServiceViewModel
+            if (User.IsInRole("Manager"))
             {
-                Service = new(),
-                Users = _context.Users.Where(u=> u.RoleId == 3),
-                Categories = _context.Categories
-            };
-            return View(viewModel);
+                int userID = _context.Users.Single(u => u.UserEmail == User.Identity.Name).UserID;
+                var viewModel = new NewServiceViewModel
+                {
+                    Service = new(),
+                    Users = _context.Users.Where(u => u.RoleId == 3),
+                    Categories = _context.Categories.Where(m => m.CategoryManagerId == userID)
+                };
+                return View(viewModel);
+            } else
+            {
+                var viewModel = new NewServiceViewModel
+                {
+                    Service = new(),
+                    Users = _context.Users.Where(u => u.RoleId == 3),
+                    Categories = _context.Categories
+                };
+                return View(viewModel);
+            }
+            
+
+            //ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryID", "CategoryName");
+           
         }
 
         [Authorize(Roles = "Admin,Manager")]
@@ -101,13 +117,29 @@ namespace ServiceTitanWebApp.Controllers
                 return RedirectToAction(nameof(Index));
             } else
             {
-                var viewModel = new NewServiceViewModel
+
+                if (User.IsInRole("Manager"))
                 {
-                    Service = new(),
-                    Users = _context.Users.Where(u => u.RoleId == 3),
-                    Categories = _context.Categories
-                };
-                return View(viewModel);
+                    int userID = _context.Users.Single(u => u.UserEmail == User.Identity.Name).UserID;
+                    var viewModel = new NewServiceViewModel
+                    {
+                        Service = new(),
+                        Users = _context.Users.Where(u => u.RoleId == 3),
+                        Categories = _context.Categories.Where(m => m.CategoryManagerId == userID)
+                    };
+                    return View(viewModel);
+                } else
+                {
+                    var viewModel = new NewServiceViewModel
+                    {
+                        Service = new(),
+                        Users = _context.Users.Where(u => u.RoleId == 3),
+                        Categories = _context.Categories
+                    };
+                    return View(viewModel);
+                }
+
+                
             }
             //ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryID", "CategoryName", service.CategoryId);
             //return View(service);
