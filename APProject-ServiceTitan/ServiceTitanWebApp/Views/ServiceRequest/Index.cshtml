@@ -14,22 +14,25 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.RequestDescription)
+                @Html.DisplayNameFor(model => model.Service)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.RequestPrice)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.RequestDescription)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.RequestDateNeeded)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Client)
-            </th>
+            @if (!User.IsInRole("User"))
+                {
+                    <th>
+                        @Html.DisplayNameFor(model => model.Client)
+                    </th>
+                }
             <th>
                 @Html.DisplayNameFor(model => model.Technician)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Service)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Status)
@@ -41,22 +44,26 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.RequestDescription)
+                @Html.DisplayFor(modelItem => item.Service.ServiceName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.RequestPrice) BHD
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.RequestDescription)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.RequestDateNeeded)
             </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.Client.FullName)
-            </td>
+                @if (!User.IsInRole("User"))
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Client.FullName)
+                    </td>
+                }
+                
             <td>
                     @Html.DisplayFor(modelItem => item.Technician.FullName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Service.ServiceDescription)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Status.Status)
