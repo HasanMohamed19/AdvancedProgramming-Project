@@ -96,13 +96,13 @@ namespace ServiceTitanWebApp.Controllers
             {
                 var viewModel = new NewUserViewModel
                 {
-                    NewUser = new(),
+                    NewUser = userVM.NewUser,
                     Categories = _context.Categories,
                     Services = _context.Services,
                     CategoryId = userVM.CategoryId,
                     ServiceId = userVM.ServiceId
                 };
-                ViewData["RoleId"] = new SelectList(_context.UserRoles.Where(ur => ur.RoleID != 1), "RoleID", "RoleName", 4);
+                ViewData["RoleId"] = new SelectList(_context.UserRoles.Where(ur => ur.RoleID != 1), "RoleID", "RoleName", userVM.NewUser.RoleId);
                 return View(viewModel);
             }
             //ViewData["RoleId"] = new SelectList(_context.UserRoles, "RoleID", "RoleName", user.RoleId);
