@@ -29,16 +29,29 @@
                 <input asp-for="Service.ServicePrice" class="form-control" />
                 <span asp-validation-for="Service.ServicePrice" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Service.CategoryId" class="control-label"></label>
-                <select asp-for="Service.CategoryId" class="form-control" asp-items="@Model.Categories.Select(s => new SelectListItem {Text=s.CategoryName, Value=s.CategoryID.ToString()})">
-                        <option value="0" disabled selected>Select Category</option>
-                        </select>
-            </div>
 
+            @{
+                if (User.IsInRole("Admin"))
+                {
+                    <div class="form-group">
+                        <label asp-for="Service.CategoryId" class="control-label"></label>
+                        <select asp-for="Service.CategoryId" class="form-control" asp-items="@Model.Categories.Select(s => new SelectListItem {Text=s.CategoryName, Value=s.CategoryID.ToString()})">
+                            <option value="0" disabled selected>Select Category</option>
+                        </select>
+                    </div>
+                } else if (User.IsInRole("Manager"))
+                {
+                    <div class="form-group">
+                        <label asp-for="Service.CategoryId" class="control-label"></label>
+                        <input type="text" disabled asp-for="Service.CategoryId" class="form-control" value="@Model.Service.Category" />
+                    </div>
+                }
+            }
+
+            
             <div class="form-group">
-                <label asp-for="Service.Technicians" class="control-label"></label>
-                <select asp-for="Service.Technicians" class="form-control" asp-items="@Model.Technicians.Select(s => new SelectListItem {Text=s.FullName, Value=s.UserID.ToString()})">
+                <label asp-for="TechniciansId" class="control-label"></label>
+                <select asp-for="TechniciansId" class="form-control" asp-items="@Model.Technicians.Select(s => new SelectListItem {Text=s.FullName, Value=s.UserID.ToString()})">
                     <option value="0" disabled selected>Select Technicans</option>
                 </select>
             </div>

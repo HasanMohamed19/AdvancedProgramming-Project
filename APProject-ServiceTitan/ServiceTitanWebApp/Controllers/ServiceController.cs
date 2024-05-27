@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using ServiceTitanBusinessObjects;
 using ServiceTitanWebApp.ViewModels;
 
@@ -85,6 +86,12 @@ namespace ServiceTitanWebApp.Controllers
                     Technicians = _context.Users.Where(u => u.RoleId == 3),
                     Categories = _context.Categories.Where(m => m.CategoryManagerId == userID)
                 };
+
+                if (viewModel.Categories.Count() < 1 || viewModel.Categories == null)
+                {
+                    return View("NoCategory");
+                }
+
                 return View(viewModel);
             } else
             {
@@ -114,6 +121,17 @@ namespace ServiceTitanWebApp.Controllers
             {
                 _context.Add(newService.Service);
                 _context.SaveChanges();
+
+                ServiceTechnician st = new ServiceTechnician();
+                st.ServicesId = newService.Service.ServiceID;
+
+                foreach (var item in newService.TechniciansId)
+                {
+                    st.TechniciansId = item;
+                    _context.ServiceTechnicians.Add(st);
+                    _context.SaveChanges();
+                }
+
                 TempData["CreateSuccess"] = "Service Created Successfully";
                 return RedirectToAction(nameof(Index));
             } else
@@ -161,7 +179,16 @@ namespace ServiceTitanWebApp.Controllers
                 return NotFound();
             }
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryID", "CategoryName", service.CategoryId);
-            return View(service);
+
+            var viewModel = new NewServiceViewModel
+            {
+                Service = service,
+                Technicians = _context.Users.Where(u => u.RoleId == 3),
+                Categories = _context.Categories
+            };
+            return View(viewModel);
+
+
         }
 
         [Authorize(Roles = "Admin,Manager")]
@@ -170,9 +197,9 @@ namespace ServiceTitanWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ServiceID,ServiceName,ServiceDescription,ServicePrice,CategoryId")] Service service)
+        public async Task<IActionResult> Edit(int id, [Bind("ServiceID,ServiceName,ServiceDescription,ServicePrice,CategoryId")] NewServiceViewModel serviceVM)
         {
-            if (id != service.ServiceID)
+            if (id != serviceVM.Service.ServiceID)
             {
                 return NotFound();
             }
@@ -181,13 +208,13 @@ namespace ServiceTitanWebApp.Controllers
             {
                 try
                 {
-                    _context.Update(service);
+                    _context.Update(serviceVM.Service);
                     
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ServiceExists(service.ServiceID))
+                    if (!ServiceExists(serviceVM.Service.ServiceID))
                     {
                         return NotFound();
                     }
@@ -198,9 +225,20 @@ namespace ServiceTitanWebApp.Controllers
                 }
                 TempData["EditSuccess"] = "Service Edited Successfully";
                 return RedirectToAction(nameof(Index));
+            } else
+            {
+
+                var viewModel = new NewServiceViewModel
+                {
+                    Service = serviceVM.Service,
+                    Technicians = _context.Users.Where(u => u.RoleId == 3),
+                    Categories = _context.Categories
+                };
+
+                ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryID", "CategoryName", serviceVM.Service.CategoryId);
+                return View(viewModel);
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryID", "CategoryName", service.CategoryId);
-            return View(service);
+            
         }
 
         [Authorize(Roles = "Admin,Manager")]
