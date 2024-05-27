@@ -103,6 +103,7 @@ namespace ServiceTitanWebApp.Controllers
                         _context.SaveChanges();
                     }
                 }
+                TempData["CreateSuccess"] = "User Added Successfully";
 
                 return RedirectToAction(nameof(Index));
             } else
@@ -178,6 +179,7 @@ namespace ServiceTitanWebApp.Controllers
                         throw;
                     }
                 }
+                TempData["EditSuccess"] = "User Edited Successfully";
                 return RedirectToAction(nameof(Index));
             }
             ViewData["RoleId"] = new SelectList(_context.UserRoles, "RoleID", "RoleName", userVM.NewUser.RoleId);
@@ -226,6 +228,7 @@ namespace ServiceTitanWebApp.Controllers
             }
             
             await _context.SaveChangesAsync();
+            TempData["DeleteSuccess"] = "User Deleted Successfully";
             return RedirectToAction(nameof(Index));
         }
 
