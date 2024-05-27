@@ -42,6 +42,11 @@ namespace ServiceTitanWebApp.Controllers
                 return NotFound();
             }
 
+            // update status to read
+            notification.NotificationStatusId = 2;
+            _context.Update(notification);
+            _context.SaveChanges();
+
             return View(notification);
         }
 
@@ -49,7 +54,7 @@ namespace ServiceTitanWebApp.Controllers
         public IActionResult Create()
         {
             ViewData["NotificationStatusId"] = new SelectList(_context.NotificationStatus, "NotificationStatusID", "NotificationStatusName");
-            ViewData["UserId"] = new SelectList(_context.Users, "UserID", "Password");
+            ViewData["UserId"] = new SelectList(_context.Users, "UserID", "FullName");
             return View();
         }
 
@@ -67,7 +72,7 @@ namespace ServiceTitanWebApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["NotificationStatusId"] = new SelectList(_context.NotificationStatus, "NotificationStatusID", "NotificationStatusName", notification.NotificationStatusId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserID", "Password", notification.UserId);
+            ViewData["UserId"] = new SelectList(_context.Users, "UserID", "FullName", notification.UserId);
             return View(notification);
         }
 
@@ -85,7 +90,7 @@ namespace ServiceTitanWebApp.Controllers
                 return NotFound();
             }
             ViewData["NotificationStatusId"] = new SelectList(_context.NotificationStatus, "NotificationStatusID", "NotificationStatusName", notification.NotificationStatusId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserID", "Password", notification.UserId);
+            ViewData["UserId"] = new SelectList(_context.Users, "UserID", "FullName", notification.UserId);
             return View(notification);
         }
 
@@ -122,7 +127,7 @@ namespace ServiceTitanWebApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["NotificationStatusId"] = new SelectList(_context.NotificationStatus, "NotificationStatusID", "NotificationStatusName", notification.NotificationStatusId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserID", "Password", notification.UserId);
+            ViewData["UserId"] = new SelectList(_context.Users, "UserID", "FullName", notification.UserId);
             return View(notification);
         }
 

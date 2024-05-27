@@ -44,11 +44,9 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Log" asp-action="Index">Log</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Notification" asp-action="Index">Notification</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        @await Component.InvokeAsync("NotificationBar")
                     </ul>
                 </div>
             </div>
