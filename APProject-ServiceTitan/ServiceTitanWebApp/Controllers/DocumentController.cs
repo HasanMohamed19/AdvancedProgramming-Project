@@ -103,7 +103,8 @@ namespace ServiceTitanWebApp.Controllers
                     _context.Documents.Add(document);
                     _context.SaveChanges();
                 }
-            }         
+            }
+            TempData["CreateSuccess"] = "Files Uploaded Successfully";
 
             return RedirectToAction(nameof(Index), new { requestId });
         }
@@ -176,6 +177,7 @@ namespace ServiceTitanWebApp.Controllers
                     throw;
                 }
             }
+            TempData["EditSuccess"] = "Document Saved Successfully";
             return RedirectToAction(nameof(Index), new { requestId = existingDocument.ServiceRequestId });
         }
 
@@ -219,6 +221,7 @@ namespace ServiceTitanWebApp.Controllers
             _context.Documents.Remove(document);
             
             await _context.SaveChangesAsync();
+            TempData["DeleteSuccess"] = "Document Deleted Successfully";
             return RedirectToAction(nameof(Index), new { requestId = document.ServiceRequestId });
         }
 

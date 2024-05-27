@@ -79,6 +79,7 @@ namespace ServiceTitanWebApp.Controllers
             {
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
+                TempData["CreateSuccess"] = "Comment Created Successfully";
                 return RedirectToAction(nameof(Index), new { requestId = comment.ServiceRequestId });
             }
 
@@ -152,6 +153,7 @@ namespace ServiceTitanWebApp.Controllers
                         throw;
                     }
                 }
+                TempData["EditSuccess"] = "Comment Saved Successfully";
                 return RedirectToAction(nameof(Index), new { requestId = existingComment.ServiceRequestId });
             }
             //ViewData["ServiceRequestId"] = new SelectList(_context.ServiceRequests, "RequestID", "RequestID", comment.ServiceRequestId);
@@ -206,6 +208,7 @@ namespace ServiceTitanWebApp.Controllers
             }
             
             await _context.SaveChangesAsync();
+            TempData["DeleteSuccess"] = "Comment Deleted Successfully";
             return RedirectToAction(nameof(Index), new { requestId = comment.ServiceRequestId });
         }
 
