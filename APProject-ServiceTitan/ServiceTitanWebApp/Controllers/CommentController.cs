@@ -98,8 +98,16 @@ namespace ServiceTitanWebApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["ServiceRequestId"] = new SelectList(_context.ServiceRequests, "RequestID", "RequestID", comment.ServiceRequestId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserID", "Password", comment.UserId);
+
+            // dont allow technicians or clients to edit other users comments
+            int thisUserId = _context.Users.Single(u => u.UserEmail == User.Identity.Name).UserID;
+            if (!User.IsInRole("Admin")
+                && !User.IsInRole("Manager")
+                && comment.UserId != thisUserId)
+                return Forbid();
+
+            //ViewData["ServiceRequestId"] = new SelectList(_context.ServiceRequests, "RequestID", "RequestID", comment.ServiceRequestId);
+            //ViewData["UserId"] = new SelectList(_context.Users, "UserID", "Password", comment.UserId);
             return View(comment);
         }
 
@@ -108,23 +116,34 @@ namespace ServiceTitanWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CommentID,CommentText,CommentDate,UserId,ServiceRequestId")] Comment comment)
+        public async Task<IActionResult> Edit(int id, [Bind("CommentID,CommentText,ServiceRequestId")] Comment comment)
         {
             if (id != comment.CommentID)
             {
                 return NotFound();
             }
+            Comment existingComment = _context.Comments.Find(id);
+            if (existingComment == null) { return NotFound(); }
+
+            // dont allow technicians or clients to edit other users comments
+            int thisUserId = _context.Users.Single(u => u.UserEmail == User.Identity.Name).UserID;
+            if (!User.IsInRole("Admin")
+                && !User.IsInRole("Manager")
+                && existingComment.UserId != thisUserId)
+                return Forbid();
+
+            existingComment.CommentText = comment.CommentText;
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(comment);
+                    _context.Update(existingComment);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CommentExists(comment.CommentID))
+                    if (!CommentExists(existingComment.CommentID))
                     {
                         return NotFound();
                     }
@@ -133,10 +152,10 @@ namespace ServiceTitanWebApp.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { requestId = existingComment.ServiceRequestId });
             }
-            ViewData["ServiceRequestId"] = new SelectList(_context.ServiceRequests, "RequestID", "RequestID", comment.ServiceRequestId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserID", "Password", comment.UserId);
+            //ViewData["ServiceRequestId"] = new SelectList(_context.ServiceRequests, "RequestID", "RequestID", comment.ServiceRequestId);
+            //ViewData["UserId"] = new SelectList(_context.Users, "UserID", "Password", comment.UserId);
             return View(comment);
         }
 
@@ -156,6 +175,12 @@ namespace ServiceTitanWebApp.Controllers
             {
                 return NotFound();
             }
+            // dont allow technicians or clients to delete other users comments
+            int thisUserId = _context.Users.Single(u => u.UserEmail == User.Identity.Name).UserID;
+            if (!User.IsInRole("Admin")
+                && !User.IsInRole("Manager")
+                && comment.UserId != thisUserId)
+                return Forbid();
 
             return View(comment);
         }
@@ -172,11 +197,16 @@ namespace ServiceTitanWebApp.Controllers
             var comment = await _context.Comments.FindAsync(id);
             if (comment != null)
             {
+                int thisUserId = _context.Users.Single(u => u.UserEmail == User.Identity.Name).UserID;
+                if (!User.IsInRole("Admin") 
+                    && !User.IsInRole("Manager") 
+                    && comment.UserId != thisUserId) 
+                    return Forbid();
                 _context.Comments.Remove(comment);
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { requestId = comment.ServiceRequestId });
         }
 
         private bool CommentExists(int id)
