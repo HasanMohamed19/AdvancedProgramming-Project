@@ -27,7 +27,7 @@ namespace ServiceTitanApp
         private void ManageCategories_Load(object sender, EventArgs e)
         {
             comboManager.DataSource = context.Users.Where(user => user.RoleId == 2).ToList();
-            comboManager.DisplayMember = "UserName";
+            comboManager.DisplayMember = "FullName";
             comboManager.ValueMember = "UserId";
             comboManager.SelectedItem = null;
 

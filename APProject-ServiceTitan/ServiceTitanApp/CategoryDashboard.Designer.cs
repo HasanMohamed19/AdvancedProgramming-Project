@@ -99,9 +99,9 @@
             // 
             comboCategory.Anchor = AnchorStyles.None;
             comboCategory.FormattingEnabled = true;
-            comboCategory.Location = new Point(3, 50);
+            comboCategory.Location = new Point(3, 52);
             comboCategory.Name = "comboCategory";
-            comboCategory.Size = new Size(222, 44);
+            comboCategory.Size = new Size(222, 38);
             comboCategory.TabIndex = 0;
             // 
             // lblSelect
@@ -259,7 +259,7 @@
             // 
             // CategoryDashboard
             // 
-            AutoScaleDimensions = new SizeF(14F, 36F);
+            AutoScaleDimensions = new SizeF(12F, 30F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1000, 500);
             Controls.Add(tblChart);

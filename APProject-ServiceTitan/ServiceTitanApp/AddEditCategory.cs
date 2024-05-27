@@ -32,7 +32,7 @@ namespace ServiceTitanApp
         private void AddEditCategory_Load(object sender, EventArgs e)
         {
             comboManager.DataSource = context.Users.Where(user => user.RoleId == 2).ToList();
-            comboManager.DisplayMember = "UserName";
+            comboManager.DisplayMember = "FullName";
             comboManager.ValueMember = "UserId";
             // don't select a category once loaded
             comboManager.SelectedItem = null;
