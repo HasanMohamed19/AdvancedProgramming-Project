@@ -159,18 +159,27 @@ namespace ServiceTitanWebApp.Controllers
             {
                 return NotFound();
             }
+
+            ApplicationUser? existingUser = _context.Users.Find(userVM.NewUser.UserID);
+            if (existingUser == null) { return NotFound(); }
+            existingUser.PhoneNumber = userVM.NewUser.PhoneNumber;
+            existingUser.FirstName = userVM.NewUser.FirstName;
+            existingUser.LastName = userVM.NewUser.LastName;
+            existingUser.City = userVM.NewUser.City;
+            existingUser.RoleId = userVM.NewUser.RoleId;
+            
             var errors = ModelState.Values.SelectMany(v => v.Errors);
             if (ModelState.IsValid)
             {
                 try
                 {
                     
-                    _context.Update(userVM.NewUser);
+                    _context.Update(existingUser);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserExists(userVM.NewUser.UserID))
+                    if (!UserExists(existingUser.UserID))
                     {
                         return NotFound();
                     }
@@ -182,10 +191,10 @@ namespace ServiceTitanWebApp.Controllers
                 TempData["EditSuccess"] = "User Edited Successfully";
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RoleId"] = new SelectList(_context.UserRoles, "RoleID", "RoleName", userVM.NewUser.RoleId);
+            ViewData["RoleId"] = new SelectList(_context.UserRoles, "RoleID", "RoleName", existingUser.RoleId);
             var viewModel = new NewUserViewModel
             {
-                NewUser = userVM.NewUser,
+                NewUser = existingUser,
                 Categories = _context.Categories,
                 Services = _context.Services,
                 
