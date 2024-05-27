@@ -10,9 +10,11 @@
 
 <h4>User</h4>
 <hr />
+
+<form asp-action="Edit">
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="NewUser.UserID" />
 
@@ -45,19 +47,134 @@
             </div>
             <div class="form-group">
                 <label asp-for="NewUser.RoleId" class="control-label"></label>
-                <select asp-for="NewUser.RoleId" class="form-control" asp-items="ViewBag.RoleId"></select>
+                <select id="role-combo" asp-for="NewUser.RoleId" class="form-control" asp-items="ViewBag.RoleId"></select>
                 <span asp-validation-for="NewUser.RoleId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            
+            <div id="manager-category-parent" class="form-group d-none">
+                Assign Category: <input type="checkbox" id="manager-category" checked />
             </div>
-        </form>
+            <div id="tech-service-parent" class="form-group d-none">
+                Assign Services: <input type="checkbox" id="tech-service" checked />
+            </div>
+        
     </div>
+
+        <div class="col-md-4">
+
+            <fieldset id="manager-fields" class="d-none">
+
+                <div class="form-group">
+                    <label asp-for="CategoryId" class="control-label"></label>
+                    <select id="role-combo" asp-for="CategoryId" class="form-control" asp-items="@Model.Categories
+                            .Where(c => c.CategoryManagerId == 0 || c.CategoryManagerId == null)
+                            .Select(c => new SelectListItem{Text=c.CategoryName, Value=c.CategoryID.ToString()})">
+                    </select>
+                </div>
+
+            </fieldset>
+
+
+
+            <fieldset id="technicans-fields" class="d-none">
+
+                <div class="form-group">
+                    <label asp-for="AssignedServicesIds" class="control-label"></label>
+                    <select id="service-combo" asp-for="AssignedServicesIds" class="form-control" asp-items="@Model.Services.Select(
+                                s => new SelectListItem{Text=s.ServiceName, Value=s.ServiceID.ToString()})">
+                    </select>
+                </div>
+
+            </fieldset>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </div>
     
-
 </div>
-
+</form>
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
 
+@section Scripts {
+    <script>
+
+        const MANAGER = 2;
+        const TECH = 3;
+        const USER = 4;
+
+        $(document).ready(function() {
+            const selectedRoleId = $("#role-combo").val();
+            switch (parseInt(selectedRoleId)) {
+
+                case 2:
+                    $("#manager-fields").removeClass("d-none");
+                    $("#manager-category-parent").removeClass("d-none");
+                    $("#tech-service-parent").addClass("d-none");
+                    $("#technicans-fields").addClass("d-none");
+                    break;
+
+                case 3:
+                    $("#technicans-fields").removeClass("d-none");
+                    $("#manager-fields").addClass("d-none");
+                    $("#manager-category-parent").addClass("d-none");
+                    $("#tech-service-parent").removeClass("d-none");
+                    break;
+
+                default:
+                    $("#manager-fields").addClass("d-none");
+                    $("#manager-category-parent").addClass("d-none");
+                    $("#tech-service-parent").addClass("d-none");
+                    $("#technicans-fields").addClass("d-none");
+                    break;
+            }
+        });
+
+        $("#manager-category").click(function () {
+            if ($(this).is(":checked")) {
+                $("#manager-fields").removeClass("d-none");
+            } else {
+                $("#manager-fields").addClass("d-none");
+            }
+        })
+
+        $("#tech-service").click(function () {
+            if ($(this).is(":checked")) {
+                $("#technicans-fields").removeClass("d-none");
+            } else {
+                $("#technicans-fields").addClass("d-none");
+            }
+        })
+
+        $("#role-combo").change(function () {
+            const selectedRoleId = $(this).val();
+
+            switch (parseInt(selectedRoleId)) {
+
+                case 2:
+                    $("#manager-fields").removeClass("d-none");
+                    $("#manager-category-parent").removeClass("d-none");
+                    $("#tech-service-parent").addClass("d-none");
+                    $("#technicans-fields").addClass("d-none");
+                    break;
+
+                case 3:
+                    $("#technicans-fields").removeClass("d-none");
+                    $("#manager-fields").addClass("d-none");
+                    $("#manager-category-parent").addClass("d-none");
+                    $("#tech-service-parent").removeClass("d-none");
+                    break;
+
+                default:
+                    $("#manager-fields").addClass("d-none");
+                    $("#manager-category-parent").addClass("d-none");
+                    $("#tech-service-parent").addClass("d-none");
+                    $("#technicans-fields").addClass("d-none");
+                    break;
+
+            }
+        })
+    </script>
+}
