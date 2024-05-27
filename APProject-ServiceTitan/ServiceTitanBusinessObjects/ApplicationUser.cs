@@ -32,6 +32,10 @@ namespace ServiceTitanBusinessObjects
         public string? Address { get; set; }
 
         [Required]
+        [MaxLength(12)]
+        public string? PhoneNumber { get; set; }
+
+        [Required]
         [MaxLength(50)]
         [RegularExpression("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")]
         public string UserEmail { get; set; }
