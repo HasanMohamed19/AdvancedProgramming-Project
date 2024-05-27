@@ -114,6 +114,7 @@ namespace ServiceTitanWebApp.Controllers
             {
                 _context.Add(newService.Service);
                 _context.SaveChanges();
+                TempData["CreateSuccess"] = "Service Created Successfully";
                 return RedirectToAction(nameof(Index));
             } else
             {
@@ -181,6 +182,7 @@ namespace ServiceTitanWebApp.Controllers
                 try
                 {
                     _context.Update(service);
+                    
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -194,6 +196,7 @@ namespace ServiceTitanWebApp.Controllers
                         throw;
                     }
                 }
+                TempData["EditSuccess"] = "Service Edited Successfully";
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryID", "CategoryName", service.CategoryId);
@@ -237,6 +240,7 @@ namespace ServiceTitanWebApp.Controllers
             }
             
             await _context.SaveChangesAsync();
+            TempData["DeleteSuccess"] = "Service Deleted Successfully";
             return RedirectToAction(nameof(Index));
         }
 
