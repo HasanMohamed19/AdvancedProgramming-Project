@@ -32,7 +32,7 @@ namespace ServiceTitanApp
             comboCategory.DisplayMember = "CategoryName";
             comboCategory.ValueMember = "CategoryID";
             // select a category once loaded since this is for categories
-            if (comboCategory.Items.Count > 0 )
+            if (comboCategory.Items.Count > 0)
             {
                 comboCategory.SelectedItem = comboCategory.Items[0];
             }
@@ -83,5 +83,9 @@ namespace ServiceTitanApp
             parentForm.GoToForm(manageCategories);
         }
 
+        private void chartBar_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

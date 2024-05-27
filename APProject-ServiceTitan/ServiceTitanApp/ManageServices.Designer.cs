@@ -118,7 +118,7 @@
             // 
             txtSearch.Location = new Point(457, 3);
             txtSearch.Name = "txtSearch";
-            txtSearch.Size = new Size(299, 35);
+            txtSearch.Size = new Size(299, 42);
             txtSearch.TabIndex = 4;
             // 
             // comboCategory
@@ -126,7 +126,7 @@
             comboCategory.FormattingEnabled = true;
             comboCategory.Location = new Point(173, 3);
             comboCategory.Name = "comboCategory";
-            comboCategory.Size = new Size(176, 38);
+            comboCategory.Size = new Size(176, 44);
             comboCategory.TabIndex = 6;
             // 
             // tblSide
@@ -222,10 +222,11 @@
             dgvServices.RowTemplate.Height = 25;
             dgvServices.Size = new Size(791, 457);
             dgvServices.TabIndex = 2;
+            dgvServices.CellContentClick += dgvServices_CellContentClick;
             // 
             // ManageServices
             // 
-            AutoScaleDimensions = new SizeF(12F, 30F);
+            AutoScaleDimensions = new SizeF(14F, 36F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1000, 500);
             Controls.Add(dgvServices);

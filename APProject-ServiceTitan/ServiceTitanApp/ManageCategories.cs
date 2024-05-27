@@ -16,6 +16,7 @@ namespace ServiceTitanApp
     {
         private BaseForm parentForm;
         private ServiceTitanDBContext context;
+
         public ManageCategories(BaseForm parent)
         {
             InitializeComponent();
@@ -28,10 +29,34 @@ namespace ServiceTitanApp
             comboManager.DataSource = context.Users.Where(user => user.RoleId == 2).ToList();
             comboManager.DisplayMember = "UserName";
             comboManager.ValueMember = "UserId";
-            // don't select a category once loaded
             comboManager.SelectedItem = null;
 
+            // Customize DataGridView appearance
+            CustomizeDataGridView();
+
             RefreshCategoriesDGV();
+        }
+
+        private void CustomizeDataGridView()
+        {
+            // Set grid styles
+            dgvCategories.BorderStyle = BorderStyle.None;
+            dgvCategories.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(238, 239, 249);
+            dgvCategories.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dgvCategories.DefaultCellStyle.SelectionBackColor = Color.LightSkyBlue; // Calming blue color
+            dgvCategories.DefaultCellStyle.SelectionForeColor = Color.Black; // Black for better contrast
+            dgvCategories.BackgroundColor = Color.White;
+
+            dgvCategories.EnableHeadersVisualStyles = false;
+            dgvCategories.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dgvCategories.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(20, 25, 72);
+            dgvCategories.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+
+            // Set row height to add more space between lines
+            dgvCategories.RowTemplate.Height = 40;
+
+            // Auto-resize columns to fit content
+            dgvCategories.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
         private void btnAddCategory_Click(object sender, EventArgs e)
@@ -65,7 +90,7 @@ namespace ServiceTitanApp
 
             var categoriesToShow = context.Categories.AsQueryable();
 
-            if (txtSearch.Text != "")
+            if (!string.IsNullOrEmpty(txtSearch.Text))
             {
                 categoriesToShow = categoriesToShow.Where(category => category.CategoryName.Contains(txtSearch.Text));
             }
@@ -81,12 +106,16 @@ namespace ServiceTitanApp
                 ManagerName = category.CategoryManager.UserEmail,
                 NoOfServices = category.Services.Count(),
             }).ToList();
-            // display a message to the user if nothing was found
-            if (categoriesToShow.ToList().Count == 0)
+
+            if (!categoriesToShow.Any())
             {
-                MessageBox.Show("No categories were found mathcing your search criteria. Please try again.", "No services found!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("No categories were found matching your search criteria. Please try again.", "No services found!", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+
+            // Refresh the DataGridView appearance
+            dgvCategories.Refresh();
         }
+
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {
@@ -120,6 +149,11 @@ namespace ServiceTitanApp
         {
             MainMenu mainMenu = new MainMenu(parentForm);
             parentForm.GoToForm(mainMenu);
+        }
+
+        private void dgvCategories_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

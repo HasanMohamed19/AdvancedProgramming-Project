@@ -16,12 +16,14 @@ namespace ServiceTitanApp
     {
         private BaseForm parentForm;
         private ServiceTitanDBContext context;
+
         public ManageServices(BaseForm parent)
         {
             InitializeComponent();
             this.parentForm = parent;
             this.context = new ServiceTitanDBContext();
         }
+
         private void ManageServices_Load(object sender, EventArgs e)
         {
             comboCategory.DataSource = context.Categories.ToList();
@@ -30,12 +32,36 @@ namespace ServiceTitanApp
             // don't select a category once loaded
             comboCategory.SelectedItem = null;
 
+            // Customize DataGridView appearance
+            CustomizeDataGridView();
+
             RefreshServicesDGV();
+        }
+
+        private void CustomizeDataGridView()
+        {
+            // Set grid styles
+            dgvServices.BorderStyle = BorderStyle.None;
+            dgvServices.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(238, 239, 249);
+            dgvServices.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dgvServices.DefaultCellStyle.SelectionBackColor = Color.LightSkyBlue; // Calming blue color
+            dgvServices.DefaultCellStyle.SelectionForeColor = Color.Black; // Black for better contrast
+            dgvServices.BackgroundColor = Color.White;
+
+            dgvServices.EnableHeadersVisualStyles = false;
+            dgvServices.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dgvServices.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(20, 25, 72);
+            dgvServices.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+
+            // Set row height to add more space between lines
+            dgvServices.RowTemplate.Height = 40;
+
+            // Auto-resize columns to fit content
+            dgvServices.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
         private void RefreshServicesDGV()
         {
-
             dgvServices.DataSource = null;
 
             var servicesToShow = context.Services.AsQueryable();
@@ -57,12 +83,15 @@ namespace ServiceTitanApp
                 Price = service.ServicePrice,
                 NoOfTechnicans = service.ServiceTechnicians.Count()
             }).ToList();
+
             // display a message to the user if nothing was found
-            if (servicesToShow.ToList().Count == 0)
+            if (!servicesToShow.Any())
             {
-                MessageBox.Show("No services were found mathcing your search criteria. Please try again.", "No services found!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("No services were found matching your search criteria. Please try again.", "No services found!", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
+            // Refresh the DataGridView appearance
+            dgvServices.Refresh();
         }
 
         private void btnAddService_Click(object sender, EventArgs e)
@@ -138,6 +167,11 @@ namespace ServiceTitanApp
                 ViewRequests viewRequests = new ViewRequests(parentForm);
                 parentForm.GoToForm(viewRequests);
             }
+
+        }
+
+        private void dgvServices_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
 
         }
     }
