@@ -150,11 +150,13 @@ namespace ServiceTitanWebApp.Controllers
             {
                 _context.Add(serviceRequest);
                 await _context.SaveChangesAsync();
+                TempData["CreateSuccess"] = "Request Created Successfully";
                 return RedirectToAction(nameof(Index));
             }
 
             ViewData["ServiceName"] = service.ServiceName;
             ViewData["ServicePrice"] = service.ServicePrice;
+
 
             var viewModel = new CreateRequestViewModel
             {
@@ -205,6 +207,7 @@ namespace ServiceTitanWebApp.Controllers
             {
                 _context.Add(serviceRequest);
                 await _context.SaveChangesAsync();
+                TempData["CreateSuccess"] = "Request Created Successfully";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -214,6 +217,7 @@ namespace ServiceTitanWebApp.Controllers
             ViewData["ServiceId"] = new SelectList(_context.Services, "ServiceID", "ServiceName", serviceRequest.ServiceId);
             ViewData["StatusId"] = new SelectList(_context.RequestStatus, "StatusID", "Status", serviceRequest.StatusId);
             ViewData["TechnicianId"] = new SelectList(_context.Users.Where(u => u.RoleId == 3), "UserID", "FullName", serviceRequest.TechnicianId);
+
 
             var viewModel = new CreateRequestViewModel
             {
@@ -291,6 +295,7 @@ namespace ServiceTitanWebApp.Controllers
                         throw;
                     }
                 }
+                TempData["EditSuccess"] = "Request Saved Successfully";
                 return RedirectToAction(nameof(Index));
             }
             //ViewData["ClientId"] = new SelectList(_context.Users, "UserID", "FullName", existingRequest.ClientId);
@@ -359,6 +364,7 @@ namespace ServiceTitanWebApp.Controllers
                             throw;
                         }
                     }
+                    TempData["CancelSuccess"] = "Request Cancelled Successfully";
                 }
             }
 
@@ -408,6 +414,7 @@ namespace ServiceTitanWebApp.Controllers
             }
             
             await _context.SaveChangesAsync();
+            TempData["DeleteSuccess"] = "Request Deleted Successfully";
             return RedirectToAction(nameof(Index));
         }
 
