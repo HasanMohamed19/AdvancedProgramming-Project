@@ -12,6 +12,8 @@
 
 <p>
     <a asp-action="Create" asp-route-requestId="@Model.RequestId">Create New</a>
+    <span> | </span>
+    <a asp-controller="ServiceRequest" asp-action="Index" asp-route-requestId="@Model.RequestId">Back to List</a>
 </p>
 <table class="table">
     <thead>

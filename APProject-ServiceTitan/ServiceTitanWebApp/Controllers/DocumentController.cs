@@ -134,7 +134,7 @@ namespace ServiceTitanWebApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "UserID", "Password", document.UserId);
+
             return View(document);
         }
 
@@ -143,34 +143,40 @@ namespace ServiceTitanWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DocumentID,DocumentName,DocumentUploadDate,DocumentType,DocumentPath,UserId")] Document document)
+        public async Task<IActionResult> Edit(int id, [Bind("DocumentID,DocumentDescription")] Document document)
         {
             if (id != document.DocumentID)
             {
                 return NotFound();
             }
+            Document? existingDocument = await _context.Documents.FirstOrDefaultAsync(x => x.DocumentID == id);
+            if (existingDocument == null) { return NotFound(); }
 
-            if (ModelState.IsValid)
+            //int thisUserId = _context.Users.Single(u => u.UserEmail == User.Identity.Name).UserID;
+            //if (!User.IsInRole("Admin")
+            //    && !User.IsInRole("Manager")
+            //    && existingDocument.UserId != thisUserId)
+            //    return Forbid();
+
+            existingDocument.DocumentDescription = document.DocumentDescription;
+
+            try
             {
-                try
-                {
-                    _context.Update(document);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DocumentExists(document.DocumentID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index), new { requestId = document.ServiceRequestId });
+                _context.Update(existingDocument);
+                await _context.SaveChangesAsync();
             }
-            return View(document);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!DocumentExists(existingDocument.DocumentID))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index), new { requestId = existingDocument.ServiceRequestId });
         }
 
         // GET: Document/Delete/5

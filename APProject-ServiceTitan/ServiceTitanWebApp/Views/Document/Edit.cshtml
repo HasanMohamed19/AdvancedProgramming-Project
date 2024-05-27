@@ -15,6 +15,11 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="DocumentID" />
             <div class="form-group">
+                <label asp-for="DocumentDescription" class="control-label"></label>
+                <input asp-for="DocumentDescription" class="form-control" />
+                <span asp-validation-for="DocumentDescription" class="text-danger"></span>
+            </div>
+            @* <div class="form-group">
                 <label asp-for="DocumentName" class="control-label"></label>
                 <input asp-for="DocumentName" class="form-control" />
                 <span asp-validation-for="DocumentName" class="text-danger"></span>
@@ -38,7 +43,7 @@
                 <label asp-for="UserId" class="control-label"></label>
                 <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
                 <span asp-validation-for="UserId" class="text-danger"></span>
-            </div>
+            </div> *@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -47,6 +52,6 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" asp-route-requestId="@Model.ServiceRequestId">Back to List</a>
 </div>
 
