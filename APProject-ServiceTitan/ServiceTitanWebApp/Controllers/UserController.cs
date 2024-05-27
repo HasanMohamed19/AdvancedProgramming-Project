@@ -67,7 +67,8 @@ namespace ServiceTitanWebApp.Controllers
             {
                 NewUser = new ApplicationUser(),
                 Categories = _context.Categories,
-                Services = _context.Services
+                Services = _context.Services,
+                AssignedServicesIds = new List<int>()
             };
             return View(viewModel);
         }
@@ -94,10 +95,13 @@ namespace ServiceTitanWebApp.Controllers
                 if (userVM.NewUser.RoleId == 3)
                 {
                     ServiceTechnician st = new ServiceTechnician();
-                    st.ServicesId = userVM.ServiceId;
                     st.TechniciansId = userVM.NewUser.UserID;
-                    _context.ServiceTechnicians.Add(st);
-                    _context.SaveChanges();
+                    foreach (int assignedServiceId in userVM.AssignedServicesIds)
+                    {
+                        st.ServicesId = assignedServiceId;   
+                        _context.ServiceTechnicians.Add(st);
+                        _context.SaveChanges();
+                    }
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -109,7 +113,7 @@ namespace ServiceTitanWebApp.Controllers
                     Categories = _context.Categories,
                     Services = _context.Services,
                     CategoryId = userVM.CategoryId,
-                    ServiceId = userVM.ServiceId
+                    AssignedServicesIds = userVM.AssignedServicesIds
                 };
                 ViewData["RoleId"] = new SelectList(_context.UserRoles.Where(ur => ur.RoleID != 1), "RoleID", "RoleName", userVM.NewUser.RoleId);
                 return View(viewModel);
