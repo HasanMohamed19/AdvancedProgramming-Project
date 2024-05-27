@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Requests</h1>
 
 @* <p>
     <a asp-action="Create">Create New</a>
@@ -68,17 +68,26 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Status.Status)
             </td>
-            <td>
-                    <a asp-action="Edit" asp-route-id="@item.RequestID">Edit</a> <span> |</span>
+                <td>
+                    <a asp-controller="Document" asp-action="Index" asp-route-requestId="@item.RequestID">Documents</a> <span> |</span>
+                    <a asp-controller="Comment" asp-action="Index" asp-route-requestId="@item.RequestID">Comments</a> <span> |</span>
                     <a asp-action="Details" asp-route-id="@item.RequestID">Details</a> <span> |</span>
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <a asp-action="Delete" asp-route-id="@item.RequestID">Delete</a> <span> |</span>
-                    }
                     @if (item.StatusId != 4 && item.StatusId != 3)
                     {
-                        // if request complete or cancelled then cannot cancel
-                        <a asp-action="Cancel" asp-route-id="@item.RequestID">Cancel</a>
+                        // if request complete or cancelled then cannot cancel or edit
+                            <a asp-action="Edit" asp-route-id="@item.RequestID">Edit</a> <span> |</span>
+                        <a asp-action="Cancel" asp-route-id="@item.RequestID">Cancel</a> <span> |</span>
+                    } else
+                    {
+                        if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                        {
+                            // unless user is admin or manager
+                            <a asp-action="Edit" asp-route-id="@item.RequestID">Edit</a> <span> |</span>
+                        }
+                    }
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.RequestID">Delete</a>
                     }
             </td>
         </tr>
