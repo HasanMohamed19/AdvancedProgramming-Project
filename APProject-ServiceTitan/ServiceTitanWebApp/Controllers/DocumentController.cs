@@ -81,9 +81,9 @@ namespace ServiceTitanWebApp.Controllers
                 var basePath = Path.Combine(Directory.GetCurrentDirectory() + "Files");
                 bool basePathExists = Directory.Exists(basePath);
                 if (!basePathExists) Directory.CreateDirectory(basePath);
-                var fileName = Path.GetFileNameWithoutExtension(file.FileName);
+                var fileName = Path.GetFileName(file.FileName);
                 var filePath = Path.Combine(basePath, file.FileName);
-                var extension = Path.GetExtension(file.FileName);
+                //var extension = Path.GetExtension(file.FileName);
                 if (!System.IO.File.Exists(filePath))
                 {
                     using (var stream = new FileStream(filePath, FileMode.Create))
@@ -106,6 +106,19 @@ namespace ServiceTitanWebApp.Controllers
             }         
 
             return RedirectToAction(nameof(Index), new { requestId });
+        }
+
+        public async Task<IActionResult> Download(int? id)
+        {
+            var file = await _context.Documents.Where(x => x.DocumentID == id).FirstOrDefaultAsync();
+            if (file == null) return null;
+            var memory = new MemoryStream();
+            using (var stream = new FileStream(file.DocumentPath, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return File(memory, file.DocumentType, file.DocumentName);
         }
 
         // GET: Document/Edit/5
@@ -192,6 +205,10 @@ namespace ServiceTitanWebApp.Controllers
             if (document == null)
             {
                 return NotFound();
+            }
+            if (System.IO.File.Exists(document.DocumentPath))
+            {
+                System.IO.File.Delete(document.DocumentPath);
             }
             _context.Documents.Remove(document);
             
