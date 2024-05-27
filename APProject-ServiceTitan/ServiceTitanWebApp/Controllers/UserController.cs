@@ -132,7 +132,15 @@ namespace ServiceTitanWebApp.Controllers
                 return NotFound();
             }
             ViewData["RoleId"] = new SelectList(_context.UserRoles, "RoleID", "RoleName", user.RoleId);
-            return View(user);
+
+            var viewModel = new NewUserViewModel
+            {
+                NewUser = user,
+                Categories = _context.Categories,
+                Services = _context.Services,
+            };
+
+            return View(viewModel);
         }
 
         // POST: User/Edit/5
@@ -140,23 +148,24 @@ namespace ServiceTitanWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserID,FirstName,LastName,Address,UserEmail,RoleId")] ApplicationUser user)
+        public async Task<IActionResult> Edit(int id, NewUserViewModel userVM)
         {
-            if (id != user.UserID)
+            if (id != userVM.NewUser.UserID)
             {
                 return NotFound();
             }
-
+            var errors = ModelState.Values.SelectMany(v => v.Errors);
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(user);
+                    
+                    _context.Update(userVM.NewUser);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserExists(user.UserID))
+                    if (!UserExists(userVM.NewUser.UserID))
                     {
                         return NotFound();
                     }
@@ -167,8 +176,15 @@ namespace ServiceTitanWebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RoleId"] = new SelectList(_context.UserRoles, "RoleID", "RoleName", user.RoleId);
-            return View(user);
+            ViewData["RoleId"] = new SelectList(_context.UserRoles, "RoleID", "RoleName", userVM.NewUser.RoleId);
+            var viewModel = new NewUserViewModel
+            {
+                NewUser = userVM.NewUser,
+                Categories = _context.Categories,
+                Services = _context.Services,
+                
+            };
+            return View(viewModel);
         }
 
         // GET: User/Delete/5

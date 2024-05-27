@@ -1,4 +1,5 @@
-@model ServiceTitanBusinessObjects.ApplicationUser
+@using ServiceTitanWebApp.ViewModels
+@model NewUserViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -13,26 +14,33 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="UserID" />
+            <input type="hidden" asp-for="NewUser.UserID" />
+
             <div class="form-group">
-                <label asp-for="UserEmail" class="control-label"></label>
-                <input asp-for="UserEmail" class="form-control" />
-                <span asp-validation-for="UserEmail" class="text-danger"></span>
+                <label asp-for="NewUser.UserEmail" class="control-label"></label>
+                <input asp-for="NewUser.UserEmail" class="form-control" disabled/>
+                <span asp-validation-for="NewUser.UserEmail" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="NewUser.FirstName" class="control-label"></label>
+                <input asp-for="NewUser.FirstName" class="form-control" />
+                <span asp-validation-for="NewUser.FirstName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="UserEmail" class="control-label"></label>
-                <input asp-for="UserEmail" class="form-control" />
-                <span asp-validation-for="UserEmail" class="text-danger"></span>
+                <label asp-for="NewUser.LastName" class="control-label"></label>
+                <input asp-for="NewUser.LastName" class="form-control" />
+                <span asp-validation-for="NewUser.LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="UserEmail" class="control-label"></label>
-                <input asp-for="UserEmail" class="form-control" />
-                <span asp-validation-for="UserEmail" class="text-danger"></span>
+                <label asp-for="NewUser.Address" class="control-label"></label>
+                <input asp-for="NewUser.Address" class="form-control" />
+                <span asp-validation-for="NewUser.Address" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="RoleId" class="control-label"></label>
-                <select asp-for="RoleId" class="form-control" asp-items="ViewBag.RoleId"></select>
-                <span asp-validation-for="RoleId" class="text-danger"></span>
+                <label asp-for="NewUser.RoleId" class="control-label"></label>
+                <select asp-for="NewUser.RoleId" class="form-control" asp-items="ViewBag.RoleId"></select>
+                <span asp-validation-for="NewUser.RoleId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
