@@ -1,47 +1,68 @@
-@model IEnumerable<ServiceTitanBusinessObjects.Comment>
+@using ServiceTitanWebApp.ViewModels
+@model RequestCommentsViewModel
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ServiceTitanBusinessObjects.Comment comment = new();
 }
 
-<h1>Index</h1>
-
+<h1>Comments for Request</h1>
+@{
+    @if (TempData["CreateSuccess"] != null)
+    {
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <div>@TempData["CreateSuccess"].ToString()</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    else if (TempData["EditSuccess"] != null)
+    {
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <div>@TempData["EditSuccess"].ToString()</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    else if (TempData["DeleteSuccess"] != null)
+    {
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <div>@TempData["DeleteSuccess"].ToString()</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+}
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" asp-route-requestId="@Model.RequestId">Create New</a>
+    <span> | </span>
+    <a asp-controller="ServiceRequest" asp-action="Index" asp-route-requestId="@Model.RequestId">Back to List</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.CommentText)
+                @Html.DisplayNameFor(model => comment.User)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CommentDate)
+                @Html.DisplayNameFor(model => comment.CommentText)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ServiceRequest)
+                @Html.DisplayNameFor(model => comment.CommentDate)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Comments) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.FullName)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.CommentText)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.CommentDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.UserEmail)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ServiceRequest.RequestID)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.CommentID">Edit</a> |

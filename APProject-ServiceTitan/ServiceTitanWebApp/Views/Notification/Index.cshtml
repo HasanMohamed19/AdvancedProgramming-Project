@@ -7,14 +7,14 @@
 
 <h1>Index</h1>
 
-<p>
+@*<p>
     <a asp-action="Create">Create New</a>
-</p>
+</p>*@
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.NotificationMessage)
+                @Html.DisplayNameFor(model => model.NotificationStatus)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.NotificationTitle)
@@ -23,11 +23,11 @@
                 @Html.DisplayNameFor(model => model.NotificationType)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.NotificationStatus)
+                @Html.DisplayNameFor(model => model.NotificationMessage)
             </th>
-            <th>
+            @*<th>
                 @Html.DisplayNameFor(model => model.User)
-            </th>
+            </th>*@
             <th></th>
         </tr>
     </thead>
@@ -35,7 +35,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.NotificationMessage)
+                @Html.DisplayFor(modelItem => item.NotificationStatus.NotificationStatusName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.NotificationTitle)
@@ -44,15 +44,17 @@
                 @Html.DisplayFor(modelItem => item.NotificationType)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.NotificationStatus.NotificationStatusName)
+                <span class="d-inline-block text-truncate" style="max-width:10rem;">
+                        @Html.DisplayFor(modelItem => item.NotificationMessage)
+                </span>
             </td>
-            <td>
+            @*<td>
                 @Html.DisplayFor(modelItem => item.User.UserEmail)
-            </td>
+            </td>*@
             <td>
-                <a asp-action="Edit" asp-route-id="@item.NotificationID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.NotificationID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.NotificationID">Delete</a>
+                @*<a asp-action="Edit" asp-route-id="@item.NotificationID">Edit</a> |*@
+                <a asp-action="Details" asp-route-id="@item.NotificationID">Details</a> @*|
+                <a asp-action="Delete" asp-route-id="@item.NotificationID">Delete</a>*@
             </td>
         </tr>
 }

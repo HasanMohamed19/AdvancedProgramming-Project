@@ -18,22 +18,27 @@ namespace ServiceTitanBusinessObjects
         [Required]
         [Column("document_name")]
         [MaxLength(200)]
+        [Display(Name = "Name")]
         public string DocumentName { get; set; }
 
 
+        [Display(Name = "Description")]
         public string? DocumentDescription { get; set; }
 
         [Required]
         [Column("document_upload_date")]
+        [Display(Name = "Upload Date")]
         public DateTime DocumentUploadDate { get; set; }
 
         [Required]
         [Column("document_type")]
         [MaxLength(20)]
+        [Display(Name = "Type")]
         public string DocumentType { get; set; }
 
         [Required]
         [Column("document_path")]
+        [Display(Name = "Filepath")]
         public string DocumentPath { get; set; }
         public int? UserId { get; set; }
         public ApplicationUser? User { get; set; }

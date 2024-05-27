@@ -1,4 +1,5 @@
-@model IEnumerable<ServiceTitanBusinessObjects.Category>
+@using ServiceTitanWebApp.ViewModels
+@model CategoryIndexViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -7,42 +8,98 @@
 
 <h1>Index</h1>
 
+@{
+    @if (TempData["CreateSuccess"] != null)
+    {
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <div>@TempData["CreateSuccess"].ToString()</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    else if (TempData["EditSuccess"] != null)
+    {
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <div>@TempData["EditSuccess"].ToString()</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    else if (TempData["DeleteSuccess"] != null)
+    {
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <div>@TempData["DeleteSuccess"].ToString()</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+}
+
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.CategoryName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CategoryDescription)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CategoryManager)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CategoryName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CategoryDescription)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CategoryManager.UserEmail)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.CategoryID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.CategoryID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.CategoryID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+
+<div class="container p-3">
+
+    <div class="row pt-4">
+
+        <div class="col-8">
+            <form asp-controller="Category" method="get" asp-action="Index">
+                Category Name:
+                <input type="text" name="searchName" asp-for="searchName" />
+                
+
+                Manager:
+                <select name="searchManager" asp-for="searchManager" asp-items="Model.Managers.Select(m => new SelectListItem{Text = m.FullName, Value = m.UserID.ToString()})">
+                    <option value="">All</option>
+                </select>
+
+                <a asp-controller="Category" asp-action="Index" class="btn btn-outline-danger">
+                    Clear
+                </a>
+                <input type="submit" value="Search" class="btn btn-secondary mx-2" />
+            </form>
+        </div>
+
+        
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @*@Html.DisplayNameFor(model => model.CategoryName)*@
+                        CategoryName
+                    </th>
+                    <th>
+                        @*@Html.DisplayNameFor(model => model.CategoryDescription)*@
+                        CategoryDescription
+                    </th>
+                    <th>
+                        @*@Html.DisplayNameFor(model => model.CategoryManager)*@
+                        CategoryManager
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+        @foreach (var category in Model.Categories) {
+                <tr>
+                    <td>
+                            @Html.DisplayFor(modelItem => category.CategoryName)
+                        
+                    </td>
+                    <td>
+                            @Html.DisplayFor(modelItem => category.CategoryDescription)
+                    </td>
+                    <td>
+                            @Html.DisplayFor(modelItem => category.CategoryManager.UserEmail)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@category.CategoryID">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@category.CategoryID">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@category.CategoryID">Delete</a>
+                    </td>
+                </tr>
+        }
+            </tbody>
+        </table>
+    </div>
+</div>

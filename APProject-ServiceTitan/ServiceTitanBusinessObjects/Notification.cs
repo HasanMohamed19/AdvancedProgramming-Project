@@ -29,9 +29,8 @@ namespace ServiceTitanBusinessObjects
         public string NotificationType { get; set; }
 
 
-        public int? NotificationStatusId { get; set; }
-        [Required]
-        [MaxLength(15)]
+        public int NotificationStatusId { get; set; }
+
         [Column("notification_status")]
         public NotificationStatus? NotificationStatus { get; set; }
 

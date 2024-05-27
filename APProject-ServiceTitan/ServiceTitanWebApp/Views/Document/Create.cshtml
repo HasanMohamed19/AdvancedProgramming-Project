@@ -1,4 +1,5 @@
-@model ServiceTitanBusinessObjects.Document
+@using ServiceTitanWebApp.ViewModels
+@model UploadFilesViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -11,14 +12,13 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="DocumentName" class="control-label"></label>
-                <input asp-for="DocumentName" class="form-control" />
-                <span asp-validation-for="DocumentName" class="text-danger"></span>
+                <label for="description" class="control-label">Description</label>
+                <input type="text" name="description" class="form-control" />
             </div>
-            <div class="form-group">
+            @* <div class="form-group">
                 <label asp-for="DocumentUploadDate" class="control-label"></label>
                 <input asp-for="DocumentUploadDate" class="form-control" />
                 <span asp-validation-for="DocumentUploadDate" class="text-danger"></span>
@@ -27,24 +27,26 @@
                 <label asp-for="DocumentType" class="control-label"></label>
                 <input asp-for="DocumentType" class="form-control" />
                 <span asp-validation-for="DocumentType" class="text-danger"></span>
-            </div>
+            </div> *@
             <div class="form-group">
-                <label asp-for="DocumentPath" class="control-label"></label>
-                <input asp-for="DocumentPath" class="form-control" />
-                <span asp-validation-for="DocumentPath" class="text-danger"></span>
+                @* <label asp-for="DocumentPath" class="control-label"></label> *@
+                <input type="file" name="files" class="form-control" multiple required/>
+                @* <span asp-validation-for="DocumentPath" class="text-danger"></span> *@
             </div>
-            <div class="form-group">
+            @* <div class="form-group">
                 <label asp-for="UserId" class="control-label"></label>
                 <select asp-for="UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
-            </div>
+            </div> *@
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
+                @* <input type="submit" value="Download" class="btn btn-primary" /> *@
+                <input type="hidden" asp-for="ServiceRequestId" name="requestId" class="form-control" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" asp-route-requestId="@Model?.ServiceRequestId">Back to List</a>
 </div>
 

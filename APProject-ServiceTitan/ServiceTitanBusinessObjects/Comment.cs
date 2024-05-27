@@ -18,10 +18,12 @@ namespace ServiceTitanBusinessObjects
         [Required]
         [MaxLength(int.MaxValue)] // verify this
         [Column("comment_text")]
+        [Display(Name = "Comment")]
         public string CommentText { get; set; }
 
         [Required]
         [Column("comment_date")]
+        [Display(Name = "Date")]
         public DateTime CommentDate { get; set; }
 
         public int? UserId { get; set; }

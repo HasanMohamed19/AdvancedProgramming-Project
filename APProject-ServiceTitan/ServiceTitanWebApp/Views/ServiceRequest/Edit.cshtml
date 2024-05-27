@@ -19,36 +19,42 @@
                 <input asp-for="RequestDescription" class="form-control" />
                 <span asp-validation-for="RequestDescription" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="RequestPrice" class="control-label"></label>
-                <input asp-for="RequestPrice" class="form-control" />
-                <span asp-validation-for="RequestPrice" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RequestDateNeeded" class="control-label"></label>
-                <input asp-for="RequestDateNeeded" class="form-control" />
-                <span asp-validation-for="RequestDateNeeded" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+            @*<div class="form-group">
                 <label asp-for="ClientId" class="control-label"></label>
                 <select asp-for="ClientId" class="form-control" asp-items="ViewBag.ClientId"></select>
                 <span asp-validation-for="ClientId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TechnicianId" class="control-label"></label>
-                <select asp-for="TechnicianId" class="form-control" asp-items="ViewBag.TechnicianId"></select>
-                <span asp-validation-for="TechnicianId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ServiceId" class="control-label"></label>
-                <select asp-for="ServiceId" class="form-control" asp-items="ViewBag.ServiceId"></select>
-                <span asp-validation-for="ServiceId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StatusId" class="control-label"></label>
-                <select asp-for="StatusId" class="form-control" asp-items="ViewBag.StatusId"></select>
-                <span asp-validation-for="StatusId" class="text-danger"></span>
-            </div>
+            </div>*@
+            @if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Technician"))
+            {
+                <div class="form-group">
+                    <label asp-for="RequestDateNeeded" class="control-label"></label>
+                    <input asp-for="RequestDateNeeded" class="form-control" />
+                    <span asp-validation-for="RequestDateNeeded" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="StatusId" class="control-label"></label>
+                    <select asp-for="StatusId" class="form-control" asp-items="ViewBag.StatusId"></select>
+                    <span asp-validation-for="StatusId" class="text-danger"></span>
+                </div>
+                if (!User.IsInRole("Technician"))
+                {
+                    <div class="form-group">
+                        <label asp-for="RequestPrice" class="control-label"></label>
+                        <input asp-for="RequestPrice" class="form-control" />
+                        <span asp-validation-for="RequestPrice" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="TechnicianId" class="control-label"></label>
+                        <select asp-for="TechnicianId" class="form-control" asp-items="ViewBag.TechnicianId"></select>
+                        <span asp-validation-for="TechnicianId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ServiceId" class="control-label"></label>
+                        <select asp-for="ServiceId" class="form-control" asp-items="ViewBag.ServiceId"></select>
+                        <span asp-validation-for="ServiceId" class="text-danger"></span>
+                    </div>
+                }
+            } 
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

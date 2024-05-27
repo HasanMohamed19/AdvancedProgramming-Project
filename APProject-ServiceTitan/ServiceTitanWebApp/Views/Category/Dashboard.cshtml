@@ -1,0 +1,85 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Categories Dashboard</h1>
+<br />
+
+<div class="row">
+    <div class="col-md-6">
+        <div id="piechart_div" style="border: 1px solid #ccc"></div>
+    </div>
+
+    <div class="col-md-6">
+        <div id="barchart_div" style="border: 1px solid #ccc"></div>
+    </div>
+</div>
+
+<br />
+<br />
+<br />
+
+<div class="row">
+    <div class="col-md-6">
+        <div  id="" style="border: 1px solid #ccc"><img src="https://placehold.co/400" /></div>
+        <div id="" style="border: 1px solid #ccc">Top Selling Service: @ViewData["topSellingService"]</div>
+    </div>
+    
+    <div class="col-md-6">
+        <div id="" style="border: 1px solid #ccc"><img src="https://placehold.co/400" /></div>
+        <div id="" style="border: 1px solid #ccc">Pending Requests: @ViewData["pendingRequests"]</div>
+    </div>
+</div>
+
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            console.log("ajhax called");
+            $.ajax({
+                type: 'GET',
+                dataType: "json",
+                contentType: "application/json",
+                url: '/Category/getAllRequests',
+                success: function (result) {
+                    google.charts.load('current', {
+                        'packages': ['corechart']
+                    });
+                    google.charts.setOnLoadCallback(function () {
+                        drawChart(result);
+                    });
+                }
+            });
+            function drawChart(result) {
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Name');
+                data.addColumn('number', 'Sales');
+                var dataArray = [];
+                $.each(result, function (i, obj) {
+                    dataArray.push([obj.name, obj.sales]);
+                });
+                data.addRows(dataArray);
+                var piechart_options = {
+                    title: 'Pie Chart: How Much Services Sold',
+                    width: 500,
+                    height: 300
+                };
+                var piechart = new google.visualization.PieChart(document
+                    .getElementById('piechart_div'));
+                piechart.draw(data, piechart_options);
+                var barchart_options = {
+                    title: 'Barchart: How Much Services Sold',
+                    width: 500,
+                    height: 300,
+                    legend: 'none'
+                };
+                var barchart = new google.visualization.BarChart(document
+                    .getElementById('barchart_div'));
+                barchart.draw(data, barchart_options);
+            }
+        });
+    </script>
+}
