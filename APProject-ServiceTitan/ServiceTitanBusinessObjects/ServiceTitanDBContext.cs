@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -148,6 +150,11 @@ namespace ServiceTitanBusinessObjects
                 .Select(t => t.Entity)
                 .ToList();
 
+            var deleted = ChangeTracker.Entries()
+                .Where(t => t.State == EntityState.Deleted)
+                .Select(t => t.Entity)
+                .ToList();
+
             // Create and populate log entries
             var logs = new List<Log>();
             foreach (var entity in added)
@@ -157,6 +164,10 @@ namespace ServiceTitanBusinessObjects
             foreach (var entity in modified)
             {
                 logs.Add(CreateLog(entity, EntityState.Modified));
+            }
+            foreach (var entity in modified)
+            {
+                logs.Add(CreateLog(entity, EntityState.Deleted));
             }
 
             // Add logs to DbContext (assuming Logs DbSet exists)
@@ -168,17 +179,83 @@ namespace ServiceTitanBusinessObjects
 
         private Log CreateLog(object entity, EntityState state)
         {
-            
-            return new Log
+
+            if (state  == EntityState.Added)
             {
-                Time = DateTime.Now,
-                UserId = 1,
-                Source = "forms",
-                Message = "aa",
-                OriginalValue = "O",
-                CurrentValue = "C",
-                Type = "T"
-            };
+                var propertyInfo = entity.GetType().GetProperties();
+                return new Log
+                {
+                    Time = DateTime.Now,
+                    UserId = 1,
+                    Source = "forms",
+                    Message = "aa",
+                    OriginalValue = "",
+                    CurrentValue = GetEntityPropertyValues(entity, propertyInfo),
+                    Type = "T"
+                };
+            }
+            else if (state == EntityState.Modified)
+            {
+
+                Log log = new Log
+                {
+                    Time = DateTime.Now,
+                    UserId = 1,
+                    Source = "forms",
+                    Message = "aa",
+                    Type = "T"
+                };
+
+                var entry = ChangeTracker.Entries().SingleOrDefault(e => e.Entity == entity);
+                if (entry != null)
+                {
+                    IEnumerable<PropertyEntry> changedProperties = entry.Properties.Where(p => p.IsModified);
+                    log.OriginalValue = GetChangedPropertyValues(entry.OriginalValues, changedProperties);
+                    log.CurrentValue = GetChangedPropertyValues(entity, changedProperties);
+                }
+
+                return log;
+            }
+            else
+            {
+                return new Log
+                {
+                    Time = DateTime.Now,
+                    UserId = 1,
+                    Source = "forms",
+                    Message = "aa",
+                    OriginalValue = "",
+                    CurrentValue = "C",
+                    Type = "T"
+                };
+            }
+
+            
+        }
+
+        private string GetChangedPropertyValues(object entity, IEnumerable<PropertyEntry> properties)
+        {
+            var values = new List<string>();
+            foreach (var prop in properties)
+            {
+                values.Add($"{prop.OriginalValue}: {prop.CurrentValue}");
+            }
+            return string.Join(", ", values);
+        }
+
+        private string GetEntityPropertyValues(object entity, PropertyInfo[] properties = null)
+        {
+            if (properties == null)
+            {
+                properties = entity.GetType().GetProperties();
+            }
+
+            var values = new List<string>();
+            foreach (var prop in properties)
+            {
+                values.Add($"{prop.Name}: {prop.GetValue(entity)}");
+            }
+            return string.Join(", ", values);
         }
 
 
