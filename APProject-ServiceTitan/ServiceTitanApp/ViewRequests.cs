@@ -82,14 +82,21 @@ namespace ServiceTitanApp
 
             dgvRequests.EnableHeadersVisualStyles = false;
             dgvRequests.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-            dgvRequests.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(20, 25, 72);
-            dgvRequests.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgvRequests.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(65, 105, 225); // Brighter color
+            dgvRequests.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
+            dgvRequests.ColumnHeadersDefaultCellStyle.Font = new Font("Microsoft Sans Serif", 12.0F, FontStyle.Bold); // Large text for headers
+
+            // Make the rest of the text smaller
+            dgvRequests.DefaultCellStyle.Font = new Font("Microsoft Sans Serif", 8.0F);
 
             // Set row height to add more space between lines
             dgvRequests.RowTemplate.Height = 40;
 
             // Auto-resize columns to fit content
             dgvRequests.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+            // Remove row header arrow
+            dgvRequests.RowHeadersVisible = false;
         }
 
         private void RefreshRequestsDGV()
