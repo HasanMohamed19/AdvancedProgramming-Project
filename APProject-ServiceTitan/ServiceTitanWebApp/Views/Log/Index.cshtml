@@ -1,4 +1,6 @@
-@model IEnumerable<ServiceTitanBusinessObjects.Log>
+@using ServiceTitanWebApp.ViewModels
+@model LogIndexViewModel
+
 
 @{
     ViewData["Title"] = "Index";
@@ -10,35 +12,58 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+<div class="container p-3">
+
+    <div class="row pt-4">
+<div class="col-8">
+    <form asp-controller="Log" method="get" asp-action="Index">
+        Log Type:
+        <select name="searchLogType" asp-for="searchLogType" asp-items="Model.LogTypes.Select(lt => new SelectListItem{Text = lt, Value = lt})">
+            <option value="">All</option>
+        </select>
+
+        <a asp-controller="Log" asp-action="Index" class="btn btn-outline-danger">
+            Clear
+        </a>
+        <input type="submit" value="Search" class="btn btn-secondary mx-2" />
+    </form>
+</div>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Source)
+                @*Html.DisplayNameFor(model => model.Source)*@Source
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Time)
+                @*Html.DisplayNameFor(model => model.Time)*@
+                Time
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Message)
+                @*Html.DisplayNameFor(model => model.Message)*@
+                Message
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.OriginalValue)
+                @*Html.DisplayNameFor(model => model.OriginalValue)*@
+                Original Value
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CurrentValue)
+                @*Html.DisplayNameFor(model => model.CurrentValue)*@
+                Current Value
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Type)
+                @*Html.DisplayNameFor(model => model.Type)*@
+                Type
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User)
+                @*Html.DisplayNameFor(model => model.User)*@
+                User
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Logs) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Source)
@@ -70,3 +95,5 @@
 }
     </tbody>
 </table>
+    </div>
+</div>

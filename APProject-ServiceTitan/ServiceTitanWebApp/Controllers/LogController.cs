@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ServiceTitanBusinessObjects;
+using ServiceTitanWebApp.ViewModels;
 
 namespace ServiceTitanWebApp.Controllers
 {
@@ -27,6 +28,30 @@ namespace ServiceTitanWebApp.Controllers
             var serviceTitanDBContext = _context.Logs.Include(l => l.User);
             return View(await serviceTitanDBContext.ToListAsync());
         }
+
+        public IActionResult Index(string searchLogType)
+        {
+            //IQueryable<Log> logs = _context.Logs.Include(l => l.LogType);
+            IEnumerable<Log> logs;
+
+            // if no filter is used
+            logs = _context.Logs.Include(l => l.User);
+
+            // search for log type
+            if (!String.IsNullOrEmpty(searchLogType))
+            {
+                logs = logs.Where(l => l.Type.Contains(searchLogType));
+            }
+
+            var logIndexVM = new LogIndexViewModel
+            {
+                Logs = logs,
+                LogTypes = _context.Logs.Select(l => l.Type).Distinct().ToList()
+            };
+
+            return View(logIndexVM);
+        }
+
 
         // GET: Log/Details/5
         public async Task<IActionResult> Details(int? id)
