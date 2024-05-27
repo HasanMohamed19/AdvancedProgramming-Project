@@ -8,6 +8,30 @@
 
 <h1>Index</h1>
 
+@{
+    @if (TempData["CreateSuccess"] != null)
+    {
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <div>@TempData["CreateSuccess"].ToString()</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    else if (TempData["EditSuccess"] != null)
+    {
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <div>@TempData["EditSuccess"].ToString()</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    else if (TempData["DeleteSuccess"] != null)
+    {
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <div>@TempData["DeleteSuccess"].ToString()</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+}
+
 <p>
     <a asp-action="Create">Create New</a>
 </p>

@@ -82,7 +82,7 @@ namespace ServiceTitanWebApp.Controllers
             var viewModel = new NewCategoryViewModel
             {
                 Category = new(),
-                Users = _context.Users.Where(u => u.RoleId == UserRole.GetRoleId("Manager"))
+                Users = _context.Users.Where(u => u.RoleId == UserRole.GetRoleId("Manager") && (u.Category.CategoryManagerId == null || u.Category.CategoryManagerId == 0))
             };
             return View(viewModel);
         }
@@ -99,6 +99,7 @@ namespace ServiceTitanWebApp.Controllers
             {
                 _context.Add(newCategory.Category);
                 _context.SaveChanges();
+                TempData["CreateSuccess"] = "Category Created Successfully";
                 return RedirectToAction(nameof(Index));
                 //return RedirectToAction("Index");
             } else
@@ -106,7 +107,7 @@ namespace ServiceTitanWebApp.Controllers
                 var viewModel = new NewCategoryViewModel
                 {
                     Category = newCategory.Category,
-                    Users = _context.Users.Where(u => u.RoleId == UserRole.GetRoleId("Manager"))
+                    Users = _context.Users.Where(u => u.RoleId == UserRole.GetRoleId("Manager") && (u.Category.CategoryManagerId == null || u.Category.CategoryManagerId == 0))
                 };
                 return View(viewModel);
             }
@@ -132,7 +133,7 @@ namespace ServiceTitanWebApp.Controllers
             var viewModel = new NewCategoryViewModel
             {
                 Category = category,
-                Users = _context.Users.Where(u => u.RoleId == UserRole.GetRoleId("Manager"))
+                Users = _context.Users.Where(u => u.RoleId == UserRole.GetRoleId("Manager") && (u.Category.CategoryManagerId == null || u.Category.CategoryManagerId == 0))
             };
 
             //ViewData["CategoryManagerId"] = new SelectList(_context.Users, "UserID", "UserName", category.CategoryManagerId);
@@ -170,6 +171,7 @@ namespace ServiceTitanWebApp.Controllers
                         throw;
                     }
                 }
+                TempData["CreateSuccess"] = "Category Edited Successfully";
                 return RedirectToAction(nameof(Index));
             }
             else
@@ -177,7 +179,7 @@ namespace ServiceTitanWebApp.Controllers
                 var viewModel = new NewCategoryViewModel
                 {
                     Category = editCategory.Category,
-                    Users = _context.Users.Where(u => u.RoleId == UserRole.GetRoleId("Manager"))
+                    Users = _context.Users.Where(u => u.RoleId == UserRole.GetRoleId("Manager") && (u.Category.CategoryManagerId == null || u.Category.CategoryManagerId == 0))
                 };
                 return View(viewModel);
             }
@@ -222,6 +224,7 @@ namespace ServiceTitanWebApp.Controllers
             }
             
             _context.SaveChanges();
+            TempData["CreateSuccess"] = "Category Deleted Successfully";
             return RedirectToAction(nameof(Index));
         }
 

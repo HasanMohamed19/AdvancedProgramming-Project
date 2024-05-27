@@ -24,14 +24,29 @@
                 <input asp-for="Category.CategoryDescription" class="form-control" />
                 <span asp-validation-for="Category.CategoryDescription" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Category.CategoryManagerId" class="control-label"></label>
-                <select asp-for="Category.CategoryManagerId" class="form-control" asp-items="@Model.Users
+            
+            @{
+                if (@Model.Users.Count() == 0) {
+                    <div><span class="alert-danger">All managers have categories right now. Cannot assign a manager to a category</span></div>
+                } else
+                {
+
+                    <div id="assign-check" class="form-group">
+                        Assign Manager:
+                        <input type="checkbox" id="assign-manager" checked />
+                    </div>
+
+                    <div id="manager-combo" class="form-group">
+
+                        <label asp-for="Category.CategoryManagerId" class="control-label"></label>
+                        <select asp-for="Category.CategoryManagerId" class="form-control" asp-items="@Model.Users
                         .Select(u => new SelectListItem {Text = u.UserEmail, Value = u.UserID.ToString()})">
-                <option value="0" disabled selected>Select Manager</option>
-                </select>
-                <span asp-validation-for="Category.CategoryManagerId" class="text-danger"></span>
-            </div>
+                            <option value="0" disabled selected>Select Manager</option>
+                        </select>
+                        <span asp-validation-for="Category.CategoryManagerId" class="text-danger"></span>
+                    </div>
+                }
+            }
 
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -44,3 +59,16 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+@section Scripts {
+    <script>
+        $("#assign-manager").click(function () {
+            if ($(this).is(":checked")) {
+                console.log("checked");
+                $("#manager-combo").removeClass("d-none");
+            } else {
+                console.log("unchecked");
+                $("#manager-combo").addClass("d-none");
+            }
+        })
+    </script>
+}
