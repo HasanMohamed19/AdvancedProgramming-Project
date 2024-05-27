@@ -249,6 +249,38 @@ namespace ServiceTitanWebApp.Controllers
 
         public IActionResult Dashboard()
         {
+
+            if (User.IsInRole("Manager"))
+            {
+                int userID = _context.Users.Single(u => u.UserEmail == User.Identity.Name).UserID;
+                string topSellingService = _context.Services
+                .Where(s => s.Category.CategoryManagerId == userID)
+                .OrderByDescending(service => service.ServiceRequests.Sum(sr => sr.RequestPrice))
+                .FirstOrDefault().ServiceName;
+
+                string pendingRequests = _context.ServiceRequests
+                .Where(sr => sr.StatusId == 2 && sr.Service.Category.CategoryManagerId == userID)
+                .Count().ToString();
+
+                ViewData["topSellingService"] = topSellingService;
+                ViewData["pendingRequests"] = pendingRequests;
+            }
+            else
+            {
+                string topSellingService = _context.Services
+                .OrderByDescending(service => service.ServiceRequests.Sum(sr => sr.RequestPrice))
+                .FirstOrDefault().ServiceName;
+
+                string pendingRequests = _context.ServiceRequests
+                .Where(sr => sr.StatusId == 2)
+                .Count().ToString();
+
+                ViewData["topSellingService"] = topSellingService;
+                ViewData["pendingRequests"] = pendingRequests;
+            }
+
+
+
             return View("Dashboard");
         }
     }
