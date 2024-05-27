@@ -7,6 +7,7 @@ namespace ServiceTitanWebApp.ViewModels
 
         public IEnumerable<Category>? Categories { get; set; }
         public IEnumerable<Service>? Services { get; set; }
+        public IEnumerable<ServiceTechnician>? ServiceTechnicians { get; set; }
 
         public string? searchName { get; set; }
         public string? searchManager { get; set; }

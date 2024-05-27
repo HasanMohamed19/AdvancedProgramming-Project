@@ -4,6 +4,7 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var services = Model.Services.ToList();
 }
 
 <h1>Index</h1>
@@ -83,7 +84,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var service in Model.Services)
+                @foreach (var service in services)
                 {
                     <tr>
                         <td>
@@ -97,7 +98,7 @@
                             @Html.DisplayFor(modelItem => service.ServicePrice)
                         </td>
                         <td>
-                            @service.Technicians.Count()
+                            @Model.ServiceTechnicians.Count(u => u.ServicesId == service.ServiceID)
                             @* @Html.DisplayFor(modelItem => service.Technicians.Count()) *@
                         </td>
                         <td>

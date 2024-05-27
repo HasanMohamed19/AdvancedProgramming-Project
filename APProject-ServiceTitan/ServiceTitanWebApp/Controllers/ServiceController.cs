@@ -47,6 +47,7 @@ namespace ServiceTitanWebApp.Controllers
             {
                 Services = services,
                 Categories = _context.Categories,
+                ServiceTechnicians = _context.ServiceTechnicians,
             };
 
             //var services = _context.Services.Include(s => s.Category);
