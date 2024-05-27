@@ -84,7 +84,7 @@ namespace ServiceTitanWebApp.Controllers
                 var viewModel = new NewServiceViewModel
                 {
                     Service = new(),
-                    Technicians = _context.Users.Where(u => u.RoleId == 3),
+                    Technicians = new MultiSelectList(_context.Users.Where(u => u.RoleId == 3), "UserID", "FullName", null),
                     Categories = _context.Categories.Where(m => m.CategoryManagerId == userID)
                 };
 
@@ -99,7 +99,7 @@ namespace ServiceTitanWebApp.Controllers
                 var viewModel = new NewServiceViewModel
                 {
                     Service = new(),
-                    Technicians = _context.Users.Where(u => u.RoleId == 3),
+                    Technicians = new MultiSelectList(_context.Users.Where(u => u.RoleId == 3), "UserID", "FullName", null),
                     Categories = _context.Categories
                 };
                 return View(viewModel);
@@ -135,32 +135,26 @@ namespace ServiceTitanWebApp.Controllers
 
                 TempData["CreateSuccess"] = "Service Created Successfully";
                 return RedirectToAction(nameof(Index));
-            } else
-            {
-
-                if (User.IsInRole("Manager"))
-                {
-                    int userID = _context.Users.Single(u => u.UserEmail == User.Identity.Name).UserID;
-                    var viewModel = new NewServiceViewModel
-                    {
-                        Service = new(),
-                        Technicians = _context.Users.Where(u => u.RoleId == 3),
-                        Categories = _context.Categories.Where(m => m.CategoryManagerId == userID)
-                    };
-                    return View(viewModel);
-                } else
-                {
-                    var viewModel = new NewServiceViewModel
-                    {
-                        Service = new(),
-                        Technicians = _context.Users.Where(u => u.RoleId == 3),
-                        Categories = _context.Categories
-                    };
-                    return View(viewModel);
-                }
-
-                
             }
+
+            IQueryable<Category> categories;
+            if (User.IsInRole("Admin"))
+            {
+                categories = _context.Categories;
+            }
+            else
+            {
+                int userID = _context.Users.Single(u => u.UserEmail == User.Identity.Name).UserID;
+                categories = _context.Categories.Where(m => m.CategoryManagerId == userID);
+            }
+            var viewModel = new NewServiceViewModel
+            {
+                Service = new(),
+                Technicians = new MultiSelectList(_context.Users.Where(u => u.RoleId == 3), "UserID", "FullName", null),
+                Categories = categories
+            };
+            return View(viewModel);
+
             //ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryID", "CategoryName", service.CategoryId);
             //return View(service);
         }
@@ -179,13 +173,31 @@ namespace ServiceTitanWebApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryID", "CategoryName", service.CategoryId);
+            //ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryID", "CategoryName", service.CategoryId);
+
+            IQueryable<Category> categories;
+            if (User.IsInRole("Admin"))
+            {
+                categories = _context.Categories;
+            }
+            else
+            {
+                int userID = _context.Users.Single(u => u.UserEmail == User.Identity.Name).UserID;
+                categories = _context.Categories.Where(m => m.CategoryManagerId == userID);
+            }
+
+            var selectedTechnicians = _context.ServiceTechnicians.Where(u => u.ServicesId == service.ServiceID);
+            List<int> techIds = new List<int>();
+            foreach (var st in selectedTechnicians)
+            {
+                techIds.Add(st.TechniciansId);
+            }
 
             var viewModel = new NewServiceViewModel
             {
                 Service = service,
-                Technicians = _context.Users.Where(u => u.RoleId == 3),
-                Categories = _context.Categories
+                Technicians = new MultiSelectList(_context.Users.Where(u => u.RoleId == 3), "UserID", "FullName", techIds),
+                Categories = categories
             };
             return View(viewModel);
 
@@ -198,7 +210,7 @@ namespace ServiceTitanWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ServiceID,ServiceName,ServiceDescription,ServicePrice,CategoryId")] NewServiceViewModel serviceVM)
+        public async Task<IActionResult> Edit(int id, [Bind("Service")] NewServiceViewModel serviceVM)
         {
             if (id != serviceVM.Service.ServiceID)
             {
@@ -226,20 +238,32 @@ namespace ServiceTitanWebApp.Controllers
                 }
                 TempData["EditSuccess"] = "Service Edited Successfully";
                 return RedirectToAction(nameof(Index));
-            } else
-            {
-
-                var viewModel = new NewServiceViewModel
-                {
-                    Service = serviceVM.Service,
-                    Technicians = _context.Users.Where(u => u.RoleId == 3),
-                    Categories = _context.Categories
-                };
-
-                ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryID", "CategoryName", serviceVM.Service.CategoryId);
-                return View(viewModel);
             }
-            
+
+            IQueryable<Category> categories;
+            if (User.IsInRole("Manager"))
+            {
+                categories = _context.Categories;
+            }
+            else
+            {
+                int userID = _context.Users.Single(u => u.UserEmail == User.Identity.Name).UserID;
+                categories = _context.Categories.Where(m => m.CategoryManagerId == userID);
+            }
+            var selectedTechnicians = _context.ServiceTechnicians.Where(u => u.ServicesId == serviceVM.Service.ServiceID);
+            List<int> techIds = new List<int>();
+            foreach (var st in selectedTechnicians)
+            {
+                techIds.Add(st.TechniciansId);
+            }
+
+            var viewModel = new NewServiceViewModel
+            {
+                Service = serviceVM.Service,
+                Technicians = new MultiSelectList(_context.Users.Where(u => u.RoleId == 3), "UserID", "FullName", techIds),
+                Categories = categories
+            };
+            return View(viewModel);
         }
 
         [Authorize(Roles = "Admin,Manager")]
