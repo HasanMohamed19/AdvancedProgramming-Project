@@ -241,7 +241,7 @@ namespace ServiceTitanWebApp.Areas.Identity.Pages.Account
                     {
                         FirstName = Input.FirstName,
                         LastName = Input.LastName,
-                        Address = Input.Address,
+                        City = Input.Address,
                         UserEmail = Input.Email,
                         RoleId = Input.RoleId
                     };

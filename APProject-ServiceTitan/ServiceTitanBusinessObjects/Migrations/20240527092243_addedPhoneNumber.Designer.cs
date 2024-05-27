@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ServiceTitanBusinessObjects;
 
@@ -11,9 +12,10 @@ using ServiceTitanBusinessObjects;
 namespace ServiceTitanBusinessObjects.Migrations
 {
     [DbContext(typeof(ServiceTitanDBContext))]
-    partial class ServiceTitanDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240527092243_addedPhoneNumber")]
+    partial class addedPhoneNumber
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +23,21 @@ namespace ServiceTitanBusinessObjects.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("ApplicationUserService", b =>
+                {
+                    b.Property<int>("ServicesServiceID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TechniciansUserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ServicesServiceID", "TechniciansUserID");
+
+                    b.HasIndex("TechniciansUserID");
+
+                    b.ToTable("ApplicationUserService");
+                });
 
             modelBuilder.Entity("ServiceTitanBusinessObjects.ApplicationUser", b =>
                 {
@@ -31,7 +48,7 @@ namespace ServiceTitanBusinessObjects.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserID"), 1L, 1);
 
-                    b.Property<string>("City")
+                    b.Property<string>("Address")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -477,6 +494,21 @@ namespace ServiceTitanBusinessObjects.Migrations
                             RoleID = 4,
                             RoleName = "User"
                         });
+                });
+
+            modelBuilder.Entity("ApplicationUserService", b =>
+                {
+                    b.HasOne("ServiceTitanBusinessObjects.Service", null)
+                        .WithMany()
+                        .HasForeignKey("ServicesServiceID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ServiceTitanBusinessObjects.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("TechniciansUserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ServiceTitanBusinessObjects.ApplicationUser", b =>
