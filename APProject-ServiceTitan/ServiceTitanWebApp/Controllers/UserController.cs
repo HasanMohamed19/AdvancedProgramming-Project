@@ -136,7 +136,7 @@ namespace ServiceTitanWebApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["RoleId"] = new SelectList(_context.UserRoles, "RoleID", "RoleName", user.RoleId);
+            ViewData["RoleId"] = new SelectList(_context.UserRoles.Where(ur => ur.RoleID != 1), "RoleID", "RoleName", user.RoleId);
 
             var viewModel = new NewUserViewModel
             {
@@ -209,7 +209,7 @@ namespace ServiceTitanWebApp.Controllers
                 TempData["EditSuccess"] = "User Edited Successfully";
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RoleId"] = new SelectList(_context.UserRoles, "RoleID", "RoleName", existingUser.RoleId);
+            ViewData["RoleId"] = new SelectList(_context.UserRoles.Where(ur => ur.RoleID != 1), "RoleID", "RoleName", existingUser.RoleId);
             var viewModel = new NewUserViewModel
             {
                 NewUser = existingUser,
