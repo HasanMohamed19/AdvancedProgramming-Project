@@ -38,6 +38,11 @@
                 <span asp-validation-for="NewUser.Address" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="NewUser.PhoneNumber" class="control-label"></label>
+                <input asp-for="NewUser.PhoneNumber" class="form-control" />
+                <span asp-validation-for="NewUser.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="NewUser.RoleId" class="control-label"></label>
                 <select asp-for="NewUser.RoleId" class="form-control" asp-items="ViewBag.RoleId"></select>
                 <span asp-validation-for="NewUser.RoleId" class="text-danger"></span>
