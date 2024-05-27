@@ -160,13 +160,31 @@ namespace ServiceTitanWebApp.Controllers
                 return NotFound();
             }
 
-            ApplicationUser? existingUser = _context.Users.Find(userVM.NewUser.UserID);
+            ApplicationUser? existingUser = await _context.Users
+                .Include(u => u.Role)
+                .SingleOrDefaultAsync(u => u.UserID == userVM.NewUser.UserID);
             if (existingUser == null) { return NotFound(); }
             existingUser.PhoneNumber = userVM.NewUser.PhoneNumber;
             existingUser.FirstName = userVM.NewUser.FirstName;
             existingUser.LastName = userVM.NewUser.LastName;
             existingUser.City = userVM.NewUser.City;
-            existingUser.RoleId = userVM.NewUser.RoleId;
+            if (existingUser.RoleId != userVM.NewUser.RoleId)
+            {
+                string newRole = _context.UserRoles.Find(userVM.NewUser.RoleId).RoleName;
+                IdentityUser idUser = await _userManager.FindByEmailAsync(existingUser.UserEmail);
+                var userRole = await _userManager.GetRolesAsync(idUser);
+                var removeResult = await _userManager.RemoveFromRoleAsync(idUser, existingUser.Role.RoleName);
+                if (!removeResult.Succeeded)
+                {
+                    return NotFound();
+                }
+                var addResult = await _userManager.AddToRoleAsync(idUser, newRole);
+                if (!addResult.Succeeded)
+                {
+                    return NotFound();
+                }
+                existingUser.RoleId = userVM.NewUser.RoleId;
+            }
             
             var errors = ModelState.Values.SelectMany(v => v.Errors);
             if (ModelState.IsValid)
