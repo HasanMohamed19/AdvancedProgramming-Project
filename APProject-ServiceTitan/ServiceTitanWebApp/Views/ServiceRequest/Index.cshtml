@@ -1,4 +1,6 @@
-@model IEnumerable<ServiceTitanBusinessObjects.ServiceRequest>
+@using ServiceTitanWebApp.ViewModels
+@model ServiceRequestIndexViewModel
+
 
 @{
     ViewData["Title"] = "Index";
@@ -39,87 +41,121 @@
 @* <p>
     <a asp-action="Create">Create New</a>
 </p> *@
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Service)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RequestPrice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RequestDescription)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RequestDateNeeded)
-            </th>
-            @if (!User.IsInRole("User"))
-                {
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-8">
+            <form asp-controller="ServiceRequest" method="get" asp-action="Index">
+                Client Name:
+                <input type="text" name="searchName" asp-for="searchName" />
+
+
+                Status:
+                <select name="searchStatus" asp-for="searchStatus" asp-items="Model.RequestStatuses.Select(s => new SelectListItem{Text = s.Status, Value = s.StatusID.ToString()})">
+                    <option value="">All</option>
+                </select>
+
+                <a asp-controller="ServiceRequest" asp-action="Index" class="btn btn-outline-danger">
+                    Clear
+                </a>
+                <input type="submit" value="Search" class="btn btn-secondary mx-2" />
+            </form>
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
                     <th>
-                        @Html.DisplayNameFor(model => model.Client)
+                        @* @Html.DisplayNameFor(model => model.Service) *@
+                        Service
                     </th>
-                }
-            <th>
-                @Html.DisplayNameFor(model => model.Technician)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Service.ServiceName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RequestPrice) BHD
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RequestDescription)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RequestDateNeeded)
-            </td>
-                @if (!User.IsInRole("User"))
+                    <th>
+                        @* @Html.DisplayNameFor(model => model.RequestPrice) *@
+                        Request Price
+                    </th>
+                    <th>
+                        @* @Html.DisplayNameFor(model => model.RequestDescription) *@
+                        Request Description
+                    </th>
+                    <th>
+                        @* @Html.DisplayNameFor(model => model.RequestDateNeeded) *@
+                        RequestDateNeeded
+                    </th>
+                    @if (!User.IsInRole("User"))
+                    {
+                        <th>
+                            @* @Html.DisplayNameFor(model => model.Client) *@
+                            Client
+                        </th>
+                    }
+                    <th>
+                        @* @Html.DisplayNameFor(model => model.Technician) *@
+                        Technician
+                    </th>
+                    <th>
+                        @* @Html.DisplayNameFor(model => model.Status) *@
+                        Status
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ServiceRequests)
                 {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Client.FullName)
-                    </td>
-                }
-                
-            <td>
-                    @Html.DisplayFor(modelItem => item.Technician.FullName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status.Status)
-            </td>
-                <td>
-                    <a asp-controller="Document" asp-action="Index" asp-route-requestId="@item.RequestID">Documents</a> <span> |</span>
-                    <a asp-controller="Comment" asp-action="Index" asp-route-requestId="@item.RequestID">Comments</a> <span> |</span>
-                    <a asp-action="Details" asp-route-id="@item.RequestID">Details</a> <span> |</span>
-                    @if (item.StatusId != 4 && item.StatusId != 3)
-                    {
-                        // if request complete or cancelled then cannot cancel or edit
-                            <a asp-action="Edit" asp-route-id="@item.RequestID">Edit</a> <span> |</span>
-                        <a asp-action="Cancel" asp-route-id="@item.RequestID">Cancel</a> <span> |</span>
-                    } else
-                    {
-                        if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Service.ServiceName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.RequestPrice) BHD
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.RequestDescription)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.RequestDateNeeded)
+                        </td>
+                        @if (!User.IsInRole("User"))
                         {
-                            // unless user is admin or manager
-                            <a asp-action="Edit" asp-route-id="@item.RequestID">Edit</a> <span> |</span>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Client.FullName)
+                            </td>
                         }
-                    }
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <a asp-action="Delete" asp-route-id="@item.RequestID">Delete</a>
-                    }
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Technician.FullName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Status.Status)
+                        </td>
+                        <td>
+                            <a asp-controller="Document" asp-action="Index" asp-route-requestId="@item.RequestID">Documents</a> <span> |</span>
+                            <a asp-controller="Comment" asp-action="Index" asp-route-requestId="@item.RequestID">Comments</a> <span> |</span>
+                            <a asp-action="Details" asp-route-id="@item.RequestID">Details</a> <span> |</span>
+                            @if (item.StatusId != 4 && item.StatusId != 3)
+                            {
+                                // if request complete or cancelled then cannot cancel or edit
+                                <a asp-action="Edit" asp-route-id="@item.RequestID">Edit</a> <span> |</span>
+                                <a asp-action="Cancel" asp-route-id="@item.RequestID">Cancel</a> <span> |</span>
+                            }
+                            else
+                            {
+                                if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                                {
+                                    // unless user is admin or manager
+                                    <a asp-action="Edit" asp-route-id="@item.RequestID">Edit</a> <span> |</span>
+                                }
+                            }
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Delete" asp-route-id="@item.RequestID">Delete</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
+

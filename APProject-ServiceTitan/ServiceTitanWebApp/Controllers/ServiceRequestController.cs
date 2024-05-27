@@ -26,7 +26,7 @@ namespace ServiceTitanWebApp.Controllers
 
         // GET: ServiceRequest
         [Authorize]
-        public IActionResult Index()
+        public IActionResult Index(string searchName, string searchStatus)
         {
             string loggedInUserEmail = _userManager.GetUserName(User);
             IEnumerable<ServiceRequest> requests = _context.ServiceRequests
@@ -37,15 +37,72 @@ namespace ServiceTitanWebApp.Controllers
             if (User.IsInRole(UserRole.GetRoleName(3)!))
             {
                 requests = requests.Where(s => s.Technician.UserEmail == loggedInUserEmail);
-                return View(requests.ToList());
+
+                // search for client name
+                if (!String.IsNullOrEmpty(searchName))
+                {
+                    requests = requests.Where(r => r.Client.FullName!.Contains(searchName));
+                }
+
+                // search for status
+                if (!String.IsNullOrEmpty(searchStatus))
+                {
+                    requests = requests.Where(r => r.StatusId == Convert.ToInt32(searchStatus));
+                }
+
+                var requestIndexVM = new ServiceRequestIndexViewModel
+                {
+                    ServiceRequests = requests,
+                    RequestStatuses = _context.RequestStatus,
+                };
+
+                return View(requestIndexVM);
             }
             else if (User.IsInRole(UserRole.GetRoleName(4)!))
             {
                 requests = requests.Where(s => s.Client.UserEmail == loggedInUserEmail);
-                return View(requests.ToList());
+
+                // search for client name
+                if (!String.IsNullOrEmpty(searchName))
+                {
+                    requests = requests.Where(r => r.Client.FullName!.Contains(searchName));
+                }
+
+                // search for status
+                if (!String.IsNullOrEmpty(searchStatus))
+                {
+                    requests = requests.Where(r => r.StatusId == Convert.ToInt32(searchStatus));
+                }
+
+                var requestIndexVM = new ServiceRequestIndexViewModel
+                {
+                    ServiceRequests = requests,
+                    RequestStatuses = _context.RequestStatus,
+                };
+
+                return View(requestIndexVM);
             } else if (User.IsInRole(UserRole.GetRoleName(1)!) || User.IsInRole(UserRole.GetRoleName(2)!))
             {
-                return View(requests.ToList());
+
+                // search for client name
+                if (!String.IsNullOrEmpty(searchName))
+                {
+                    requests = requests.Where(r => r.Client.FullName!.Contains(searchName));
+                }
+
+                // search for status
+                if (!String.IsNullOrEmpty(searchStatus))
+                {
+                    requests = requests.Where(r => r.StatusId == Convert.ToInt32(searchStatus));
+                }
+
+                var requestIndexVM = new ServiceRequestIndexViewModel
+                {
+                    ServiceRequests = requests,
+                    RequestStatuses = _context.RequestStatus,
+                };
+
+                return View(requestIndexVM);
             }
             // if none of the roles match, dont return anything
             return View();
