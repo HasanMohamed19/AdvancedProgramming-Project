@@ -1,41 +1,44 @@
-@model IEnumerable<ServiceTitanBusinessObjects.Document>
+@using ServiceTitanWebApp.ViewModels
+@using ServiceTitanBusinessObjects
+@model UploadFilesViewModel
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    Document document = new();
 }
 
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" asp-route-requestId="@Model.ServiceRequestId">Create New</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.DocumentName)
+                @Html.DisplayNameFor(model => document.DocumentName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DocumentUploadDate)
+                @Html.DisplayNameFor(model => document.DocumentDescription)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DocumentType)
+                @Html.DisplayNameFor(model => document.DocumentUploadDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DocumentPath)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User)
+                @Html.DisplayNameFor(model => document.DocumentType)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Documents) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.DocumentName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DocumentDescription)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DocumentUploadDate)
@@ -44,14 +47,9 @@
                 @Html.DisplayFor(modelItem => item.DocumentType)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DocumentPath)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.UserEmail)
-            </td>
-            <td>
                 <a asp-action="Edit" asp-route-id="@item.DocumentID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.DocumentID">Details</a> |
+                <a asp-action="Download" asp-route-id="@item.DocumentID">Download</a> |
                 <a asp-action="Delete" asp-route-id="@item.DocumentID">Delete</a>
             </td>
         </tr>
