@@ -17,11 +17,8 @@ namespace ServiceTitanBusinessObjects
 
         [Required]
         [Column("document_name")]
-        [MaxLength(200)]
+        [MaxLength(100)]
         public string DocumentName { get; set; }
-
-
-        public string? DocumentDescription { get; set; }
 
         [Required]
         [Column("document_upload_date")]
@@ -37,7 +34,5 @@ namespace ServiceTitanBusinessObjects
         public string DocumentPath { get; set; }
         public int? UserId { get; set; }
         public ApplicationUser? User { get; set; }
-        public int? ServiceRequestId { get; set; }
-        public ServiceRequest? Request { get; set; }
     }
 }

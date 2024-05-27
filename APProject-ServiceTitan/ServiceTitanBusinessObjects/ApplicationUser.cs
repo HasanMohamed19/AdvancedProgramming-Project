@@ -29,11 +29,7 @@ namespace ServiceTitanBusinessObjects
 
         [Required]
         [MaxLength(50)]
-        public string? City { get; set; }
-
-        [Required]
-        [MaxLength(12)]
-        public string? PhoneNumber { get; set; }
+        public string? Address { get; set; }
 
         [Required]
         [MaxLength(50)]
@@ -46,7 +42,7 @@ namespace ServiceTitanBusinessObjects
         public Category? Category { get; set; }
 
         public ICollection<ServiceTechnician> ServiceTechnicians { get; } = new HashSet<ServiceTechnician>();
-        //public ICollection<Service> Services { get; } = new HashSet<Service>();
+        public ICollection<Service> Services { get; } = new HashSet<Service>();
 
         public ICollection<ServiceRequest> ClientServiceRequests { get; } = new HashSet<ServiceRequest>();
         public ICollection<ServiceRequest> TechnicianServiceRequests { get;} = new HashSet<ServiceRequest>();

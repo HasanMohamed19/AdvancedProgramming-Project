@@ -22,6 +22,21 @@ namespace ServiceTitanBusinessObjects.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("ApplicationUserService", b =>
+                {
+                    b.Property<int>("ServicesServiceID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TechniciansUserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ServicesServiceID", "TechniciansUserID");
+
+                    b.HasIndex("TechniciansUserID");
+
+                    b.ToTable("ApplicationUserService");
+                });
+
             modelBuilder.Entity("ServiceTitanBusinessObjects.ApplicationUser", b =>
                 {
                     b.Property<int>("UserID")
@@ -31,7 +46,7 @@ namespace ServiceTitanBusinessObjects.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserID"), 1L, 1);
 
-                    b.Property<string>("City")
+                    b.Property<string>("Address")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -45,11 +60,6 @@ namespace ServiceTitanBusinessObjects.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(12)
-                        .HasColumnType("nvarchar(12)");
 
                     b.Property<int?>("RoleId")
                         .HasColumnType("int");
@@ -140,13 +150,10 @@ namespace ServiceTitanBusinessObjects.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DocumentID"), 1L, 1);
 
-                    b.Property<string>("DocumentDescription")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("DocumentName")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("document_name");
 
                     b.Property<string>("DocumentPath")
@@ -164,15 +171,10 @@ namespace ServiceTitanBusinessObjects.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("document_upload_date");
 
-                    b.Property<int?>("ServiceRequestId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("DocumentID");
-
-                    b.HasIndex("ServiceRequestId");
 
                     b.HasIndex("UserId");
 
@@ -479,6 +481,21 @@ namespace ServiceTitanBusinessObjects.Migrations
                         });
                 });
 
+            modelBuilder.Entity("ApplicationUserService", b =>
+                {
+                    b.HasOne("ServiceTitanBusinessObjects.Service", null)
+                        .WithMany()
+                        .HasForeignKey("ServicesServiceID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ServiceTitanBusinessObjects.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("TechniciansUserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ServiceTitanBusinessObjects.ApplicationUser", b =>
                 {
                     b.HasOne("ServiceTitanBusinessObjects.UserRole", "Role")
@@ -515,15 +532,9 @@ namespace ServiceTitanBusinessObjects.Migrations
 
             modelBuilder.Entity("ServiceTitanBusinessObjects.Document", b =>
                 {
-                    b.HasOne("ServiceTitanBusinessObjects.ServiceRequest", "Request")
-                        .WithMany()
-                        .HasForeignKey("ServiceRequestId");
-
                     b.HasOne("ServiceTitanBusinessObjects.ApplicationUser", "User")
                         .WithMany("Documents")
                         .HasForeignKey("UserId");
-
-                    b.Navigation("Request");
 
                     b.Navigation("User");
                 });
