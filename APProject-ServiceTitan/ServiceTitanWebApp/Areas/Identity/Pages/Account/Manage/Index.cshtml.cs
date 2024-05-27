@@ -85,7 +85,7 @@ namespace ServiceTitanWebApp.Areas.Identity.Pages.Account.Manage
             {
                 FirstName = appUser.FirstName,
                 LastName = appUser.LastName,
-                Address = appUser.Address
+                Address = appUser.City
             };
         }
 
@@ -120,7 +120,7 @@ namespace ServiceTitanWebApp.Areas.Identity.Pages.Account.Manage
             ApplicationUser appUser = _context.Users.Single(x => x.UserEmail == user.UserName);
             appUser.FirstName = Input.FirstName;
             appUser.LastName = Input.LastName;
-            appUser.Address = Input.Address;
+            appUser.City = Input.Address;
             _context.Users.Update(appUser);
             _context.SaveChanges();
 
