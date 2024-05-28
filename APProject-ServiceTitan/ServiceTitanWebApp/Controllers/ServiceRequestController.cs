@@ -35,6 +35,7 @@ namespace ServiceTitanWebApp.Controllers
                 .Include(s => s.Service)
                 .Include(s => s.Status)
                 .Include(s => s.Technician);
+            // if this is technician, show only requests for him
             if (User.IsInRole(UserRole.GetRoleName(3)!))
             {
                 requests = requests.Where(s => s.Technician.UserEmail == loggedInUserEmail);
@@ -61,6 +62,7 @@ namespace ServiceTitanWebApp.Controllers
             }
             else if (User.IsInRole(UserRole.GetRoleName(4)!))
             {
+                // if this is User, show only requests for him
                 requests = requests.Where(s => s.Client.UserEmail == loggedInUserEmail);
 
                 // search for client name
@@ -84,7 +86,8 @@ namespace ServiceTitanWebApp.Controllers
                 return View(requestIndexVM);
             } else if (User.IsInRole(UserRole.GetRoleName(1)!) || User.IsInRole(UserRole.GetRoleName(2)!))
             {
-
+                // if this is admin or manager show all
+                // no time to hide from manager
                 // search for client name
                 if (!String.IsNullOrEmpty(searchName))
                 {
@@ -202,12 +205,13 @@ namespace ServiceTitanWebApp.Controllers
             //if (serviceRequest.RequestDateNeeded < DateTime.Now.AddDays(2))
             //    TempData["CreateFailed"] = "Request must be at least 2 days after today.";
 
-
+            
             serviceRequest.StatusId = 1; //pending
             serviceRequest.ClientId = _context.Users.Single(s => s.UserEmail == _userManager.GetUserName(User)).UserID;
             serviceRequest.RequestPrice = service.ServicePrice;
             serviceRequest.ServiceId = service.ServiceID;
 
+            // add if valid
             if (ModelState.IsValid)
             {
                 try
@@ -225,7 +229,7 @@ namespace ServiceTitanWebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-
+            // invalid, refresh page
             ViewData["ServiceName"] = service.ServiceName;
             ViewData["ServicePrice"] = service.ServicePrice;
 
@@ -237,6 +241,7 @@ namespace ServiceTitanWebApp.Controllers
             };
             return View(viewModel);
         }
+        // unused admin functions
         [Authorize(Roles = "Admin")]
         public IActionResult AdminCreate(int? id)
         {
@@ -329,6 +334,7 @@ namespace ServiceTitanWebApp.Controllers
                 return NotFound();
             }
 
+            // make sure manager for different category cant edit this one
             ApplicationUser loggedInUser = _context.Users.Include(u => u.Role).Include(u => u.Category).Single(u => u.UserEmail == User.Identity.Name);
             if (User.IsInRole("Manager") && (loggedInUser.Category == null || (loggedInUser.Category != null && loggedInUser.Category.CategoryID != serviceRequest.Service.CategoryId)))
             {
@@ -381,6 +387,7 @@ namespace ServiceTitanWebApp.Controllers
                 }
             }
 
+            // update if valid
             if (ModelState.IsValid)
             {
                 try
@@ -407,6 +414,8 @@ namespace ServiceTitanWebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            // invalid, refresh
             //ViewData["ClientId"] = new SelectList(_context.Users, "UserID", "FullName", existingRequest.ClientId);
             ViewData["ServiceId"] = new SelectList(_context.Services, "ServiceID", "ServiceName", existingRequest.ServiceId);
             ViewData["StatusId"] = new SelectList(_context.RequestStatus, "StatusID", "Status", existingRequest.StatusId);
