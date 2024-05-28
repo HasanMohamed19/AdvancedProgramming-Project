@@ -7,11 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ServiceTitanBusinessObjects;
+using ServiceTitanWebApp.Helpers;
 using ServiceTitanWebApp.ViewModels;
 
 namespace ServiceTitanWebApp.Controllers
 {
-    public class CategoryController : Controller
+    public class CategoryController : BaseController
     {
         private readonly ServiceTitanDBContext _context;
 
@@ -93,12 +94,12 @@ namespace ServiceTitanWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(NewCategoryViewModel newCategory)
+        public async Task<IActionResult> Create(NewCategoryViewModel newCategory)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(newCategory.Category);
-                _context.SaveChanges();
+                await _context.SaveAsync(User, GetSourceRoute(), null);
                 TempData["CreateSuccess"] = "Category Created Successfully";
                 return RedirectToAction(nameof(Index));
                 //return RedirectToAction("Index");
@@ -146,7 +147,7 @@ namespace ServiceTitanWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, NewCategoryViewModel editCategory)
+        public async Task<IActionResult> Edit(int id, NewCategoryViewModel editCategory)
         {
             if (id != editCategory.Category.CategoryID)
             {
@@ -158,7 +159,7 @@ namespace ServiceTitanWebApp.Controllers
                 try
                 {
                     _context.Update(editCategory.Category);
-                    _context.SaveChangesAsync();
+                    await _context.SaveAsync(User, GetSourceRoute(), null);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -211,7 +212,7 @@ namespace ServiceTitanWebApp.Controllers
         // POST: Category/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Categories == null)
             {
@@ -222,8 +223,8 @@ namespace ServiceTitanWebApp.Controllers
             {
                 _context.Categories.Remove(category);
             }
-            
-            _context.SaveChanges();
+
+            await _context.SaveAsync(User, GetSourceRoute(), null);
             TempData["CreateSuccess"] = "Category Deleted Successfully";
             return RedirectToAction(nameof(Index));
         }

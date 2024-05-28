@@ -72,6 +72,11 @@ namespace ServiceTitanWebApp.Areas.Identity.Pages.Account.Manage
 
             [Required]
             public string City { get; set; }
+
+            [Required]
+            [MinLength(8)]
+            [MaxLength(12)]
+            public string PhoneNumber { get; set; }
         }
 
         private async Task LoadAsync(IdentityUser user)
@@ -85,7 +90,8 @@ namespace ServiceTitanWebApp.Areas.Identity.Pages.Account.Manage
             {
                 FirstName = appUser.FirstName,
                 LastName = appUser.LastName,
-                City = appUser.City
+                City = appUser.City,
+                PhoneNumber = appUser.PhoneNumber
             };
         }
 
@@ -121,6 +127,7 @@ namespace ServiceTitanWebApp.Areas.Identity.Pages.Account.Manage
             appUser.FirstName = Input.FirstName;
             appUser.LastName = Input.LastName;
             appUser.City = Input.City;
+            appUser.PhoneNumber = Input.PhoneNumber;
             _context.Users.Update(appUser);
             _context.SaveChanges();
 

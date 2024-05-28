@@ -1,4 +1,5 @@
-@model ServiceTitanBusinessObjects.ApplicationUser
+@using ServiceTitanWebApp.ViewModels
+@model NewUserViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -9,37 +10,149 @@
 
 <h4>User</h4>
 <hr />
+<form asp-action="Create">
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="UserEmail" class="control-label"></label>
-                <input asp-for="UserEmail" class="form-control" />
-                <span asp-validation-for="UserEmail" class="text-danger"></span>
+    
+        <div class="col-md-4">
+        
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <fieldset id="common-fields">
+                    <div id="user-email" class="form-group">
+                        <label asp-for="NewUser.UserEmail" class="control-label"></label>
+                        <input asp-for="NewUser.UserEmail" class="form-control" />
+                        <span asp-validation-for="NewUser.UserEmail" class="text-danger"></span>
+                    </div>
+                    <div id="first-name" class="form-group">
+                        <label asp-for="NewUser.FirstName" class="control-label"></label>
+                        <input asp-for="NewUser.FirstName" class="form-control" />
+                        <span asp-validation-for="NewUser.FirstName" class="text-danger"></span>
+                    </div>
+                    <div id="last-name" class="form-group">
+                        <label asp-for="NewUser.LastName" class="control-label"></label>
+                        <input asp-for="NewUser.LastName" class="form-control" />
+                        <span asp-validation-for="NewUser.LastName" class="text-danger"></span>
+                    </div>
+                    <div id="address" class="form-group">
+                    <label asp-for="NewUser.City" class="control-label"></label>
+                    <input asp-for="NewUser.City" class="form-control" />
+                    <span asp-validation-for="NewUser.City" class="text-danger"></span>
+                    </div>
+                    <div id="phone" class="form-group">
+                        <label asp-for="NewUser.PhoneNumber" class="control-label"></label>
+                        <input asp-for="NewUser.PhoneNumber" class="form-control" />
+                        <span asp-validation-for="NewUser.PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="NewUser.RoleId" class="control-label"></label>
+                        <select id="role-combo" asp-for="NewUser.RoleId" class ="form-control" asp-items="ViewBag.RoleId"></select>
+                    </div>
+                </fieldset>
+
+            <div id="manager-category-parent" class="form-group">
+                Assign Category: <input type="checkbox" id="manager-category" checked />
             </div>
-            <div class="form-group">
-                <label asp-for="UserEmail" class="control-label"></label>
-                <input asp-for="UserEmail" class="form-control" />
-                <span asp-validation-for="UserEmail" class="text-danger"></span>
+            <div id="tech-service-parent" class="form-group d-none">
+                Assign Services: <input type="checkbox" id="tech-service" checked />
             </div>
-            <div class="form-group">
-                <label asp-for="UserEmail" class="control-label"></label>
-                <input asp-for="UserEmail" class="form-control" />
-                <span asp-validation-for="UserEmail" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RoleId" class="control-label"></label>
-                <select asp-for="RoleId" class ="form-control" asp-items="ViewBag.RoleId"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+                
+        
     </div>
+
+        <div class="col-md-4">
+            
+            <fieldset id="manager-fields" class="">
+
+                <div class="form-group">
+                    <label asp-for="CategoryId" class="control-label"></label>
+                    <select id="role-combo" asp-for="CategoryId" class="form-control" asp-items="@Model.Categories
+                            .Where(c => c.CategoryManagerId == 0 || c.CategoryManagerId == null)
+                            .Select(c => new SelectListItem{Text=c.CategoryName, Value=c.CategoryID.ToString()})">
+                    </select>
+                </div>
+
+            </fieldset>
+
+            
+
+            <fieldset id="technicans-fields" class="d-none">
+
+                <div class="form-group">
+                    <label asp-for="AssignedServicesIds" class="control-label"></label>
+                    <select id="service-combo" asp-for="AssignedServicesIds" class="form-control" asp-items="@Model.Services">
+                    </select>
+                    <input type="button" value="Deselect All" class="btn btn-secondary" id="clearServicesList" />
+                </div>
+
+            </fieldset>
+        </div>
+        @* the button should be at the end *@
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+    
 </div>
+</form>
 
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
 
+@section Scripts {
+    <script>
+
+        const MANAGER = 2;
+        const TECH = 3;
+        const USER = 4;
+
+        $("#manager-category").click(function() {
+            if ($(this).is(":checked")) {
+                $("#manager-fields").removeClass("d-none");
+            } else {
+                $("#manager-fields").addClass("d-none");
+            }
+        })
+
+        $("#tech-service").click(function () {
+            if ($(this).is(":checked")) {
+                $("#technicans-fields").removeClass("d-none");
+            } else {
+                $("#technicans-fields").addClass("d-none");
+                $('#clearServicesList').click();
+            }
+        })
+
+        $("#role-combo").change(function () {
+            const selectedRoleId = $(this).val();
+
+            switch (parseInt(selectedRoleId)) {
+
+                case 2:
+                    $("#manager-fields").removeClass("d-none");
+                    $("#manager-category-parent").removeClass("d-none");
+                    $("#tech-service-parent").addClass("d-none");
+                    $("#technicans-fields").addClass("d-none");
+                    break;
+
+                case 3:
+                    $("#technicans-fields").removeClass("d-none");
+                    $("#manager-fields").addClass("d-none");
+                    $("#manager-category-parent").addClass("d-none");
+                    $("#tech-service-parent").removeClass("d-none");
+                    break;
+
+                default:
+                    $("#manager-fields").addClass("d-none");
+                    $("#manager-category-parent").addClass("d-none");
+                    $("#tech-service-parent").addClass("d-none");
+                    $("#technicans-fields").addClass("d-none");
+                    break;
+
+            }
+        })
+        $('#clearServicesList').click(function () {
+            $('#service-combo option:selected').each(function () {
+                $(this).prop('selected', false);
+            })
+        });
+    </script>
+}

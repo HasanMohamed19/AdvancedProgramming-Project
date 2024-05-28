@@ -1,4 +1,5 @@
-@model ServiceTitanBusinessObjects.Service
+@using ServiceTitanWebApp.ViewModels
+@model NewServiceViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -13,27 +14,49 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ServiceID" />
+            <input type="hidden" asp-for="Service.ServiceID" />
             <div class="form-group">
-                <label asp-for="ServiceName" class="control-label"></label>
-                <input asp-for="ServiceName" class="form-control" />
-                <span asp-validation-for="ServiceName" class="text-danger"></span>
+                <label asp-for="Service.ServiceName" class="control-label"></label>
+                <input asp-for="Service.ServiceName" class="form-control" />
+                <span asp-validation-for="Service.ServiceName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ServiceDescription" class="control-label"></label>
-                <input asp-for="ServiceDescription" class="form-control" />
-                <span asp-validation-for="ServiceDescription" class="text-danger"></span>
+                <label asp-for="Service.ServiceDescription" class="control-label"></label>
+                <input asp-for="Service.ServiceDescription" class="form-control" />
+                <span asp-validation-for="Service.ServiceDescription" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ServicePrice" class="control-label"></label>
-                <input asp-for="ServicePrice" class="form-control" />
-                <span asp-validation-for="ServicePrice" class="text-danger"></span>
+                <label asp-for="Service.ServicePrice" class="control-label"></label>
+                <input asp-for="Service.ServicePrice" class="form-control" />
+                <span asp-validation-for="Service.ServicePrice" class="text-danger"></span>
             </div>
+            @{
+                if (User.IsInRole("Admin"))
+                {
+                            <div class="form-group">
+                                <label asp-for="Service.CategoryId" class="control-label"></label>
+                                <select asp-for="Service.CategoryId" class="form-control" asp-items="@Model.Categories.Select(s => new SelectListItem {Text=s.CategoryName, Value=s.CategoryID.ToString()})">
+                                    <option value="0" disabled selected>Select Category</option>
+                                </select>
+                            </div>
+                }
+                else if (User.IsInRole("Manager"))
+                {
+                            <div class="form-group">
+                                <label asp-for="Service.CategoryId" class="control-label"></label>
+                                <input type="text" disabled asp-for="Service.CategoryId" class="form-control" value="@Model.Service.Category" />
+                            </div>
+                }
+            }
+
             <div class="form-group">
-                <label asp-for="CategoryId" class="control-label"></label>
-                <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
-                <span asp-validation-for="CategoryId" class="text-danger"></span>
+                <label asp-for="TechniciansId" class="control-label"></label>
+                <select id="techniciansList" asp-for="TechniciansId" class="form-control" asp-items="@Model.Technicians">
+                    <option value="0" disabled selected>Select Technicans</option>
+                </select>
+                <input type="button" value="Deselect All" class="btn btn-secondary" id="clearList"/>
             </div>
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -44,4 +67,13 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+@section Scripts {
+    <script>
+        $('#clearList').click(function() {
+            $('#techniciansList option:selected').each(function () {
+                $(this).prop('selected', false);
+            })
+        });
+    </script>
 
+}

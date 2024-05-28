@@ -7,12 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ServiceTitanBusinessObjects;
+using ServiceTitanWebApp.Helpers;
 using ServiceTitanWebApp.ViewModels;
 
 namespace ServiceTitanWebApp.Controllers
 {
     [Authorize]
-    public class CommentController : Controller
+    public class CommentController : BaseController
     {
         private readonly ServiceTitanDBContext _context;
 
@@ -78,7 +79,7 @@ namespace ServiceTitanWebApp.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(comment);
-                await _context.SaveChangesAsync();
+                await _context.SaveAsync(User,GetSourceRoute(), null);
                 TempData["CreateSuccess"] = "Comment Created Successfully";
                 return RedirectToAction(nameof(Index), new { requestId = comment.ServiceRequestId });
             }
@@ -140,7 +141,7 @@ namespace ServiceTitanWebApp.Controllers
                 try
                 {
                     _context.Update(existingComment);
-                    await _context.SaveChangesAsync();
+                    await _context.SaveAsync(User, GetSourceRoute(), null);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -206,8 +207,7 @@ namespace ServiceTitanWebApp.Controllers
                     return Forbid();
                 _context.Comments.Remove(comment);
             }
-            
-            await _context.SaveChangesAsync();
+            await _context.SaveAsync(User, GetSourceRoute(), null);
             TempData["DeleteSuccess"] = "Comment Deleted Successfully";
             return RedirectToAction(nameof(Index), new { requestId = comment.ServiceRequestId });
         }
