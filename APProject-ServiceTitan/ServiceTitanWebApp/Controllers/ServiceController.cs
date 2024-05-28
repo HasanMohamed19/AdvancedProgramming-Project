@@ -30,12 +30,20 @@ namespace ServiceTitanWebApp.Controllers
 
             IEnumerable<Service> services;
 
-            services = _context.Services.Include(c => c.Category).ThenInclude(m => m.CategoryManager);
+            if (!String.IsNullOrEmpty(searchName))
+                searchName = searchName.ToLower();
+
+            services = _context.Services
+                .Include(s => s.ServiceTechnicians)
+                .Include(c => c.Category)
+                .ThenInclude(m => m.CategoryManager);
 
             // search for service name
             if (!String.IsNullOrEmpty(searchName))
             {
-                services = services.Where(s => s.ServiceName!.Contains(searchName));
+                services = services.Where(s => s.ServiceName!.ToLower().Contains(searchName)
+                        || s.ServiceDescription.ToLower().Contains(searchName)
+                        || s.Category.CategoryName.ToLower().Contains(searchName));
             }
 
             // filter by category
@@ -78,7 +86,20 @@ namespace ServiceTitanWebApp.Controllers
                 return NotFound();
             }
 
-            return View(service);
+            var servicesTechs = _context.ServiceTechnicians.Where(st => st.ServicesId == service.ServiceID).ToList();
+            var technicians = new List<ApplicationUser>();
+            foreach (var st in servicesTechs)
+            {
+                technicians.Add(_context.Users.Single(u => u.UserID == st.TechniciansId));
+            }
+
+            var detailsVM = new ServiceDetailsViewModel
+            {
+                Service = service,
+                Technicians = technicians
+            };
+
+            return View(detailsVM);
         }
 
         [Authorize(Roles = "Admin,Manager")]
@@ -320,15 +341,29 @@ namespace ServiceTitanWebApp.Controllers
                 return NotFound();
             }
 
-            var service = await _context.Services
+            var service = _context.Services
                 .Include(s => s.Category)
-                .FirstOrDefaultAsync(m => m.ServiceID == id);
+                .ThenInclude(m => m.CategoryManager)
+                .FirstOrDefault(m => m.ServiceID == id);
             if (service == null)
             {
                 return NotFound();
             }
 
-            return View(service);
+            var servicesTechs = _context.ServiceTechnicians.Where(st => st.ServicesId == service.ServiceID).ToList();
+            var technicians = new List<ApplicationUser>();
+            foreach (var st in servicesTechs)
+            {
+                technicians.Add(_context.Users.Single(u => u.UserID == st.TechniciansId));
+            }
+
+            var detailsVM = new ServiceDetailsViewModel
+            {
+                Service = service,
+                Technicians = technicians
+            };
+
+            return View(detailsVM);
         }
 
         [Authorize(Roles = "Admin,Manager")]

@@ -56,8 +56,8 @@
     </dl>
 </div>
 <div>
-    <a asp-controller="Document" asp-action="Index" asp-route-requestId="@Model?.RequestID">Documents</a> |
-    <a asp-controller="Comment" asp-action="Index" asp-route-requestId="@Model?.RequestID">Comments</a> |
-    <a asp-action="Edit" asp-route-id="@Model?.RequestID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="Document" asp-action="Index" asp-route-requestId="@Model?.RequestID" class="btn btn-primary">Documents</a>
+    <a asp-controller="Comment" asp-action="Index" asp-route-requestId="@Model?.RequestID" class="btn btn-primary">Comments</a>
+    <a asp-action="Edit" asp-route-id="@Model?.RequestID" class="btn btn-primary">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </div>
