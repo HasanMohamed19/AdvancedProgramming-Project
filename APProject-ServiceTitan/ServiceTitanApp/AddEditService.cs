@@ -69,7 +69,7 @@ namespace ServiceTitanApp
             if (service != null)
             {
                 selectedTechnicians = technicans.Where(u => u.ServiceTechnicians
-                .Select(s => s.ServicesId == service.ServiceID).Any());
+                .Any(s => s.ServicesId == service.ServiceID));
             }
 
             foreach (ApplicationUser user in technicansToShow)
@@ -107,7 +107,19 @@ namespace ServiceTitanApp
                 service.ServiceDescription = txtDescription.Text;
                 service.Category = (Category)comboCategory.SelectedItem;
 
-                for (int i=0; i< chklistTechnicians.Items.Count; i++)
+
+                if (service.ServiceID > 0)
+                {
+                    context.Services.Update(service);
+                }
+                else
+                {
+                    context.Services.Add(service);
+                    // must save right here to get the ID for adding relationships below
+                    context.SaveChanges();
+                }
+
+                for (int i = 0; i < chklistTechnicians.Items.Count; i++)
                 {
                     ApplicationUser tech = (ApplicationUser)chklistTechnicians.Items[i];
                     bool relationshipExists = context.ServiceTechnicians
@@ -121,24 +133,14 @@ namespace ServiceTitanApp
                         serviceTechnician.TechniciansId = tech.UserID;
                         serviceTechnician.ServicesId = service.ServiceID;
                         context.ServiceTechnicians.Add(serviceTechnician);
-                    } else if (!chklistTechnicians.GetItemChecked(i) && relationshipExists)
+                    }
+                    else if (!chklistTechnicians.GetItemChecked(i) && relationshipExists)
                     {
                         ServiceTechnician serviceTechnician = context.ServiceTechnicians
                             .Single(x => x.TechniciansId == tech.UserID && x.ServicesId == service.ServiceID);
                         context.ServiceTechnicians.Remove(serviceTechnician);
                     }
                 }
-
-                if (service.ServiceID > 0)
-                {
-                    context.Services.Update(service);
-                }
-                else
-                {
-                    context.Services.Add(service);
-                }
-
-
 
                 //foreach (User tech in chklistTechnicians.Items)
                 //{
@@ -167,9 +169,9 @@ namespace ServiceTitanApp
                 //    }
                 //}
 
-
                 string source = Helper.GetLogSource(this);
-                context.Save(Global.User, source, "Add/Edited Service.");
+                context.Save(Global.User, source, "Added/Edited Service.");
+
                 this.DialogResult = DialogResult.OK;
                 this.Close();
 
