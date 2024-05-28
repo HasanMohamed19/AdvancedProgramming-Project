@@ -1,4 +1,5 @@
 ﻿#nullable disable
+using Microsoft.AspNetCore.Mvc.Rendering;
 using ServiceTitanBusinessObjects;
 
 namespace ServiceTitanWebApp.ViewModels
@@ -13,8 +14,8 @@ namespace ServiceTitanWebApp.ViewModels
         
 
         public IEnumerable<Category> Categories { get; set; }
-        public IEnumerable<Service> Services { get; set; }
 
+        public MultiSelectList Services { get; set; }
 
     }
 }

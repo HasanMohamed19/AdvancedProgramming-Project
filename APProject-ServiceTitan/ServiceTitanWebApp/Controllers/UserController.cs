@@ -67,7 +67,7 @@ namespace ServiceTitanWebApp.Controllers
             {
                 NewUser = new ApplicationUser(),
                 Categories = _context.Categories,
-                Services = _context.Services,
+                Services = new MultiSelectList(_context.Services, "ServiceID", "ServiceName", null),
                 AssignedServicesIds = new List<int>()
             };
             return View(viewModel);
@@ -92,6 +92,8 @@ namespace ServiceTitanWebApp.Controllers
                 await _emailStore.SetEmailAsync(user, userVM.NewUser.UserEmail, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, "Test@123");
 
+                userVM.AssignedServicesIds ??= new List<int>();
+
                 if (userVM.NewUser.RoleId == 3)
                 {
                     ServiceTechnician st = new ServiceTechnician();
@@ -106,19 +108,19 @@ namespace ServiceTitanWebApp.Controllers
                 TempData["CreateSuccess"] = "User Added Successfully";
 
                 return RedirectToAction(nameof(Index));
-            } else
-            {
-                var viewModel = new NewUserViewModel
-                {
-                    NewUser = userVM.NewUser,
-                    Categories = _context.Categories,
-                    Services = _context.Services,
-                    CategoryId = userVM.CategoryId,
-                    AssignedServicesIds = userVM.AssignedServicesIds
-                };
-                ViewData["RoleId"] = new SelectList(_context.UserRoles.Where(ur => ur.RoleID != 1), "RoleID", "RoleName", userVM.NewUser.RoleId);
-                return View(viewModel);
             }
+            var viewModel = new NewUserViewModel
+            {
+                NewUser = userVM.NewUser,
+                Categories = _context.Categories,
+                Services = new MultiSelectList(_context.Services, "ServiceID", "ServiceName", null),
+                CategoryId = userVM.CategoryId,
+                AssignedServicesIds = userVM.AssignedServicesIds
+            };
+            ViewData["RoleId"] = new SelectList(_context.UserRoles.Where(ur => ur.RoleID != 1), "RoleID", "RoleName", userVM.NewUser.RoleId);
+            return View(viewModel);
+
+
             //ViewData["RoleId"] = new SelectList(_context.UserRoles, "RoleID", "RoleName", user.RoleId);
             //return View(user);
         }
@@ -138,11 +140,18 @@ namespace ServiceTitanWebApp.Controllers
             }
             ViewData["RoleId"] = new SelectList(_context.UserRoles.Where(ur => ur.RoleID != 1), "RoleID", "RoleName", user.RoleId);
 
+            var selectedServices = _context.ServiceTechnicians.Where(u => u.TechniciansId == user.UserID);
+            List<int> serviceIds = new List<int>();
+            foreach (var st in selectedServices)
+            {
+                serviceIds.Add(st.ServicesId);
+            }
+
             var viewModel = new NewUserViewModel
             {
                 NewUser = user,
                 Categories = _context.Categories,
-                Services = _context.Services,
+                Services = new MultiSelectList(_context.Services, "ServiceID", "ServiceName", serviceIds),
             };
 
             return View(viewModel);
@@ -191,7 +200,35 @@ namespace ServiceTitanWebApp.Controllers
             {
                 try
                 {
-                    
+                    // loop through all technicians in the db and check which 
+                    // have been modified for this service
+                    var services = _context.Services.ToList();
+                    for (int i = 0; i < services.Count(); i++)
+                    {
+                        Service service = services[i];
+                        bool relationshipExists = _context.ServiceTechnicians
+                            .Any(st => st.TechniciansId == existingUser.UserID
+                            && st.ServicesId == service.ServiceID);
+
+                        userVM.AssignedServicesIds ??= new List<int>();
+
+                        if (!relationshipExists && userVM.AssignedServicesIds.Any(t => t == service.ServiceID))
+                        {
+                            // add if not already selected
+                            _context.ServiceTechnicians.Add(new ServiceTechnician
+                            {
+                                TechniciansId = existingUser.UserID,
+                                ServicesId = service.ServiceID
+                            });
+                        }
+                        else if (relationshipExists && !userVM.AssignedServicesIds.Any(t => t == service.ServiceID))
+                        {
+                            // remove if deselected
+                            _context.ServiceTechnicians.Remove(_context.ServiceTechnicians
+                                .Single(st => st.TechniciansId == existingUser.UserID && st.ServicesId == service.ServiceID)
+                                );
+                        }
+                    }
                     _context.Update(existingUser);
                     await _context.SaveChangesAsync();
                 }
@@ -210,12 +247,18 @@ namespace ServiceTitanWebApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["RoleId"] = new SelectList(_context.UserRoles.Where(ur => ur.RoleID != 1), "RoleID", "RoleName", existingUser.RoleId);
+            var selectedServices = _context.ServiceTechnicians.Where(u => u.TechniciansId == existingUser.UserID);
+            List<int> serviceIds = new List<int>();
+            foreach (var st in selectedServices)
+            {
+                serviceIds.Add(st.ServicesId);
+            }
+
             var viewModel = new NewUserViewModel
             {
                 NewUser = existingUser,
                 Categories = _context.Categories,
-                Services = _context.Services,
-                
+                Services = new MultiSelectList(_context.Services, "ServiceID", "ServiceName", serviceIds),
             };
             return View(viewModel);
         }

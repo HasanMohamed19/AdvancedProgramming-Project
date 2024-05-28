@@ -78,9 +78,9 @@
 
                 <div class="form-group">
                     <label asp-for="AssignedServicesIds" class="control-label"></label>
-                    <select id="service-combo" asp-for="AssignedServicesIds" class="form-control" asp-items="@Model.Services.Select(
-                                s => new SelectListItem{Text=s.ServiceName, Value=s.ServiceID.ToString()})">
+                    <select id="service-combo" asp-for="AssignedServicesIds" class="form-control" asp-items="@Model.Services">
                     </select>
+                    <input type="button" value="Deselect All" class="btn btn-secondary" id="clearServicesList" />
                 </div>
 
             </fieldset>
@@ -148,5 +148,10 @@
 
             }
         })
+        $('#clearList').click(function() {
+            $('#techniciansList option:selected').each(function () {
+                $(this).prop('selected', false);
+            })
+        });
     </script>
 }
