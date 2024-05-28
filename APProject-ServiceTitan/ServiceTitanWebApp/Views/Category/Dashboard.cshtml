@@ -23,7 +23,7 @@
             <img src="/Images/topService.png" />
         </div>
     </div>
-    
+
     <div class="col-md-6">
         <div class=" border border-1 text-center">
             <h4>Pending Requests: @ViewData["pendingRequests"]</h4>
@@ -38,7 +38,6 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            console.log("ajhax called");
             $.ajax({
                 type: 'GET',
                 dataType: "json",
