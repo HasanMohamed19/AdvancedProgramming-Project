@@ -54,11 +54,11 @@
             tblSide.RowStyles.Add(new RowStyle(SizeType.Percent, 26.0440865F));
             tblSide.Size = new Size(250, 500);
             tblSide.TabIndex = 0;
+            tblSide.Paint += tblSide_Paint;
             // 
             // btnManageCategories
             // 
             btnManageCategories.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            btnManageCategories.Enabled = false;
             btnManageCategories.Location = new Point(3, 141);
             btnManageCategories.Name = "btnManageCategories";
             btnManageCategories.Size = new Size(244, 57);

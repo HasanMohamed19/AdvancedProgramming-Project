@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace ServiceTitanApp
 {
@@ -17,6 +16,7 @@ namespace ServiceTitanApp
         private BaseForm parentForm;
         private ServiceTitanDBContext context;
         private Service service;
+
         public ViewRequests(BaseForm parent)
         {
             InitializeComponent();
@@ -35,27 +35,27 @@ namespace ServiceTitanApp
 
         private void ViewRequests_Load(object sender, EventArgs e)
         {
-            // load category combobox
+            // Load category combobox
             comboCategory.DataSource = context.Categories.ToList();
             comboCategory.DisplayMember = "CategoryName";
             comboCategory.ValueMember = "CategoryId";
 
-            // load client combobox
+            // Load client combobox
             comboClient.DataSource = context.Users.Where(u => u.RoleId == 4).ToList();
             comboClient.DisplayMember = "UserName";
             comboClient.ValueMember = "UserID";
 
-            // load service combobox
+            // Load service combobox
             comboService.DataSource = context.Services.ToList();
             comboService.DisplayMember = "ServiceName";
             comboService.ValueMember = "ServiceID";
 
-            // load technicans combobox
+            // Load technicians combobox
             comboTechnician.DataSource = context.Users.Where(u => u.RoleId == 3).ToList();
             comboTechnician.DisplayMember = "UserName";
             comboTechnician.ValueMember = "UserID";
 
-            // if viewing for a specific service set the selected items in comboboxes
+            // If viewing for a specific service, set the selected items in comboboxes
             if (service.ServiceID > 0)
             {
                 comboCategory.SelectedValue = this.service.CategoryId;
@@ -64,8 +64,39 @@ namespace ServiceTitanApp
                 comboCategory.Enabled = false;
             }
 
-            RefreshRequestsDGV();
+            // Customize DataGridView appearance
+            CustomizeDataGridView();
 
+            RefreshRequestsDGV();
+        }
+
+        private void CustomizeDataGridView()
+        {
+            // Set grid styles
+            dgvRequests.BorderStyle = BorderStyle.None;
+            dgvRequests.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(238, 239, 249);
+            dgvRequests.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dgvRequests.DefaultCellStyle.SelectionBackColor = Color.LightSkyBlue; // Calming blue color
+            dgvRequests.DefaultCellStyle.SelectionForeColor = Color.Black; // Black for better contrast
+            dgvRequests.BackgroundColor = Color.White;
+
+            dgvRequests.EnableHeadersVisualStyles = false;
+            dgvRequests.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dgvRequests.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(65, 105, 225); // Brighter color
+            dgvRequests.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
+            dgvRequests.ColumnHeadersDefaultCellStyle.Font = new Font("Microsoft Sans Serif", 12.0F, FontStyle.Bold); // Large text for headers
+
+            // Make the rest of the text smaller
+            dgvRequests.DefaultCellStyle.Font = new Font("Microsoft Sans Serif", 8.0F);
+
+            // Set row height to add more space between lines
+            dgvRequests.RowTemplate.Height = 40;
+
+            // Auto-resize columns to fit content
+            dgvRequests.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+            // Remove row header arrow
+            dgvRequests.RowHeadersVisible = false;
         }
 
         private void RefreshRequestsDGV()
@@ -85,7 +116,7 @@ namespace ServiceTitanApp
             }
             else if (comboService.SelectedValue != null)
             {
-                requestsToShow = requestsToShow.Where(request => request.ServiceId ==  Convert.ToInt32(comboService.SelectedValue));
+                requestsToShow = requestsToShow.Where(request => request.ServiceId == Convert.ToInt32(comboService.SelectedValue));
             }
             else if (comboTechnician.SelectedValue != null)
             {
@@ -93,7 +124,7 @@ namespace ServiceTitanApp
             }
             else if (comboClient.SelectedValue != null)
             {
-                requestsToShow = requestsToShow.Where(request => request.ClientId ==  Convert.ToInt32(comboClient.SelectedValue));
+                requestsToShow = requestsToShow.Where(request => request.ClientId == Convert.ToInt32(comboClient.SelectedValue));
             }
 
             dgvRequests.DataSource = requestsToShow.Select(request => new
@@ -133,6 +164,11 @@ namespace ServiceTitanApp
             comboTechnician.SelectedItem = null;
             comboService.SelectedItem = null;
             RefreshRequestsDGV();
+        }
+
+        private void dgvRequests_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

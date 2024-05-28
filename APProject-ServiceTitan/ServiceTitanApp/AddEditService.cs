@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -33,12 +34,18 @@ namespace ServiceTitanApp
 
         private void AddEditService_Load(object sender, EventArgs e)
         {
-            // change this later placeholder
-            comboCategory.DataSource = context.Categories.ToList();
             comboCategory.DisplayMember = "CategoryName";
             comboCategory.ValueMember = "CategoryID";
-
-            comboCategory.SelectedItem = comboCategory.Items[0];
+            if (Global.RoleName.Equals("Admin"))
+            {
+                comboCategory.DataSource = context.Categories.ToList();
+                comboCategory.SelectedItem = comboCategory.Items[0];
+            } else if (Global.RoleName.Equals("Manager"))
+            {
+                comboCategory.DataSource = context.Categories.Where(c => c.CategoryManagerId == Global.LoggedInUserId).ToList();
+                comboCategory.Enabled = false;
+                comboCategory.SelectedItem = comboCategory.Items[0];
+            }
 
             // if edit
             if (service.ServiceID > 0)
@@ -49,6 +56,7 @@ namespace ServiceTitanApp
                 txtPrice.Text = service.ServicePrice.ToString("0.000");
                 txtDescription.Text = service.ServiceDescription;
             }
+
             PopulateTechnicans();
         }
 
@@ -61,7 +69,7 @@ namespace ServiceTitanApp
             if (service != null)
             {
                 selectedTechnicians = technicans.Where(u => u.ServiceTechnicians
-                .Select(s => s.ServicesId == service.ServiceID).Any());
+                .Any(s => s.ServicesId == service.ServiceID));
             }
 
             foreach (ApplicationUser user in technicansToShow)
@@ -93,13 +101,25 @@ namespace ServiceTitanApp
             {
 
                 //MessageBox.Show("Database Service has technicians: "+dbService.Technicians.Count().ToString());
-
+                ValidateService();
                 service.ServiceName = txtName.Text;
                 service.ServicePrice = Convert.ToDecimal(txtPrice.Text);
                 service.ServiceDescription = txtDescription.Text;
                 service.Category = (Category)comboCategory.SelectedItem;
 
-                for (int i=0; i< chklistTechnicians.Items.Count; i++)
+
+                if (service.ServiceID > 0)
+                {
+                    context.Services.Update(service);
+                }
+                else
+                {
+                    context.Services.Add(service);
+                    // must save right here to get the ID for adding relationships below
+                    context.SaveChanges();
+                }
+
+                for (int i = 0; i < chklistTechnicians.Items.Count; i++)
                 {
                     ApplicationUser tech = (ApplicationUser)chklistTechnicians.Items[i];
                     bool relationshipExists = context.ServiceTechnicians
@@ -113,24 +133,14 @@ namespace ServiceTitanApp
                         serviceTechnician.TechniciansId = tech.UserID;
                         serviceTechnician.ServicesId = service.ServiceID;
                         context.ServiceTechnicians.Add(serviceTechnician);
-                    } else if (!chklistTechnicians.GetItemChecked(i) && relationshipExists)
+                    }
+                    else if (!chklistTechnicians.GetItemChecked(i) && relationshipExists)
                     {
                         ServiceTechnician serviceTechnician = context.ServiceTechnicians
                             .Single(x => x.TechniciansId == tech.UserID && x.ServicesId == service.ServiceID);
                         context.ServiceTechnicians.Remove(serviceTechnician);
                     }
                 }
-
-                if (service.ServiceID > 0)
-                {
-                    context.Services.Update(service);
-                }
-                else
-                {
-                    context.Services.Add(service);
-                }
-
-                
 
                 //foreach (User tech in chklistTechnicians.Items)
                 //{
@@ -159,15 +169,24 @@ namespace ServiceTitanApp
                 //    }
                 //}
 
+                string source = Helper.GetLogSource(this);
+                context.Save(Global.User, source, "Added/Edited Service.");
 
-
-                context.SaveChanges();
                 this.DialogResult = DialogResult.OK;
                 this.Close();
 
             }
             catch (Exception ex)
             {
+                
+                if (ex is FormatException)
+                {
+                    MessageBox.Show("Price can be just numbers.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                string source = Helper.GetLogSource(this);
+                context.LogException(ex, Global.User, source);
                 if (ex.InnerException != null)
                     MessageBox.Show(ex.InnerException.ToString());
                 else MessageBox.Show(ex.ToString());
@@ -180,6 +199,34 @@ namespace ServiceTitanApp
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
+        }
+
+        private void ValidateService()
+        {
+            foreach (Control ctl in Controls)
+            {
+                if (ctl.HasChildren)
+                {
+                    foreach(Control ctl2 in ctl.Controls)
+                    {
+                        if (ctl2 is TextBox)
+                        {
+                            if (ctl2.Name == txtPrice.Name)
+                            {
+                                if (ctl2.Text == null)
+                                {
+                                    MessageBox.Show("price cannot be empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return;
+                                }
+                            } else if (ctl2.Name == txtName.Text && (ctl.Text.Length <= 0))
+                            {
+                                MessageBox.Show("name cannot be empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

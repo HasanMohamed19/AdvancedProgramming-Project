@@ -1,4 +1,5 @@
-﻿using ServiceTitanBusinessObjects;
+﻿using Microsoft.EntityFrameworkCore;
+using ServiceTitanBusinessObjects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,24 +17,63 @@ namespace ServiceTitanApp
     {
         private BaseForm parentForm;
         private ServiceTitanDBContext context;
+
         public ManageCategories(BaseForm parent)
         {
             InitializeComponent();
             this.parentForm = parent;
             this.context = new ServiceTitanDBContext();
+
+            if (Global.RoleName.Equals("Manager"))
+            {
+                btnAddCategory.Enabled = false;
+                btnEditCategory.Enabled = false;
+                btnDelete.Enabled = false;
+            }
         }
 
         private void ManageCategories_Load(object sender, EventArgs e)
         {
             comboManager.DataSource = context.Users.Where(user => user.RoleId == 2).ToList();
-            comboManager.DisplayMember = "UserName";
+            comboManager.DisplayMember = "FullName";
             comboManager.ValueMember = "UserId";
-            // don't select a category once loaded
             comboManager.SelectedItem = null;
+
+            // Customize DataGridView appearance
+            CustomizeDataGridView();
 
             RefreshCategoriesDGV();
         }
 
+
+        private void CustomizeDataGridView()
+        {
+            // Set grid styles
+            dgvCategories.BorderStyle = BorderStyle.None;
+            dgvCategories.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(238, 239, 249);
+            dgvCategories.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dgvCategories.DefaultCellStyle.SelectionBackColor = Color.LightSkyBlue; // Calming blue color
+            dgvCategories.DefaultCellStyle.SelectionForeColor = Color.Black; // Black for better contrast
+            dgvCategories.BackgroundColor = Color.White;
+
+            dgvCategories.EnableHeadersVisualStyles = false;
+            dgvCategories.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dgvCategories.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(65, 105, 225);  // Brighter color
+            dgvCategories.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
+            dgvCategories.ColumnHeadersDefaultCellStyle.Font = new Font("Microsoft Sans Serif", 12.0F, FontStyle.Bold); // Large text for headers
+
+            // Make the rest of the text smaller
+            dgvCategories.DefaultCellStyle.Font = new Font("Microsoft Sans Serif", 8.0F);
+
+            // Set row height to add more space between lines
+            dgvCategories.RowTemplate.Height = 40;
+
+            // Auto-resize columns to fit content
+            dgvCategories.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+            // Remove row header arrow
+            dgvCategories.RowHeadersVisible = false;
+        }
         private void btnAddCategory_Click(object sender, EventArgs e)
         {
             AddEditCategory addEditCategory = new AddEditCategory();
@@ -65,7 +105,7 @@ namespace ServiceTitanApp
 
             var categoriesToShow = context.Categories.AsQueryable();
 
-            if (txtSearch.Text != "")
+            if (!string.IsNullOrEmpty(txtSearch.Text))
             {
                 categoriesToShow = categoriesToShow.Where(category => category.CategoryName.Contains(txtSearch.Text));
             }
@@ -81,12 +121,16 @@ namespace ServiceTitanApp
                 ManagerName = category.CategoryManager.UserEmail,
                 NoOfServices = category.Services.Count(),
             }).ToList();
-            // display a message to the user if nothing was found
-            if (categoriesToShow.ToList().Count == 0)
+
+            if (!categoriesToShow.Any())
             {
-                MessageBox.Show("No categories were found mathcing your search criteria. Please try again.", "No services found!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("No categories were found matching your search criteria. Please try again.", "No services found!", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+
+            // Refresh the DataGridView appearance
+            dgvCategories.Refresh();
         }
+
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {
@@ -105,13 +149,25 @@ namespace ServiceTitanApp
             int selectedCategoryId = Convert.ToInt32(dgvCategories.SelectedCells[0].OwningRow.Cells[0].Value);
             Category selectedCategory = context.Categories.Single(category => category.CategoryID == selectedCategoryId);
 
+            var hasAnyServiceNotCompleted = context.ServiceRequests
+                .Include(sr => sr.Service)
+                .ThenInclude(s => s.Category)
+                .Where(x => x.Service.CategoryId == selectedCategoryId && (x.StatusId == 1 || x.StatusId == 2)).ToList();
+
+            if (hasAnyServiceNotCompleted.Count() != 0)
+            {
+                MessageBox.Show("Cannot delete category becuase one of its services have pending/inprogress requests for it.");
+                return;
+            }
+
             if (MessageBox.Show("Are you sure you want to delete the service (" + selectedCategory.CategoryName + " and its services)?", "Confirm Delete", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 // since we don't have on delete cascade
                 var alldet = context.Services.Where(service => service.CategoryId == selectedCategoryId).ToList();
                 context.Services.RemoveRange(alldet);
                 context.Categories.Remove(selectedCategory);
-                context.SaveChanges();
+                string source = Helper.GetLogSource(this);
+                context.Save(Global.User, source, "Deleted Category.");
                 RefreshCategoriesDGV();
             }
         }
@@ -120,6 +176,16 @@ namespace ServiceTitanApp
         {
             MainMenu mainMenu = new MainMenu(parentForm);
             parentForm.GoToForm(mainMenu);
+        }
+
+        private void dgvCategories_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void comboManager_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -222,6 +222,7 @@
             dgvServices.RowTemplate.Height = 25;
             dgvServices.Size = new Size(791, 457);
             dgvServices.TabIndex = 2;
+            dgvServices.CellContentClick += dgvServices_CellContentClick;
             // 
             // ManageServices
             // 

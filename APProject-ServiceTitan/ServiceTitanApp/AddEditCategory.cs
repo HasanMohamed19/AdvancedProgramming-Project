@@ -32,7 +32,7 @@ namespace ServiceTitanApp
         private void AddEditCategory_Load(object sender, EventArgs e)
         {
             comboManager.DataSource = context.Users.Where(user => user.RoleId == 2).ToList();
-            comboManager.DisplayMember = "UserName";
+            comboManager.DisplayMember = "FullName";
             comboManager.ValueMember = "UserId";
             // don't select a category once loaded
             comboManager.SelectedItem = null;
@@ -49,8 +49,16 @@ namespace ServiceTitanApp
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            
             try
             {
+                // validation for lengths
+                if (txtName.Text.Length < 5 || txtName.Text == null)
+                {
+                    MessageBox.Show("Category Name cannot be empty and needs to be at least 5 characters long.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
                 //category.Services = null;
                 category.CategoryManager = context.Users.Where(user => user.UserID == Convert.ToInt32(comboManager.SelectedValue)).FirstOrDefault();
                 category.CategoryName = txtName.Text;
@@ -65,12 +73,15 @@ namespace ServiceTitanApp
                     context.Categories.Add(category);
                 }
 
-                context.SaveChanges();
+                string source = Helper.GetLogSource(this);
+                context.Save(Global.User, source, "Add/Edited Category.");
                 this.DialogResult = DialogResult.OK;
                 this.Close();
 
             } catch (Exception ex)
             {
+                string source = Helper.GetLogSource(this);
+                context.LogException(ex, Global.User, source);
                 MessageBox.Show(ex.Message);
             }
         }

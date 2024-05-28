@@ -1,10 +1,12 @@
-﻿using ServiceTitanBusinessObjects;
+﻿using Microsoft.EntityFrameworkCore;
+using ServiceTitanBusinessObjects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,12 +18,14 @@ namespace ServiceTitanApp
     {
         private BaseForm parentForm;
         private ServiceTitanDBContext context;
+
         public ManageServices(BaseForm parent)
         {
             InitializeComponent();
             this.parentForm = parent;
             this.context = new ServiceTitanDBContext();
         }
+
         private void ManageServices_Load(object sender, EventArgs e)
         {
             comboCategory.DataSource = context.Categories.ToList();
@@ -30,12 +34,43 @@ namespace ServiceTitanApp
             // don't select a category once loaded
             comboCategory.SelectedItem = null;
 
+            // Customize DataGridView appearance
+            CustomizeDataGridView();
+
             RefreshServicesDGV();
+        }
+
+        private void CustomizeDataGridView()
+        {
+            // Set grid styles
+            dgvServices.BorderStyle = BorderStyle.None;
+            dgvServices.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(238, 239, 249);
+            dgvServices.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dgvServices.DefaultCellStyle.SelectionBackColor = Color.LightSkyBlue; // Calming blue color
+            dgvServices.DefaultCellStyle.SelectionForeColor = Color.Black; // Black for better contrast
+            dgvServices.BackgroundColor = Color.White;
+
+            dgvServices.EnableHeadersVisualStyles = false;
+            dgvServices.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dgvServices.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(65, 105, 225);  // Brighter color
+            dgvServices.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
+            dgvServices.ColumnHeadersDefaultCellStyle.Font = new Font("Microsoft Sans Serif", 12.0F, FontStyle.Bold); // Large text for headers
+
+            // Make the rest of the text smaller
+            dgvServices.DefaultCellStyle.Font = new Font("Microsoft Sans Serif", 8.0F);
+
+            // Set row height to add more space between lines
+            dgvServices.RowTemplate.Height = 40;
+
+            // Auto-resize columns to fit content
+            dgvServices.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+            // Remove row header arrow
+            dgvServices.RowHeadersVisible = false;
         }
 
         private void RefreshServicesDGV()
         {
-
             dgvServices.DataSource = null;
 
             var servicesToShow = context.Services.AsQueryable();
@@ -57,12 +92,15 @@ namespace ServiceTitanApp
                 Price = service.ServicePrice,
                 NoOfTechnicans = service.ServiceTechnicians.Count()
             }).ToList();
+
             // display a message to the user if nothing was found
-            if (servicesToShow.ToList().Count == 0)
+            if (!servicesToShow.Any())
             {
-                MessageBox.Show("No services were found mathcing your search criteria. Please try again.", "No services found!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("No services were found matching your search criteria. Please try again.", "No services found!", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
+            // Refresh the DataGridView appearance
+            dgvServices.Refresh();
         }
 
         private void btnAddService_Click(object sender, EventArgs e)
@@ -98,13 +136,33 @@ namespace ServiceTitanApp
         private void btnDelete_Click(object sender, EventArgs e)
         {
             int selectedServiceId = Convert.ToInt32(dgvServices.SelectedCells[0].OwningRow.Cells[0].Value);
-            Service selectedService = context.Services.Single(service => service.ServiceID == selectedServiceId);
+            Service selectedService = context.Services.Include(s => s.Category).Single(service => service.ServiceID == selectedServiceId);
+
+            if (Global.RoleName == "Manager")
+            {
+                if (selectedService.Category.CategoryManagerId!= Global.LoggedInUserId)
+                {
+                    MessageBox.Show("You cannot delete a service that is not in your category");
+                    return;
+                }
+            }
+
+            // check if there is a request for this service before deleting
+            var hasAnyRequestsInProgressOrPending = context.ServiceRequests.Where(sr => sr.ServiceId == selectedServiceId && (sr.StatusId == 1 || sr.StatusId == 2)).ToList();
+            if (hasAnyRequestsInProgressOrPending.Count() != 0)
+            {
+                MessageBox.Show("Cannot delete service becuase there are pending/inprogress requests for it.");
+                return;
+            }
+
+            
 
             if (MessageBox.Show("Are you sure you want to delete the service (" + selectedService.ServiceName + " and its requests)?", "Confirm Delete", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 // since we have on delete cascade, service requests are deleted as well
                 context.Services.Remove(selectedService);
-                context.SaveChanges();
+                string source = Helper.GetLogSource(this);
+                context.Save(Global.User, source, "Deleted Service.");
                 RefreshServicesDGV();
             }
 
@@ -138,6 +196,11 @@ namespace ServiceTitanApp
                 ViewRequests viewRequests = new ViewRequests(parentForm);
                 parentForm.GoToForm(viewRequests);
             }
+
+        }
+
+        private void dgvServices_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
 
         }
     }

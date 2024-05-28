@@ -53,9 +53,11 @@
             dgvCategories.Location = new Point(209, 43);
             dgvCategories.Name = "dgvCategories";
             dgvCategories.ReadOnly = true;
+            dgvCategories.RowHeadersWidth = 51;
             dgvCategories.RowTemplate.Height = 25;
             dgvCategories.Size = new Size(791, 457);
             dgvCategories.TabIndex = 3;
+            dgvCategories.CellContentClick += dgvCategories_CellContentClick;
             // 
             // tblSide
             // 
@@ -209,6 +211,7 @@
             comboManager.Name = "comboManager";
             comboManager.Size = new Size(176, 38);
             comboManager.TabIndex = 6;
+            comboManager.SelectedIndexChanged += comboManager_SelectedIndexChanged;
             // 
             // ManageCategories
             // 
