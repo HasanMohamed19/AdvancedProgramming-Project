@@ -292,7 +292,8 @@ namespace ServiceTitanBusinessObjects
             var values = new List<string>();
             foreach (var prop in properties)
             {
-                values.Add(prop.OriginalValue.ToString());
+                if (prop.OriginalValue != null)
+                    values.Add(prop.OriginalValue.ToString());
             }
             return string.Join(", ", values);
         }
@@ -301,7 +302,8 @@ namespace ServiceTitanBusinessObjects
             var values = new List<string>();
             foreach (var prop in properties)
             {
-                values.Add(prop.CurrentValue.ToString());
+                if (prop.CurrentValue != null)
+                    values.Add(prop.CurrentValue.ToString());
             }
             return string.Join(", ", values);
         }

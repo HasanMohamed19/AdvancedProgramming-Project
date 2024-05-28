@@ -225,6 +225,7 @@ namespace ServiceTitanWebApp.Controllers
                 {
                     _context.Add(serviceRequest);
                     await _context.SaveAsync(User, GetSourceRoute(), null);
+                    SendCreateNotification(serviceRequest, service);
                     TempData["CreateSuccess"] = "Request Created Successfully";
                 } catch (Exception ex)
                 {
@@ -289,6 +290,7 @@ namespace ServiceTitanWebApp.Controllers
                 {
                     _context.Add(serviceRequest);
                     await _context.SaveAsync(User, GetSourceRoute(), null);
+                    SendCreateNotification(serviceRequest, service);
                     TempData["CreateSuccess"] = "Request Created Successfully";
                 }
                 catch (Exception ex)
@@ -348,7 +350,9 @@ namespace ServiceTitanWebApp.Controllers
             {
                 return NotFound();
             }
-            ServiceRequest? existingRequest = _context.ServiceRequests.Find(id);
+            ServiceRequest? existingRequest = _context.ServiceRequests
+                .Include(s => s.Service)
+                .SingleOrDefault(s => s.RequestID == id);
             if (existingRequest == null) { return NotFound(); }
 
             existingRequest.RequestDescription = serviceRequest.RequestDescription;
@@ -371,6 +375,7 @@ namespace ServiceTitanWebApp.Controllers
                 {
                     _context.Update(existingRequest);
                     await _context.SaveAsync(User, GetSourceRoute(), null);
+                    SendEditNotification(existingRequest);
                     TempData["EditSuccess"] = "Request Saved Successfully";
                 }
                 catch (DbUpdateConcurrencyException ex)
@@ -430,7 +435,9 @@ namespace ServiceTitanWebApp.Controllers
             {
                 return Problem("Entity set 'ServiceTitanDBContext.ServiceRequests'  is null.");
             }
-            var serviceRequest = await _context.ServiceRequests.FindAsync(id);
+            var serviceRequest = _context.ServiceRequests
+                .Include(s => s.Service)
+                .SingleOrDefault(s => s.RequestID == id);
             if (serviceRequest != null)
             {
                 serviceRequest.StatusId = 4;
@@ -442,6 +449,7 @@ namespace ServiceTitanWebApp.Controllers
                     {
                         _context.Update(serviceRequest);
                         await _context.SaveAsync(User, GetSourceRoute(), null);
+                        SendCancelNotification(serviceRequest);
                         TempData["CancelSuccess"] = "Request Cancelled Successfully";
                     }
                     catch (DbUpdateConcurrencyException ex)
@@ -508,6 +516,8 @@ namespace ServiceTitanWebApp.Controllers
                 }
 
                 await _context.SaveAsync(User, GetSourceRoute(), null);
+                if (serviceRequest.StatusId != 4 && serviceRequest.StatusId != 3)
+                    SendCancelNotification(serviceRequest);
                 TempData["DeleteSuccess"] = "Request Deleted Successfully";
             } catch (Exception ex)
             {
@@ -521,6 +531,81 @@ namespace ServiceTitanWebApp.Controllers
         private bool ServiceRequestExists(int id)
         {
           return (_context.ServiceRequests?.Any(e => e.RequestID == id)).GetValueOrDefault();
+        }
+        private void SendCreateNotification(ServiceRequest serviceRequest, Service service)
+        {
+            Notification notif = new Notification
+            {
+                NotificationTitle = "Service Requested",
+                NotificationMessage = $"The service {service.ServiceName} has been requested successfully.",
+                NotificationType = "Request",
+                NotificationStatusId = 1,
+                UserId = serviceRequest.ClientId
+            };
+            if (serviceRequest.TechnicianId != null)
+            {
+                Notification notifTech = new Notification
+                {
+                    NotificationTitle = "Service Request Assigned",
+                    NotificationMessage = $"A service request for {service.ServiceName} has been assigned to you.",
+                    NotificationType = "Request",
+                    NotificationStatusId = 1,
+                    UserId = serviceRequest.TechnicianId
+                };
+                _context.Notifications.Add(notifTech);
+            }
+            _context.Notifications.Add(notif);
+            _context.Save(User, GetSourceRoute(), null);
+        }
+        private void SendEditNotification(ServiceRequest serviceRequest)
+        {
+            Notification notif = new Notification
+            {
+                NotificationTitle = "Service Request Updated",
+                NotificationMessage = $"The service request for {serviceRequest.Service?.ServiceName} has been updated.",
+                NotificationType = "Request",
+                NotificationStatusId = 1,
+                UserId = serviceRequest.ClientId
+            };
+            if (serviceRequest.TechnicianId != null)
+            {
+                Notification notifTech = new Notification
+                {
+                    NotificationTitle = "Service Request Assigned",
+                    NotificationMessage = $"A service request for {serviceRequest.Service?.ServiceName} has been assigned to you.",
+                    NotificationType = "Request",
+                    NotificationStatusId = 1,
+                    UserId = serviceRequest.TechnicianId
+                };
+                _context.Notifications.Add(notifTech);
+            }
+            _context.Notifications.Add(notif);
+            _context.Save(User, GetSourceRoute(), null);
+        }
+        private void SendCancelNotification(ServiceRequest serviceRequest)
+        {
+            Notification notif = new Notification
+            {
+                NotificationTitle = "Service Request Cancelled",
+                NotificationMessage = $"The service request for {serviceRequest.Service?.ServiceName} has been cancelled.",
+                NotificationType = "Request",
+                NotificationStatusId = 1,
+                UserId = serviceRequest.ClientId
+            };
+            if (serviceRequest.TechnicianId != null)
+            {
+                Notification notifTech = new Notification
+                {
+                    NotificationTitle = "Service Request Cancelled",
+                    NotificationMessage = $"A service request for {serviceRequest.Service?.ServiceName} has been cancelled.",
+                    NotificationType = "Request",
+                    NotificationStatusId = 1,
+                    UserId = serviceRequest.TechnicianId
+                };
+                _context.Notifications.Add(notifTech);
+            }
+            _context.Notifications.Add(notif);
+            _context.Save(User, GetSourceRoute(), null);
         }
     }
 }

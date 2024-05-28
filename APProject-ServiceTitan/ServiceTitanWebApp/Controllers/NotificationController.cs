@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,16 +14,23 @@ namespace ServiceTitanWebApp.Controllers
     public class NotificationController : BaseController
     {
         private readonly ServiceTitanDBContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public NotificationController(ServiceTitanDBContext context)
+        public NotificationController(ServiceTitanDBContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Notification
         public async Task<IActionResult> Index()
         {
-            var serviceTitanDBContext = _context.Notifications.Include(n => n.NotificationStatus).Include(n => n.User);
+            int loggedInUserId = _context.Users.Single(s => s.UserEmail == _userManager.GetUserName(User)).UserID;
+            var serviceTitanDBContext = _context.Notifications
+                .Include(n => n.NotificationStatus)
+                .Include(n => n.User)
+                .Where(n => n.UserId == loggedInUserId)
+                .OrderByDescending(n => n.NotificationID);
             return View(await serviceTitanDBContext.ToListAsync());
         }
 
