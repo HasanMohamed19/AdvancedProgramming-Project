@@ -319,7 +319,11 @@ namespace ServiceTitanWebApp.Controllers
                 return NotFound();
             }
 
-            var serviceRequest = await _context.ServiceRequests.Include(sr => sr.Service).SingleAsync(sr => sr.RequestID == id);
+            var serviceRequest = await _context.ServiceRequests
+                .Include(sr => sr.Service)
+                .ThenInclude(s => s.ServiceTechnicians).
+                SingleAsync(sr => sr.RequestID == id);
+
             if (serviceRequest == null)
             {
                 return NotFound();
@@ -330,11 +334,19 @@ namespace ServiceTitanWebApp.Controllers
             {
                 return Forbid();
             }
+            // get all technicians inside this service resource pool
+            var serviceTechs = serviceRequest.Service.ServiceTechnicians.ToList();
+            List<ApplicationUser> technicians = new List<ApplicationUser>();
+            foreach (var st in  serviceTechs)
+            {
+                technicians.Add(_context.Users.Single(u => u.UserID == st.TechniciansId));
+            }
+
 
             //ViewData["ClientId"] = new SelectList(_context.Users, "UserID", "FullName", serviceRequest.ClientId);
             ViewData["ServiceId"] = new SelectList(_context.Services, "ServiceID", "ServiceName", serviceRequest.ServiceId);
             ViewData["StatusId"] = new SelectList(_context.RequestStatus, "StatusID", "Status", serviceRequest.StatusId);
-            ViewData["TechnicianId"] = new SelectList(_context.Users.Where(u => u.RoleId == 3), "UserID", "FullName", serviceRequest.TechnicianId);
+            ViewData["TechnicianId"] = new SelectList(technicians, "UserID", "FullName", serviceRequest.TechnicianId);
             return View(serviceRequest);
         }
 
