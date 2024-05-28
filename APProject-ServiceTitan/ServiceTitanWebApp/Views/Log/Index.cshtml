@@ -16,7 +16,7 @@
 
     <div class="row pt-4">
 <div class="col-8">
-    <form asp-controller="Log" method="get" asp-action="Index">
+    @* <form asp-controller="Log" method="get" asp-action="Index">
 
         User Name:
             <input type="text" name="searchUser" asp-for="searchUser" />
@@ -30,37 +30,44 @@
             Clear
         </a>
         <input type="submit" value="Search" class="btn btn-secondary mx-2" />
-    </form>
+    </form> *@
+            <form asp-controller="Log" method="get" asp-action="Index" class="mb-3">
+                <div class="hstack gap-2" style="max-width:45rem;">
+                    <input class="form-control" type="text" name="searchUser" asp-for="searchUser" placeholder="Search" />
+                    <label asp-for="searchLogType">Type:</label>
+                    <select style="max-width:10rem;" class="form-select" name="searchLogType" asp-for="searchLogType" asp-items="Model.LogTypes.Select(lt => new SelectListItem{Text = lt, Value = lt})">
+                        <option value="">All</option>
+                    </select>
+                    <a asp-controller="Log" asp-action="Index" class="btn btn-outline-danger">
+                        Clear
+                    </a>
+                    <input type="submit" value="Search" class="btn btn-secondary" />
+                </div>
+            </form>
 </div>
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                @*Html.DisplayNameFor(model => model.Source)*@Source
+                Source
             </th>
             <th>
-                @*Html.DisplayNameFor(model => model.Time)*@
                 Time
             </th>
             <th>
-                @*Html.DisplayNameFor(model => model.Message)*@
                 Message
             </th>
             <th>
-                @*Html.DisplayNameFor(model => model.OriginalValue)*@
                 Original Value
             </th>
             <th>
-                @*Html.DisplayNameFor(model => model.CurrentValue)*@
                 Current Value
             </th>
             <th>
-                @*Html.DisplayNameFor(model => model.Type)*@
                 Type
             </th>
             <th>
-                @*Html.DisplayNameFor(model => model.User)*@
                 User
             </th>
             <th></th>
@@ -68,20 +75,20 @@
     </thead>
     <tbody>
 @foreach (var item in Model.Logs) {
-        <tr>
+        <tr style="max-height:3rem;">
             <td>
                 @Html.DisplayFor(modelItem => item.Source)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Time)
             </td>
-            <td>
+            <td class="text-truncate" style="max-width:15rem;">
                 @Html.DisplayFor(modelItem => item.Message)
             </td>
-            <td>
+                        <td class="text-truncate" style="max-width:15rem;">
                 @Html.DisplayFor(modelItem => item.OriginalValue)
             </td>
-            <td>
+                        <td class="text-truncate" style="max-width:15rem;">
                 @Html.DisplayFor(modelItem => item.CurrentValue)
             </td>
             <td>
@@ -91,9 +98,7 @@
                 @Html.DisplayFor(modelItem => item.User.UserEmail)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.LogID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.LogID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.LogID">Delete</a>
+                <a asp-action="Details" asp-route-id="@item.LogID">Details</a>
             </td>
         </tr>
 }

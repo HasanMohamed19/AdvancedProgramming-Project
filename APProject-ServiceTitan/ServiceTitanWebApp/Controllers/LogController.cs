@@ -35,7 +35,12 @@ namespace ServiceTitanWebApp.Controllers
             IEnumerable<Log> logs;
 
             // if no filter is used
-            logs = _context.Logs.Include(l => l.User);
+            logs = _context.Logs
+                .Include(l => l.User)
+                .OrderByDescending(l => l.Time);
+
+            if (!String.IsNullOrEmpty(searchUser))
+                searchUser = searchUser.ToLower();
 
             // search for log type
             if (!String.IsNullOrEmpty(searchLogType))
@@ -45,7 +50,12 @@ namespace ServiceTitanWebApp.Controllers
 
             if (!String.IsNullOrEmpty(searchUser))
             {
-                logs = logs.Where(l => l.User.UserEmail.Contains(searchUser));
+                logs = logs.Where(l => l.User.UserEmail.ToLower().Contains(searchUser)
+                        || l.User.FullName.ToLower().Contains(searchUser)
+                        || l.Source.ToLower().Contains(searchUser)
+                        || l.Message.ToLower().Contains(searchUser)
+                        || l.OriginalValue.ToLower().Contains(searchUser)
+                        || l.CurrentValue.ToLower().Contains(searchUser)) ;
             }
 
             var logIndexVM = new LogIndexViewModel
