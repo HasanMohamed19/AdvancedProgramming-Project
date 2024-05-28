@@ -22,6 +22,13 @@ namespace ServiceTitanApp
             InitializeComponent();
             this.parentForm = parent;
             this.context = new ServiceTitanDBContext();
+
+            if (Global.RoleName.Equals("Manager"))
+            {
+                btnAddCategory.Enabled = true;
+                btnEditCategory.Enabled = true;
+                comboManager.Enabled = false;
+            }
         }
 
         private void ManageCategories_Load(object sender, EventArgs e)
@@ -36,6 +43,7 @@ namespace ServiceTitanApp
 
             RefreshCategoriesDGV();
         }
+
 
         private void CustomizeDataGridView()
         {
@@ -158,6 +166,11 @@ namespace ServiceTitanApp
         }
 
         private void dgvCategories_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void comboManager_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }

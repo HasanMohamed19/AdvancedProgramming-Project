@@ -102,6 +102,11 @@ namespace ServiceTitanApp
             ManageCategories manageCategories = new ManageCategories(parentForm);
             parentForm.GoToForm(manageCategories);
         }
+
+        private void tblSide_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 
 }

@@ -201,7 +201,7 @@
             // 
             txtSearch.Location = new Point(457, 3);
             txtSearch.Name = "txtSearch";
-            txtSearch.Size = new Size(299, 35);
+            txtSearch.Size = new Size(299, 42);
             txtSearch.TabIndex = 4;
             // 
             // comboManager
@@ -209,12 +209,13 @@
             comboManager.FormattingEnabled = true;
             comboManager.Location = new Point(173, 3);
             comboManager.Name = "comboManager";
-            comboManager.Size = new Size(176, 38);
+            comboManager.Size = new Size(176, 44);
             comboManager.TabIndex = 6;
+            comboManager.SelectedIndexChanged += comboManager_SelectedIndexChanged;
             // 
             // ManageCategories
             // 
-            AutoScaleDimensions = new SizeF(12F, 30F);
+            AutoScaleDimensions = new SizeF(14F, 36F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1000, 500);
             Controls.Add(dgvCategories);

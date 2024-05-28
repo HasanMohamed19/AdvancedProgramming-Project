@@ -54,6 +54,7 @@
             tblSide.RowStyles.Add(new RowStyle(SizeType.Percent, 26.0440865F));
             tblSide.Size = new Size(250, 500);
             tblSide.TabIndex = 0;
+            tblSide.Paint += tblSide_Paint;
             // 
             // btnManageCategories
             // 
@@ -106,7 +107,7 @@
             // 
             // MainMenu
             // 
-            AutoScaleDimensions = new SizeF(12F, 30F);
+            AutoScaleDimensions = new SizeF(14F, 36F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1000, 500);
             Controls.Add(tblMain);
