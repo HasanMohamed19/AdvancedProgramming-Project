@@ -2,13 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ServiceTitanBusinessObjects;
+using ServiceTitanWebApp.ViewModels;
 
 namespace ServiceTitanWebApp.Controllers
 {
+
+    [Authorize(Roles ="Admin")]
     public class LogController : Controller
     {
         private readonly ServiceTitanDBContext _context;
@@ -19,11 +23,40 @@ namespace ServiceTitanWebApp.Controllers
         }
 
         // GET: Log
-        public async Task<IActionResult> Index()
+        //public async Task<IActionResult> Index()
+        //{
+        //    var serviceTitanDBContext = _context.Logs.Include(l => l.User);
+        //    return View(await serviceTitanDBContext.ToListAsync());
+        //}
+
+        public IActionResult Index(string searchLogType, string searchUser)
         {
-            var serviceTitanDBContext = _context.Logs.Include(l => l.User);
-            return View(await serviceTitanDBContext.ToListAsync());
+            //IQueryable<Log> logs = _context.Logs.Include(l => l.LogType);
+            IEnumerable<Log> logs;
+
+            // if no filter is used
+            logs = _context.Logs.Include(l => l.User);
+
+            // search for log type
+            if (!String.IsNullOrEmpty(searchLogType))
+            {
+                logs = logs.Where(l => l.Type.Contains(searchLogType));
+            }
+
+            if (!String.IsNullOrEmpty(searchUser))
+            {
+                logs = logs.Where(l => l.User.UserEmail.Contains(searchUser));
+            }
+
+            var logIndexVM = new LogIndexViewModel
+            {
+                Logs = logs,
+                LogTypes = _context.Logs.Select(l => l.Type).Distinct().ToList()
+            };
+
+            return View(logIndexVM);
         }
+
 
         // GET: Log/Details/5
         public async Task<IActionResult> Details(int? id)
