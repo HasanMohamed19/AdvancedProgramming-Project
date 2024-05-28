@@ -24,11 +24,6 @@ namespace ServiceTitanApp
             this.parentForm = parent;
             this.context = new ServiceTitanDBContext();
             CreateStatistics();
-            // authorization
-            if (Global.RoleName.Equals("Admin"))
-            {
-                btnManageCategories.Enabled = true;
-            }
         }
 
         private void CreateStatistics()

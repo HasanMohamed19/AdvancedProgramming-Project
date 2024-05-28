@@ -61,8 +61,12 @@ namespace ServiceTitanApp
 
                         //save into global class
                         Global.User = founduser;
-
                         Global.RoleName = roleName;
+
+                        // get the appUser userId and save it into global class
+                        int userId = context.Users.Where(u => u.UserEmail == founduser.Email).FirstOrDefault().UserID;
+                        Global.LoggedInUserId = userId;
+
 
                         //Those are added as extra just to show how you can query all users in a certain role
                         Global.AllAdmins = await userManager.GetUsersInRoleAsync("Admin");

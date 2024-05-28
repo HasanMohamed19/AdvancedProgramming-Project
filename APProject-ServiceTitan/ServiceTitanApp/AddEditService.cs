@@ -33,12 +33,18 @@ namespace ServiceTitanApp
 
         private void AddEditService_Load(object sender, EventArgs e)
         {
-            // change this later placeholder
-            comboCategory.DataSource = context.Categories.ToList();
             comboCategory.DisplayMember = "CategoryName";
             comboCategory.ValueMember = "CategoryID";
-
-            comboCategory.SelectedItem = comboCategory.Items[0];
+            if (Global.RoleName.Equals("Admin"))
+            {
+                comboCategory.DataSource = context.Categories.ToList();
+                comboCategory.SelectedItem = comboCategory.Items[0];
+            } else if (Global.RoleName.Equals("Manager"))
+            {
+                comboCategory.DataSource = context.Categories.Where(c => c.CategoryManagerId == Global.LoggedInUserId).ToList();
+                comboCategory.Enabled = false;
+                comboCategory.SelectedItem = comboCategory.Items[0];
+            }
 
             // if edit
             if (service.ServiceID > 0)
@@ -49,6 +55,7 @@ namespace ServiceTitanApp
                 txtPrice.Text = service.ServicePrice.ToString("0.000");
                 txtDescription.Text = service.ServiceDescription;
             }
+
             PopulateTechnicans();
         }
 

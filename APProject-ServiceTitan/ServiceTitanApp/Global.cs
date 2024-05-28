@@ -12,6 +12,7 @@ namespace ServiceTitanApp
     {
         public static IdentityUser User;
         public static string RoleName;
+        public static int LoggedInUserId;
 
         public static IEnumerable<IdentityUser> AllAdmins;
         public static IEnumerable<IdentityUser> AllTechnicicans;
@@ -22,6 +23,7 @@ namespace ServiceTitanApp
         {
             User = null;
             RoleName = null;
+            LoggedInUserId = -1;
 
             AllAdmins = null;
             AllTechnicicans = null;

@@ -25,9 +25,9 @@ namespace ServiceTitanApp
 
             if (Global.RoleName.Equals("Manager"))
             {
-                btnAddCategory.Enabled = true;
-                btnEditCategory.Enabled = true;
-                comboManager.Enabled = false;
+                btnAddCategory.Enabled = false;
+                btnEditCategory.Enabled = false;
+                btnDelete.Enabled = false;
             }
         }
 
