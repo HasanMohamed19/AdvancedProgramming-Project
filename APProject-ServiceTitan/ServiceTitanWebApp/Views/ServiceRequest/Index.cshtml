@@ -182,34 +182,27 @@
             <thead>
                 <tr>
                     <th>
-                        @* @Html.DisplayNameFor(model => model.Service) *@
                         Service
                     </th>
                     <th>
-                        @* @Html.DisplayNameFor(model => model.RequestPrice) *@
                         Request Price
                     </th>
                     <th>
-                        @* @Html.DisplayNameFor(model => model.RequestDescription) *@
                         Request Description
                     </th>
                     <th>
-                        @* @Html.DisplayNameFor(model => model.RequestDateNeeded) *@
                         RequestDateNeeded
                     </th>
                     @if (!User.IsInRole("User"))
                     {
                         <th>
-                            @* @Html.DisplayNameFor(model => model.Client) *@
                             Client
                         </th>
                     }
                     <th>
-                        @* @Html.DisplayNameFor(model => model.Technician) *@
                         Technician
                     </th>
                     <th>
-                        @* @Html.DisplayNameFor(model => model.Status) *@
                         Status
                     </th>
                     <th></th>
