@@ -12,7 +12,7 @@ using ServiceTitanWebApp.ViewModels;
 namespace ServiceTitanWebApp.Controllers
 {
 
-    [Authorize(Policy = "AdminPolicy")]
+    [Authorize(Roles ="Admin")]
     public class LogController : Controller
     {
         private readonly ServiceTitanDBContext _context;
@@ -23,13 +23,13 @@ namespace ServiceTitanWebApp.Controllers
         }
 
         // GET: Log
-        public async Task<IActionResult> Index()
-        {
-            var serviceTitanDBContext = _context.Logs.Include(l => l.User);
-            return View(await serviceTitanDBContext.ToListAsync());
-        }
+        //public async Task<IActionResult> Index()
+        //{
+        //    var serviceTitanDBContext = _context.Logs.Include(l => l.User);
+        //    return View(await serviceTitanDBContext.ToListAsync());
+        //}
 
-        public IActionResult Index(string searchLogType)
+        public IActionResult Index(string searchLogType, string searchUser)
         {
             //IQueryable<Log> logs = _context.Logs.Include(l => l.LogType);
             IEnumerable<Log> logs;
@@ -41,6 +41,11 @@ namespace ServiceTitanWebApp.Controllers
             if (!String.IsNullOrEmpty(searchLogType))
             {
                 logs = logs.Where(l => l.Type.Contains(searchLogType));
+            }
+
+            if (!String.IsNullOrEmpty(searchUser))
+            {
+                logs = logs.Where(l => l.User.UserEmail.Contains(searchUser));
             }
 
             var logIndexVM = new LogIndexViewModel

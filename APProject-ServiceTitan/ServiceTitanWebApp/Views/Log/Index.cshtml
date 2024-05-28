@@ -17,6 +17,10 @@
     <div class="row pt-4">
 <div class="col-8">
     <form asp-controller="Log" method="get" asp-action="Index">
+
+        User Name:
+            <input type="text" name="searchUser" asp-for="searchUser" />
+
         Log Type:
         <select name="searchLogType" asp-for="searchLogType" asp-items="Model.LogTypes.Select(lt => new SelectListItem{Text = lt, Value = lt})">
             <option value="">All</option>

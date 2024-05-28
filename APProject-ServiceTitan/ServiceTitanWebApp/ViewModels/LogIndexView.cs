@@ -8,5 +8,6 @@ namespace ServiceTitanWebApp.ViewModels
         public IEnumerable<Log>? Logs { get; set; }
 
         public string? searchLogType { get; set; }
+        public string? searchUser { get; set; }
     }
 }
