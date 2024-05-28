@@ -213,6 +213,13 @@ namespace ServiceTitanWebApp.Controllers
             }
             //ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryID", "CategoryName", service.CategoryId);
 
+            // dont allow wrong manager to edit
+            ApplicationUser loggedInUser = _context.Users.Include(u => u.Role).Include(u => u.Category).Single(u => u.UserEmail == User.Identity.Name);
+            if (User.IsInRole("Manager") && (loggedInUser.Category == null || (loggedInUser.Category != null && loggedInUser.Category.CategoryID != service.CategoryId)))
+            {
+                return Forbid();
+            }
+
             IQueryable<Category> categories;
             if (User.IsInRole("Admin"))
             {
@@ -348,6 +355,13 @@ namespace ServiceTitanWebApp.Controllers
             if (service == null)
             {
                 return NotFound();
+            }
+
+            // forbid wrong manager from deleting
+            ApplicationUser loggedInUser = _context.Users.Include(u => u.Role).Include(u => u.Category).Single(u => u.UserEmail == User.Identity.Name);
+            if (User.IsInRole("Manager") && (loggedInUser.Category == null || (loggedInUser.Category != null && loggedInUser.Category.CategoryID != service.CategoryId)))
+            {
+                return Forbid();
             }
 
             var servicesTechs = _context.ServiceTechnicians.Where(st => st.ServicesId == service.ServiceID).ToList();

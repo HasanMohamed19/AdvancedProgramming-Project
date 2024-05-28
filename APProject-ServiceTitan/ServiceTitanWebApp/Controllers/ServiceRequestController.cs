@@ -319,11 +319,18 @@ namespace ServiceTitanWebApp.Controllers
                 return NotFound();
             }
 
-            var serviceRequest = await _context.ServiceRequests.FindAsync(id);
+            var serviceRequest = await _context.ServiceRequests.Include(sr => sr.Service).SingleAsync(sr => sr.RequestID == id);
             if (serviceRequest == null)
             {
                 return NotFound();
             }
+
+            ApplicationUser loggedInUser = _context.Users.Include(u => u.Role).Include(u => u.Category).Single(u => u.UserEmail == User.Identity.Name);
+            if (User.IsInRole("Manager") && (loggedInUser.Category == null || (loggedInUser.Category != null && loggedInUser.Category.CategoryID != serviceRequest.Service.CategoryId)))
+            {
+                return Forbid();
+            }
+
             //ViewData["ClientId"] = new SelectList(_context.Users, "UserID", "FullName", serviceRequest.ClientId);
             ViewData["ServiceId"] = new SelectList(_context.Services, "ServiceID", "ServiceName", serviceRequest.ServiceId);
             ViewData["StatusId"] = new SelectList(_context.RequestStatus, "StatusID", "Status", serviceRequest.StatusId);
@@ -411,7 +418,12 @@ namespace ServiceTitanWebApp.Controllers
 
             if (serviceRequest == null) { return NotFound(); }
 
-            
+            ApplicationUser loggedInUser = _context.Users.Include(u => u.Role).Include(u => u.Category).Single(u => u.UserEmail == User.Identity.Name);
+            if (User.IsInRole("Manager") && (loggedInUser.Category == null || (loggedInUser.Category != null && loggedInUser.Category.CategoryID != serviceRequest.Service.CategoryId)))
+            {
+                return Forbid();
+            }
+
             if (serviceRequest == null)
             {
                 return NotFound();
