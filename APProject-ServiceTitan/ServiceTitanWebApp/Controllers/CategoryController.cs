@@ -98,9 +98,17 @@ namespace ServiceTitanWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(newCategory.Category);
-                await _context.SaveAsync(User, GetSourceRoute(), null);
-                TempData["CreateSuccess"] = "Category Created Successfully";
+                try
+                {
+                    _context.Add(newCategory.Category);
+                    await _context.SaveAsync(User, GetSourceRoute(), null);
+                    TempData["CreateSuccess"] = "Category Created Successfully";
+
+                } catch (Exception ex)
+                {
+                    _context.LogException(ex, User, GetSourceRoute());
+                    TempData["CreateFailed"] = "Could not create category.";
+                }
                 return RedirectToAction(nameof(Index));
                 //return RedirectToAction("Index");
             } else
@@ -160,19 +168,21 @@ namespace ServiceTitanWebApp.Controllers
                 {
                     _context.Update(editCategory.Category);
                     await _context.SaveAsync(User, GetSourceRoute(), null);
+                    TempData["EditSuccess"] = "Category Saved Successfully";
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
                     if (!CategoryExists(editCategory.Category.CategoryID))
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+                    _context.LogException(ex, User, GetSourceRoute());
                 }
-                TempData["CreateSuccess"] = "Category Edited Successfully";
+                catch (Exception ex)
+                {
+                    _context.LogException(ex, User, GetSourceRoute());
+                    TempData["EditFailed"] = "Could not save category.";
+                }
                 return RedirectToAction(nameof(Index));
             }
             else
@@ -218,14 +228,23 @@ namespace ServiceTitanWebApp.Controllers
             {
                 return Problem("Entity set 'ServiceTitanDBContext.Categories'  is null.");
             }
-            var category = _context.Categories.Find(id);
-            if (category != null)
+            try
             {
-                _context.Categories.Remove(category);
-            }
+                var category = _context.Categories.Find(id);
+                if (category != null)
+                {
+                    _context.Categories.Remove(category);
+                }
 
-            await _context.SaveAsync(User, GetSourceRoute(), null);
-            TempData["CreateSuccess"] = "Category Deleted Successfully";
+                await _context.SaveAsync(User, GetSourceRoute(), null);
+                TempData["DeleteSuccess"] = "Category Deleted Successfully";
+            }
+            catch (Exception ex)
+            {
+                _context.LogException(ex, User, GetSourceRoute());
+                TempData["DeleteFailed"] = "Could not delete category.";
+            }
+            
             return RedirectToAction(nameof(Index));
         }
 
@@ -282,8 +301,6 @@ namespace ServiceTitanWebApp.Controllers
                 ViewData["topSellingService"] = topSellingService;
                 ViewData["pendingRequests"] = pendingRequests;
             }
-
-
 
             return View("Dashboard");
         }

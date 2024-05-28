@@ -206,9 +206,16 @@ namespace ServiceTitanWebApp.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Add(serviceRequest);
-                await _context.SaveAsync(User, GetSourceRoute(), null);
-                TempData["CreateSuccess"] = "Request Created Successfully";
+                try
+                {
+                    _context.Add(serviceRequest);
+                    await _context.SaveAsync(User, GetSourceRoute(), null);
+                    TempData["CreateSuccess"] = "Request Created Successfully";
+                } catch (Exception ex)
+                {
+                    _context.LogException(ex, User, GetSourceRoute());
+                    TempData["CreateFailed"] = "Could not create request.";
+                }
                 return RedirectToAction(nameof(Index));
             }
 
@@ -263,9 +270,17 @@ namespace ServiceTitanWebApp.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Add(serviceRequest);
-                await _context.SaveAsync(User, GetSourceRoute(), null);
-                TempData["CreateSuccess"] = "Request Created Successfully";
+                try
+                {
+                    _context.Add(serviceRequest);
+                    await _context.SaveAsync(User, GetSourceRoute(), null);
+                    TempData["CreateSuccess"] = "Request Created Successfully";
+                }
+                catch (Exception ex)
+                {
+                    _context.LogException(ex, User, GetSourceRoute());
+                    TempData["CreateFailed"] = "Could not create request.";
+                }
                 return RedirectToAction(nameof(Index));
             }
 
@@ -341,19 +356,21 @@ namespace ServiceTitanWebApp.Controllers
                 {
                     _context.Update(existingRequest);
                     await _context.SaveAsync(User, GetSourceRoute(), null);
+                    TempData["EditSuccess"] = "Request Saved Successfully";
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
                     if (!ServiceRequestExists(existingRequest.RequestID))
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+                    _context.LogException(ex, User, GetSourceRoute());
+                    TempData["EditFailed"] = "Could not save request.";
+                } catch  (Exception ex)
+                {
+                    _context.LogException(ex, User, GetSourceRoute());
+                    TempData["EditFailed"] = "Could not save request.";
                 }
-                TempData["EditSuccess"] = "Request Saved Successfully";
                 return RedirectToAction(nameof(Index));
             }
             //ViewData["ClientId"] = new SelectList(_context.Users, "UserID", "FullName", existingRequest.ClientId);
@@ -410,19 +427,21 @@ namespace ServiceTitanWebApp.Controllers
                     {
                         _context.Update(serviceRequest);
                         await _context.SaveAsync(User, GetSourceRoute(), null);
+                        TempData["CancelSuccess"] = "Request Cancelled Successfully";
                     }
-                    catch (DbUpdateConcurrencyException)
+                    catch (DbUpdateConcurrencyException ex)
                     {
                         if (!ServiceRequestExists(serviceRequest.RequestID))
                         {
                             return NotFound();
                         }
-                        else
-                        {
-                            throw;
-                        }
+                        _context.LogException(ex, User, GetSourceRoute());
+                        TempData["CancelFailed"] = "Could not cancel request.";
+                    } catch (Exception ex)
+                    {
+                        _context.LogException(ex, User, GetSourceRoute());
+                        TempData["CancelFailed"] = "Could not cancel request.";
                     }
-                    TempData["CancelSuccess"] = "Request Cancelled Successfully";
                 }
             }
 
@@ -465,14 +484,22 @@ namespace ServiceTitanWebApp.Controllers
             {
                 return Problem("Entity set 'ServiceTitanDBContext.ServiceRequests'  is null.");
             }
-            var serviceRequest = await _context.ServiceRequests.FindAsync(id);
-            if (serviceRequest != null)
+            try
             {
-                _context.ServiceRequests.Remove(serviceRequest);
-            }
+                var serviceRequest = await _context.ServiceRequests.FindAsync(id);
+                if (serviceRequest != null)
+                {
+                    _context.ServiceRequests.Remove(serviceRequest);
+                }
 
-            await _context.SaveAsync(User, GetSourceRoute(), null);
-            TempData["DeleteSuccess"] = "Request Deleted Successfully";
+                await _context.SaveAsync(User, GetSourceRoute(), null);
+                TempData["DeleteSuccess"] = "Request Deleted Successfully";
+            } catch (Exception ex)
+            {
+                _context.LogException(ex, User, GetSourceRoute());
+                TempData["DeleteFailed"] = "Could not delete request.";
+            }
+            
             return RedirectToAction(nameof(Index));
         }
 

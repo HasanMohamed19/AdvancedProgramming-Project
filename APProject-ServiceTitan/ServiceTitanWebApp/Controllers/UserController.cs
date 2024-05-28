@@ -101,12 +101,20 @@ namespace ServiceTitanWebApp.Controllers
                     st.TechniciansId = userVM.NewUser.UserID;
                     foreach (int assignedServiceId in userVM.AssignedServicesIds)
                     {
-                        st.ServicesId = assignedServiceId;   
-                        _context.ServiceTechnicians.Add(st);
-                        _context.Save(User, GetSourceRoute(), null);
+                        try
+                        {
+                            st.ServicesId = assignedServiceId;   
+                            _context.ServiceTechnicians.Add(st);
+                            _context.Save(User, GetSourceRoute(), null);
+                            TempData["CreateSuccess"] = "User Added Successfully";  
+
+                        } catch (Exception ex)
+                        {
+                            _context.LogException(ex, User, GetSourceRoute());
+                            TempData["CreateFailed"] = "Could not add user.";
+                        }
                     }
                 }
-                TempData["CreateSuccess"] = "User Added Successfully";
 
                 return RedirectToAction(nameof(Index));
             }
@@ -233,16 +241,16 @@ namespace ServiceTitanWebApp.Controllers
                     _context.Update(existingUser);
                     await _context.SaveAsync(User, GetSourceRoute(), null);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
                     if (!UserExists(existingUser.UserID))
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+                    _context.LogException(ex, User, GetSourceRoute());
+                } catch (Exception ex)
+                {
+                    _context.LogException(ex, User, GetSourceRoute());
                 }
                 TempData["EditSuccess"] = "User Edited Successfully";
                 return RedirectToAction(nameof(Index));
@@ -292,13 +300,19 @@ namespace ServiceTitanWebApp.Controllers
             {
                 return Problem("Entity set 'ServiceTitanDBContext.Users'  is null.");
             }
-            var user = await _context.Users.FindAsync(id);
-            if (user != null)
+            try
             {
-                _context.Users.Remove(user);
-            }
+                var user = await _context.Users.FindAsync(id);
+                if (user != null)
+                {
+                    _context.Users.Remove(user);
+                }
 
-            await _context.SaveAsync(User, GetSourceRoute(), null);
+                await _context.SaveAsync(User, GetSourceRoute(), null);
+            } catch (Exception ex)
+            {
+                _context.LogException(ex, User, GetSourceRoute());
+            }
             TempData["DeleteSuccess"] = "User Deleted Successfully";
             return RedirectToAction(nameof(Index));
         }
@@ -314,8 +328,9 @@ namespace ServiceTitanWebApp.Controllers
             {
                 return Activator.CreateInstance<IdentityUser>();
             }
-            catch
+            catch (Exception ex) 
             {
+                _context.LogException(ex, User, GetSourceRoute());
                 throw new InvalidOperationException($"Can't create an instance of '{nameof(IdentityUser)}'. " +
                     $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");

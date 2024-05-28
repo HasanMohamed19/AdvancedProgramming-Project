@@ -137,13 +137,14 @@ namespace ServiceTitanWebApp.Controllers
                         st.TechniciansId = item;
                         _context.ServiceTechnicians.Add(st);
                         _context.Save(User, GetSourceRoute(), null);
+                        TempData["CreateSuccess"] = "Service Created Successfully";
                     } catch (Exception ex)
                     {
                         _context.LogException(ex, User, GetSourceRoute());
+                        TempData["CreateFailed"] = "Could not create service.";
                     }
                 }
 
-                TempData["CreateSuccess"] = "Service Created Successfully";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -260,6 +261,7 @@ namespace ServiceTitanWebApp.Controllers
                     _context.Update(serviceVM.Service);
 
                     await _context.SaveAsync(User, GetSourceRoute(), null);
+                    TempData["EditSuccess"] = "Service Edited Successfully";
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
@@ -268,11 +270,12 @@ namespace ServiceTitanWebApp.Controllers
                         return NotFound();
                     }
                     _context.LogException(ex, User, GetSourceRoute());
+                    TempData["EditFailed"] = "Could not save service.";
                 } catch (Exception ex)
                 {
                     _context.LogException(ex, User, GetSourceRoute());
+                    TempData["EditFailed"] = "Could not save service.";
                 }
-                TempData["EditSuccess"] = "Service Edited Successfully";
                 return RedirectToAction(nameof(Index));
             }
 
