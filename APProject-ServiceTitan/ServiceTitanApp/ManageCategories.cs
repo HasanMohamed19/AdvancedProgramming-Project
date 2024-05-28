@@ -1,4 +1,5 @@
-﻿using ServiceTitanBusinessObjects;
+﻿using Microsoft.EntityFrameworkCore;
+using ServiceTitanBusinessObjects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -147,6 +148,17 @@ namespace ServiceTitanApp
         {
             int selectedCategoryId = Convert.ToInt32(dgvCategories.SelectedCells[0].OwningRow.Cells[0].Value);
             Category selectedCategory = context.Categories.Single(category => category.CategoryID == selectedCategoryId);
+
+            var hasAnyServiceNotCompleted = context.ServiceRequests
+                .Include(sr => sr.Service)
+                .ThenInclude(s => s.Category)
+                .Where(x => x.Service.CategoryId == selectedCategoryId && (x.StatusId == 1 || x.StatusId == 2)).ToList();
+
+            if (hasAnyServiceNotCompleted.Count() != 0)
+            {
+                MessageBox.Show("Cannot delete category becuase one of its services have pending/inprogress requests for it.");
+                return;
+            }
 
             if (MessageBox.Show("Are you sure you want to delete the service (" + selectedCategory.CategoryName + " and its services)?", "Confirm Delete", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
