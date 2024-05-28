@@ -137,17 +137,21 @@ namespace ServiceTitanApp
             int selectedServiceId = Convert.ToInt32(dgvServices.SelectedCells[0].OwningRow.Cells[0].Value);
             Service selectedService = context.Services.Include(s => s.Category).Single(service => service.ServiceID == selectedServiceId);
 
-            if (selectedService.Category.CategoryManagerId!= Global.LoggedInUserId)
+            if (Global.RoleName == "Manager")
             {
-                MessageBox.Show("You cannot delete a service that is not in your category");
-                return;
+                if (selectedService.Category.CategoryManagerId!= Global.LoggedInUserId)
+                {
+                    MessageBox.Show("You cannot delete a service that is not in your category");
+                    return;
+                }
             }
 
             if (MessageBox.Show("Are you sure you want to delete the service (" + selectedService.ServiceName + " and its requests)?", "Confirm Delete", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 // since we have on delete cascade, service requests are deleted as well
                 context.Services.Remove(selectedService);
-                context.SaveChanges();
+                string source = Helper.GetLogSource(this);
+                context.Save(Global.User, source, "Deleted Service.");
                 RefreshServicesDGV();
             }
 

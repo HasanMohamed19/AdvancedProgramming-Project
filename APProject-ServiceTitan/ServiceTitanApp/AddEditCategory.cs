@@ -49,6 +49,7 @@ namespace ServiceTitanApp
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            
             try
             {
                 //category.Services = null;
@@ -65,7 +66,8 @@ namespace ServiceTitanApp
                     context.Categories.Add(category);
                 }
 
-                context.SaveChanges();
+                string source = Helper.GetLogSource(this);
+                context.Save(Global.User, source, "Add/Edited Category.");
                 this.DialogResult = DialogResult.OK;
                 this.Close();
 

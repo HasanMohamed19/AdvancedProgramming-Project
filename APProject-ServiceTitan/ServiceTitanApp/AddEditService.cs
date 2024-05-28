@@ -137,7 +137,7 @@ namespace ServiceTitanApp
                     context.Services.Add(service);
                 }
 
-                
+
 
                 //foreach (User tech in chklistTechnicians.Items)
                 //{
@@ -167,8 +167,8 @@ namespace ServiceTitanApp
                 //}
 
 
-
-                context.SaveChanges();
+                string source = Helper.GetLogSource(this);
+                context.Save(Global.User, source, "Add/Edited Service.");
                 this.DialogResult = DialogResult.OK;
                 this.Close();
 

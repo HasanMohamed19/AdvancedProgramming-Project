@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
@@ -133,6 +134,49 @@ namespace ServiceTitanBusinessObjects
 
         //        return base.SaveChanges();
         //    }
+
+        public int Save(IdentityUser user, string source, string? message)
+        {
+            // Detect changes
+            ChangeTracker.DetectChanges();
+
+            // Get added and modified entities
+            var added = ChangeTracker.Entries()
+                .Where(t => t.State == EntityState.Added)
+                .Select(t => t.Entity)
+                .ToList();
+
+            var modified = ChangeTracker.Entries()
+                .Where(t => t.State == EntityState.Modified)
+                .Select(t => t.Entity)
+                .ToList();
+
+            var deleted = ChangeTracker.Entries()
+                .Where(t => t.State == EntityState.Deleted)
+                .Select(t => t.Entity)
+                .ToList();
+
+            // Create and populate log entries
+            var logs = new List<Log>();
+            foreach (var entity in added)
+            {
+                logs.Add(CreateLog(entity, EntityState.Added, user, source, message));
+            }
+            foreach (var entity in modified)
+            {
+                logs.Add(CreateLog(entity, EntityState.Modified, user, source, message));
+            }
+            foreach (var entity in modified)
+            {
+                logs.Add(CreateLog(entity, EntityState.Deleted, user, source, message));
+            }
+
+            // Add logs to DbContext (assuming Logs DbSet exists)
+            Logs.AddRange(logs);
+
+            // Save changes (including logs)
+            return SaveChanges();
+        }
 
         public int Save(ClaimsPrincipal user, string source, string? message)
         {
@@ -277,6 +321,72 @@ namespace ServiceTitanBusinessObjects
             {
                 Time = DateTime.Now,
                 UserId = Users.Single(u => u.UserEmail == user.Identity.Name).UserID,
+                Source = source,
+                Message = message,
+                OriginalValue = "",
+                CurrentValue = "",
+                Type = "T"
+            };
+        }
+
+        private Log CreateLog(object entity, EntityState state, IdentityUser user, string source, string? message)
+        {
+            var propertyInfo = entity.GetType().GetProperties();
+            if (state  == EntityState.Added)
+            {
+                message ??= "Added to entity";
+                return new Log
+                {
+                    Time = DateTime.Now,
+                    UserId = Users.Single(u => u.UserEmail == user.UserName).UserID,
+                    Source = source,
+                    Message = message,
+                    OriginalValue = "",
+                    CurrentValue = GetEntityPropertyValues(entity, propertyInfo),
+                    Type = "T"
+                };
+            }
+            else if (state == EntityState.Modified)
+            {
+                message ??= "Modified entity";
+                Log log = new Log
+                {
+                    Time = DateTime.Now,
+                    UserId = Users.Single(u => u.UserEmail == user.UserName).UserID,
+                    Source = source,
+                    Message = message,
+                    Type = "T"
+                };
+
+                var entry = ChangeTracker.Entries().SingleOrDefault(e => e.Entity == entity);
+                if (entry != null)
+                {
+                    IEnumerable<PropertyEntry> changedProperties = entry.Properties.Where(p => p.IsModified);
+                    log.OriginalValue = GetOriginalPropertyValues(changedProperties);
+                    log.CurrentValue = GetCurrentPropertyValues(changedProperties);
+                }
+
+                return log;
+            }
+            else if (state == EntityState.Deleted)
+            {
+                message ??= "Deleted from entity";
+                return new Log
+                {
+                    Time = DateTime.Now,
+                    UserId = Users.Single(u => u.UserEmail == user.UserName).UserID,
+                    Source = source,
+                    Message = message,
+                    OriginalValue = GetEntityPropertyValues(entity, propertyInfo),
+                    CurrentValue = "",
+                    Type = "T"
+                };
+            }
+            message ??= "";
+            return new Log
+            {
+                Time = DateTime.Now,
+                UserId = Users.Single(u => u.UserEmail == user.UserName).UserID,
                 Source = source,
                 Message = message,
                 OriginalValue = "",

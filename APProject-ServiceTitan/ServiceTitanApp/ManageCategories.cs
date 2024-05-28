@@ -154,7 +154,8 @@ namespace ServiceTitanApp
                 var alldet = context.Services.Where(service => service.CategoryId == selectedCategoryId).ToList();
                 context.Services.RemoveRange(alldet);
                 context.Categories.Remove(selectedCategory);
-                context.SaveChanges();
+                string source = Helper.GetLogSource(this);
+                context.Save(Global.User, source, "Deleted Category.");
                 RefreshCategoriesDGV();
             }
         }
