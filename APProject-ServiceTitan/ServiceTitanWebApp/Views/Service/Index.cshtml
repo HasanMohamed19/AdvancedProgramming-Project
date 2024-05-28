@@ -43,7 +43,7 @@
 <form asp-controller="Service" method="get" asp-action="Index" class="mb-3">
     <div class="hstack gap-2" style="max-width:45rem;">
         <input class="form-control" type="text" name="searchName" asp-for="searchName" placeholder="Search" />
-        <label asp-for="searchName">Name:</label>
+        <label asp-for="searchCategory">Category:</label>
         <select style="max-width:10rem;" class="form-select" name="searchCategory" asp-for="searchCategory" asp-items="Model.Categories.Select(m => new SelectListItem{Text = m.CategoryName, Value = m.CategoryID.ToString()})">
             <option value="">All</option>
         </select>
@@ -66,12 +66,20 @@
                 </div>
                 <div class="card-body">
                     <div class="crop-text-2" style="height:3rem;">
-                        @Html.DisplayFor(modelItem => item.ServicePrice)
+                        @Html.DisplayFor(modelItem => item.ServiceDescription)
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            @Html.DisplayFor(modelItem => item.ServicePrice) BHD
+                        </div>
+                        <div class="col">
+                            @Html.DisplayFor(modelItem => item.Category.CategoryName)
+                        </div>
                     </div>
                     @if (item.ServiceTechnicians.Count() != 0)
                     {
                         <div>
-                            @Html.DisplayFor(modelItem => item.ServiceTechnicians.Count())
+                            Technicians: @item.ServiceTechnicians.Count()
                         </div>
                     }
                     else
