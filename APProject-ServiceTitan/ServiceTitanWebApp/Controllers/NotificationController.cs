@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ServiceTitanBusinessObjects;
 using ServiceTitanWebApp.Helpers;
+using ServiceTitanWebApp.ViewModels;
 
 namespace ServiceTitanWebApp.Controllers
 {
@@ -23,15 +24,38 @@ namespace ServiceTitanWebApp.Controllers
         }
 
         // GET: Notification
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchQuery, string statusId)
         {
+            IEnumerable<Notification> notifications;
             int loggedInUserId = _context.Users.Single(s => s.UserEmail == _userManager.GetUserName(User)).UserID;
-            var serviceTitanDBContext = _context.Notifications
+            notifications = _context.Notifications
                 .Include(n => n.NotificationStatus)
                 .Include(n => n.User)
                 .Where(n => n.UserId == loggedInUserId)
                 .OrderByDescending(n => n.NotificationID);
-            return View(await serviceTitanDBContext.ToListAsync());
+
+            if (!String.IsNullOrEmpty(searchQuery))
+                searchQuery = searchQuery.ToLower();
+
+            if (!String.IsNullOrEmpty(searchQuery))
+            {
+                notifications = notifications.Where(s => s.NotificationTitle.ToLower().Contains(searchQuery)
+                || s.NotificationMessage.ToLower().Contains(searchQuery)
+                || s.NotificationType.ToLower().Contains(searchQuery));
+            }
+
+            if (!String.IsNullOrEmpty(statusId))
+            {
+                notifications = notifications.Where(n => n.NotificationStatusId == Convert.ToInt32(statusId));
+            }
+
+            var notificationIndexVM = new NotificationIndexViewModel
+            {
+                Notifications = notifications,
+                StatusIds = _context.NotificationStatus.ToList()
+            };
+
+            return View(notificationIndexVM);
         }
 
         // GET: Notification/Details/5

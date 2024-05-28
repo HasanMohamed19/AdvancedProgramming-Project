@@ -1,8 +1,11 @@
-@model IEnumerable<ServiceTitanBusinessObjects.Notification>
+@using ServiceTitanWebApp.ViewModels
+@using ServiceTitanBusinessObjects
+@model NotificationIndexViewModel
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    Notification notif = new();
 }
 
 <h1>Index</h1>
@@ -10,29 +13,43 @@
 @*<p>
     <a asp-action="Create">Create New</a>
 </p>*@
+<form asp-controller="Notification" method="get" asp-action="Index" class="mb-3">
+    <div class="hstack gap-2" style="max-width:45rem;">
+        <input class="form-control" type="text" name="searchQuery" asp-for="SearchQuery" placeholder="Search" />
+        <label asp-for="StatusId">Status:</label>
+        <select style="max-width:10rem;" class="form-select" name="statusId" asp-for="StatusId" asp-items="Model.StatusIds.Select(s => new SelectListItem{Text = s.NotificationStatusName, Value = s.NotificationStatusID.ToString()})">
+            <option value="">All</option>
+        </select>
+        <a asp-controller="Notification" asp-action="Index" class="btn btn-outline-danger">
+            Clear
+        </a>
+        <input type="submit" value="Search" class="btn btn-secondary" />
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.NotificationStatus)
+                @Html.DisplayNameFor(model => notif.NotificationStatus)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.NotificationTitle)
+                @Html.DisplayNameFor(model => notif.NotificationTitle)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.NotificationType)
+                @Html.DisplayNameFor(model => notif.NotificationType)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.NotificationMessage)
+                @Html.DisplayNameFor(model => notif.NotificationMessage)
             </th>
             @*<th>
-                @Html.DisplayNameFor(model => model.User)
+            @Html.DisplayNameFor(model => notif.User)
             </th>*@
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Notifications) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.NotificationStatus.NotificationStatusName)
