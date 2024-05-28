@@ -27,7 +27,7 @@ namespace ServiceTitanApp
             {
                 btnAddCategory.Enabled = false;
                 btnEditCategory.Enabled = false;
-                comboManager.Enabled = false;
+                btnDelete.Enabled = false;
             }
         }
 

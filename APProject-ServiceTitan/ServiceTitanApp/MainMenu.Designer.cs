@@ -59,7 +59,6 @@
             // btnManageCategories
             // 
             btnManageCategories.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            btnManageCategories.Enabled = false;
             btnManageCategories.Location = new Point(3, 141);
             btnManageCategories.Name = "btnManageCategories";
             btnManageCategories.Size = new Size(244, 57);
@@ -107,7 +106,7 @@
             // 
             // MainMenu
             // 
-            AutoScaleDimensions = new SizeF(14F, 36F);
+            AutoScaleDimensions = new SizeF(12F, 30F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1000, 500);
             Controls.Add(tblMain);
