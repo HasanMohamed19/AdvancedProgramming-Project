@@ -9,42 +9,158 @@
     ServiceRequest model = new();
 }
 
-<h1>Requests</h1>
-@{
-    @if (TempData["CreateSuccess"] != null)
-    {
-        <div class="alert alert-success alert-dismissible" role="alert">
-            <div>@TempData["CreateSuccess"].ToString()</div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+<div class="container">
+    <h1 class="mb-3">Requests</h1>
+    @{
+        @if (TempData["CreateSuccess"] != null)
+        {
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <div>@TempData["CreateSuccess"].ToString()</div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        else if (TempData["EditSuccess"] != null)
+        {
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <div>@TempData["EditSuccess"].ToString()</div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        else if (TempData["CancelSuccess"] != null)
+        {
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <div>@TempData["CancelSuccess"].ToString()</div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        else if (TempData["DeleteSuccess"] != null)
+        {
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <div>@TempData["DeleteSuccess"].ToString()</div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
     }
-    else if (TempData["EditSuccess"] != null)
-    {
-        <div class="alert alert-success alert-dismissible" role="alert">
-            <div>@TempData["EditSuccess"].ToString()</div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    @* <p>
+        <a asp-action="Create">Create New</a>
+    </p> *@
+    <form asp-controller="ServiceRequest" method="get" asp-action="Index" class="mb-3">
+        <div class="hstack gap-2" style="max-width:45rem;">
+                <input class="form-control" type="text" name="searchName" asp-for="searchName" placeholder="Search" />
+                <label asp-for="searchStatus">Status:</label>
+                <select style="max-width:10rem;" class="form-select" name="searchStatus" asp-for="searchStatus" asp-items="Model.RequestStatuses.Select(s => new SelectListItem{Text = s.Status, Value = s.StatusID.ToString()})">
+                    <option value="">All</option>
+                </select>
+                <a asp-controller="ServiceRequest" asp-action="Index" class="btn btn-outline-danger">
+                    Clear
+                </a>
+                <input type="submit" value="Search" class="btn btn-secondary" />
         </div>
-    }
-    else if (TempData["CancelSuccess"] != null)
-    {
-        <div class="alert alert-success alert-dismissible" role="alert">
-            <div>@TempData["CancelSuccess"].ToString()</div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
-    else if (TempData["DeleteSuccess"] != null)
-    {
-        <div class="alert alert-success alert-dismissible" role="alert">
-            <div>@TempData["DeleteSuccess"].ToString()</div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
-}
-@* <p>
-    <a asp-action="Create">Create New</a>
-</p> *@
+    </form>
 
-<div class="container p-3">
+    <div class="row row-cols-1 row-cols-lg-3 g-3">
+        @foreach (var item in Model.ServiceRequests)
+        {
+            <div class="col">
+                <div class="card text-center">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            @Html.DisplayFor(modelItem => item.Service.ServiceName)
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            @if (!User.IsInRole("Technician"))
+                            {
+                                <div class="col fw-bold">
+                                    @Html.DisplayNameFor(modelItem => item.Technician)
+                                </div>
+                            }
+                            @if (!User.IsInRole("User"))
+                            {
+                                <div class="col fw-bold">
+                                    @Html.DisplayNameFor(modelItem => item.Client)
+                                </div>
+                            }
+                        </div>
+                        <div class="row">
+                            @if (!User.IsInRole("Technician"))
+                            {
+                                @if (item.Technician != null)
+                                {
+                                    <div class="col">
+                                        @Html.DisplayFor(modelItem => item.Technician.FullName)
+                                    </div>
+                                } else
+                                {
+                                    <div class="col fst-italic">
+                                        None
+                                    </div>
+                                }
+                            }
+                            @if (!User.IsInRole("User"))
+                            {
+                                @if (item.Client != null)
+                                {
+                                    <div class="col">
+                                        @Html.DisplayFor(modelItem => item.Client.FullName)
+                                    </div>
+                                } else
+                                {
+                                    <div class="col fst-italic">
+                                        None
+                                    </div>
+                                }
+                            }
+                        </div>
+                        <div class="crop-text-2" style="height:3rem;">
+                            @Html.DisplayFor(modelItem => item.RequestDescription)
+                        </div>
+                        <div class="">
+                            @Html.DisplayFor(modelItem => item.RequestDateNeeded)
+                        </div>
+                        <div class="row row-cols-2">
+                            <div class="col text-end">
+                                @Html.DisplayFor(modelItem => item.RequestPrice) BHD
+                            </div>
+                            <div class="col text-start">
+                                @Html.DisplayFor(modelItem => item.Status.Status)
+                            </div>
+                        </div>
+                        <hr class="m-2" />
+                        <div class="g-2 mb-2">
+                            <a class="btn btn-primary" asp-controller="Document" asp-action="Index" asp-route-requestId="@item.RequestID">Documents</a>
+                            <a class="btn btn-primary" asp-controller="Comment" asp-action="Index" asp-route-requestId="@item.RequestID">Comments</a>
+                        </div>
+                        <div class="g-2">
+                            <a class="btn btn-secondary" asp-action="Details" asp-route-id="@item.RequestID">Details</a>
+                            @if (item.StatusId != 4 && item.StatusId != 3)
+                            {
+                                // if request complete or cancelled then cannot cancel or edit
+                                <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.RequestID">Edit</a>
+                                <a class="btn btn-danger" asp-action="Cancel" asp-route-id="@item.RequestID">Cancel</a>
+                            }
+                            else
+                            {
+                                if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                                {
+                                    // unless user is admin or manager
+                                    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.RequestID">Edit</a>
+                                }
+                            }
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.RequestID">Delete</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@* <div class="container p-3">
     <div class="row pt-4">
         <div class="col-8">
             <form asp-controller="ServiceRequest" method="get" asp-action="Index">
@@ -160,3 +276,4 @@
     </div>
 </div>
 
+ *@

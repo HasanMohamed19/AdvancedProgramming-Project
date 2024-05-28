@@ -35,4 +35,9 @@
     <EditorConfigFiles Remove="C:\Users\202101277\Documents\AdvancedProgramming-Project\APProject-ServiceTitan\ServiceTitanWebApp\.editorconfig" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\Images\requests.png" />
+    <None Include="wwwroot\Images\topService.png" />
+  </ItemGroup>
+
 </Project>

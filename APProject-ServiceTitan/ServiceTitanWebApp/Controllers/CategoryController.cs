@@ -27,14 +27,18 @@ namespace ServiceTitanWebApp.Controllers
         {
             //IQueryable<Category> categories = _context.Categories.Include(c => c.CategoryManager);
             IEnumerable<Category> categories;
+            if (!String.IsNullOrEmpty(searchName))
+                searchName = searchName.ToLower();
 
             // if no filter is used
-            categories = _context.Categories.Include(c => c.CategoryManager);
+            categories = _context.Categories
+                .Include(c => c.CategoryManager);
 
-            // search for category name
+            // search for category name or description
             if (!String.IsNullOrEmpty(searchName))
             {
-                categories = categories.Where(c => c.CategoryName!.Contains(searchName));
+                categories = categories.Where(c => c.CategoryName!.ToLower().Contains(searchName)
+                || (c.CategoryDescription != null && c.CategoryDescription.ToLower().Contains(searchName)));
             }
 
             // search for manager

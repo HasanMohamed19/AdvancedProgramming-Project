@@ -13,52 +13,54 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Category.CategoryID" />
-            <div class="form-group">
-                <label asp-for="Category.CategoryName" class="control-label"></label>
-                <input asp-for="Category.CategoryName" class="form-control" />
-                <span asp-validation-for="Category.CategoryName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Category.CategoryDescription" class="control-label"></label>
-                <input asp-for="Category.CategoryDescription" class="form-control" />
-                <span asp-validation-for="Category.CategoryDescription" class="text-danger"></span>
-            </div>
-            @{
-                int c = Model.Users.Count();
-                if (@Model.Users.Count() == 0)
-                {
-                    <div><span class="alert-danger">All managers have categories right now. Cannot assign a manager to a category</span></div>
+            <div class="vstack gap-3">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Category.CategoryID" />
+                <div class="form-group">
+                    <label asp-for="Category.CategoryName" class="control-label"></label>
+                    <input asp-for="Category.CategoryName" class="form-control" />
+                    <span asp-validation-for="Category.CategoryName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Category.CategoryDescription" class="control-label"></label>
+                    <input asp-for="Category.CategoryDescription" class="form-control" />
+                    <span asp-validation-for="Category.CategoryDescription" class="text-danger"></span>
+                </div>
+                @{
+                    int c = Model.Users.Count();
+                    if (@Model.Users.Count() == 0)
+                    {
+                        <div><span class="alert-danger">All managers have categories right now. Cannot assign a manager to a category</span></div>
+                    }
+                    else
+                    {
+
+                        <div id="assign-check" class="form-group">
+                            Assign Manager:
+                            <input type="checkbox" id="assign-manager" checked />
+                        </div>
+
+                        <div id="manager-combo" class="form-group">
+
+                            <label asp-for="Category.CategoryManagerId" class="control-label"></label>
+                            <select asp-for="Category.CategoryManagerId" class="form-control" asp-items="@Model.Users
+                            .Select(u => new SelectListItem {Text = u.FullName, Value = u.UserID.ToString()})">
+                                <option value="0" disabled selected>Select Manager</option>
+                            </select>
+                            <span asp-validation-for="Category.CategoryManagerId" class="text-danger"></span>
+                        </div>
+                    }
                 }
-                else
-                {
-
-                    <div id="assign-check" class="form-group">
-                        Assign Manager:
-                        <input type="checkbox" id="assign-manager" checked />
-                    </div>
-
-                    <div id="manager-combo" class="form-group">
-
-                        <label asp-for="Category.CategoryManagerId" class="control-label"></label>
-                        <select asp-for="Category.CategoryManagerId" class="form-control" asp-items="@Model.Users
-                        .Select(u => new SelectListItem {Text = u.UserEmail, Value = u.UserID.ToString()})">
-                            <option value="0" disabled selected>Select Manager</option>
-                        </select>
-                        <span asp-validation-for="Category.CategoryManagerId" class="text-danger"></span>
-                    </div>
-                }
-            }
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="mt-3">
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </div>
 
 @section Scripts {

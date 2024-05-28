@@ -6,29 +6,29 @@
 <h1>Categories Dashboard</h1>
 <br />
 
-<div class="row">
+<div class="row mb-3">
     <div class="col-md-6">
-        <div id="piechart_div" style="border: 1px solid #ccc"></div>
+        <div id="piechart_div" class="border border-1"></div>
     </div>
 
     <div class="col-md-6">
-        <div id="barchart_div" style="border: 1px solid #ccc"></div>
+        <div id="barchart_div" class="border border-1"></div>
     </div>
 </div>
 
-<br />
-<br />
-<br />
-
 <div class="row">
     <div class="col-md-6">
-        <div  id="" style="border: 1px solid #ccc"><img src="https://placehold.co/400" /></div>
-        <div id="" style="border: 1px solid #ccc">Top Selling Service: @ViewData["topSellingService"]</div>
+        <div class="border border-1 text-center">
+            <h4>Top Selling Service: @ViewData["topSellingService"]</h4>
+            <img src="/Images/topService.png" />
+        </div>
     </div>
     
     <div class="col-md-6">
-        <div id="" style="border: 1px solid #ccc"><img src="https://placehold.co/400" /></div>
-        <div id="" style="border: 1px solid #ccc">Pending Requests: @ViewData["pendingRequests"]</div>
+        <div class=" border border-1 text-center">
+            <h4>Pending Requests: @ViewData["pendingRequests"]</h4>
+            <img src="/Images/requests.png" />
+        </div>
     </div>
 </div>
 
@@ -63,7 +63,7 @@
                 });
                 data.addRows(dataArray);
                 var piechart_options = {
-                    title: 'Pie Chart: How Much Services Sold',
+                    title: 'Pie Chart: How Many Services Sold',
                     width: 500,
                     height: 300
                 };
@@ -71,7 +71,7 @@
                     .getElementById('piechart_div'));
                 piechart.draw(data, piechart_options);
                 var barchart_options = {
-                    title: 'Barchart: How Much Services Sold',
+                    title: 'Barchart: How Many Services Sold',
                     width: 500,
                     height: 300,
                     legend: 'none'
