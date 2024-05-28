@@ -6,7 +6,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<div class="container">
+    <h1 class="mb-3">Categories</h1>
 
 @{
     @if (TempData["CreateSuccess"] != null)
@@ -31,13 +32,61 @@
         </div>
     }
 }
+    @if (User.IsInRole("Admin"))
+    {
+        <p>
+            <a asp-action="Create" class="btn btn-primary">Create New</a>
+        </p>
+    }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+    <form asp-controller="Category" method="get" asp-action="Index" class="mb-3">
+        <div class="hstack gap-2" style="max-width:45rem;">
+             <input class="form-control" type="text" name="searchName" asp-for="searchName" placeholder="Search" />
+             <label asp-for="searchManager">Manager:</label>
+                <select style="max-width:10rem;" class="form-select" name="searchStatus" asp-for="searchManager" asp-items="Model.Managers.Select(m => new SelectListItem{Text = m.FullName, Value = m.UserID.ToString()})">
+                    <option value="">All</option>
+                </select>
+                <a asp-controller="Category" asp-action="Index" class="btn btn-outline-danger">
+                    Clear
+                </a>
+                <input type="submit" value="Search" class="btn btn-secondary" />
+        </div>
+    </form>
 
+<div class="row row-cols-1 row-cols-lg-3 g-3">
+        @foreach (var item in Model.Categories)
+        {
+            <div class="col">
+                <div class="card text-center">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            @Html.DisplayFor(modelItem => item.CategoryName)
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="crop-text-2" style="height:3rem;">
+                            @Html.DisplayFor(modelItem => item.CategoryDescription)
+                        </div>
+                        <div class="">
+                            @Html.DisplayFor(modelItem => item.CategoryManager.FullName)
+                        </div>
+                        <hr class="m-2" />
+                        <div class="g-2">
+                            <a class="btn btn-secondary" asp-action="Details" asp-route-id="@item.CategoryID">Details</a>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.CategoryID">Edit</a>
+                                <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.CategoryID">Delete</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
 
-<div class="container p-3">
+ @* <div class="container p-3">
 
     <div class="row pt-4">
 
@@ -65,15 +114,12 @@
             <thead>
                 <tr>
                     <th>
-                        @*@Html.DisplayNameFor(model => model.CategoryName)*@
                         CategoryName
                     </th>
                     <th>
-                        @*@Html.DisplayNameFor(model => model.CategoryDescription)*@
                         CategoryDescription
                     </th>
                     <th>
-                        @*@Html.DisplayNameFor(model => model.CategoryManager)*@
                         CategoryManager
                     </th>
                     <th></th>
@@ -102,4 +148,4 @@
             </tbody>
         </table>
     </div>
-</div>
+</div>  *@
