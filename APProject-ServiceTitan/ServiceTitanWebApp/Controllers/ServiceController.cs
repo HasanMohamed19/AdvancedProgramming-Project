@@ -336,6 +336,13 @@ namespace ServiceTitanWebApp.Controllers
                 return Problem("Entity set 'ServiceTitanDBContext.Services'  is null.");
             }
             var service = await _context.Services.FindAsync(id);
+            var hasAnyRequestsInProgressOrPending = _context.ServiceRequests.Where(sr => sr.ServiceId == service.ServiceID && (sr.StatusId == 1 || sr.StatusId == 2)).ToList();
+            if (hasAnyRequestsInProgressOrPending.Count() != 0)
+            {
+                // return alert
+                TempData["cannotDelete"] = "<script>alert('Cannot delete service becuase there are pending/inprogress requests for it.');</script>";
+                return RedirectToAction(nameof(Index));
+            }
             try
             {
                 if (service != null)

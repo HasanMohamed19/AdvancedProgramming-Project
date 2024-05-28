@@ -235,6 +235,19 @@ namespace ServiceTitanWebApp.Controllers
             try
             {
                 var category = _context.Categories.Find(id);
+
+                var hasAnyServiceNotCompleted = _context.ServiceRequests
+                .Include(sr => sr.Service)
+                .ThenInclude(s => s.Category)
+                .Where(x => x.Service.CategoryId == category.CategoryID && (x.StatusId == 1 || x.StatusId == 2)).ToList();
+
+                if (hasAnyServiceNotCompleted.Count() != 0)
+                {
+                    // return alert
+                    TempData["cannotDelete"] = "<script>alert('Cannot delete category becuase there are one or more requests for one or more of its services.');</script>";
+                    return RedirectToAction(nameof(Index));
+                }
+
                 if (category != null)
                 {
                     _context.Categories.Remove(category);

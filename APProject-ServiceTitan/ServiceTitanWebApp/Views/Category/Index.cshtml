@@ -30,6 +30,9 @@
             <div>@TempData["DeleteSuccess"].ToString()</div>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
+    } else if (TempData["cannotDelete"] != null)
+    {
+        @Html.Raw(TempData["cannotDelete"])
     }
 }
     @if (User.IsInRole("Admin"))
