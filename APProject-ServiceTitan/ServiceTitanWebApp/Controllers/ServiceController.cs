@@ -136,7 +136,7 @@ namespace ServiceTitanWebApp.Controllers
                     {
                         st.TechniciansId = item;
                         _context.ServiceTechnicians.Add(st);
-                        _context.SaveChanges();
+                        _context.Save(User, GetSourceRoute(), null);
                     } catch (Exception ex)
                     {
                         _context.LogException(ex, User, GetSourceRoute());
