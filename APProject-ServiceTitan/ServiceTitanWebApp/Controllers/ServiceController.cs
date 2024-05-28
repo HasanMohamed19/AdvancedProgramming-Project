@@ -30,7 +30,7 @@ namespace ServiceTitanWebApp.Controllers
 
             IEnumerable<Service> services;
 
-            services = _context.Services.Include(c => c.Category);
+            services = _context.Services.Include(c => c.Category).ThenInclude(m => m.CategoryManager);
 
             // search for service name
             if (!String.IsNullOrEmpty(searchName))
@@ -55,7 +55,6 @@ namespace ServiceTitanWebApp.Controllers
             {
                 TempData["userId"] = _context.Users.Single(u => u.UserEmail == User.Identity.Name).UserID;
             }
-            
 
             //var services = _context.Services.Include(s => s.Category);
             return View(serviceIndexVM);
@@ -72,6 +71,7 @@ namespace ServiceTitanWebApp.Controllers
 
             var service = _context.Services
                 .Include(s => s.Category)
+                .ThenInclude(m => m.CategoryManager)
                 .FirstOrDefault(m => m.ServiceID == id);
             if (service == null)
             {
