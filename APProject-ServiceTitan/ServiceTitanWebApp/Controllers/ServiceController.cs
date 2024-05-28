@@ -341,15 +341,29 @@ namespace ServiceTitanWebApp.Controllers
                 return NotFound();
             }
 
-            var service = await _context.Services
+            var service = _context.Services
                 .Include(s => s.Category)
-                .FirstOrDefaultAsync(m => m.ServiceID == id);
+                .ThenInclude(m => m.CategoryManager)
+                .FirstOrDefault(m => m.ServiceID == id);
             if (service == null)
             {
                 return NotFound();
             }
 
-            return View(service);
+            var servicesTechs = _context.ServiceTechnicians.Where(st => st.ServicesId == service.ServiceID).ToList();
+            var technicians = new List<ApplicationUser>();
+            foreach (var st in servicesTechs)
+            {
+                technicians.Add(_context.Users.Single(u => u.UserID == st.TechniciansId));
+            }
+
+            var detailsVM = new ServiceDetailsViewModel
+            {
+                Service = service,
+                Technicians = technicians
+            };
+
+            return View(detailsVM);
         }
 
         [Authorize(Roles = "Admin,Manager")]

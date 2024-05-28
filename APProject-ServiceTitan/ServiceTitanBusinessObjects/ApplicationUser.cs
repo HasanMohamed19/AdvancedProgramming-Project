@@ -18,33 +18,42 @@ namespace ServiceTitanBusinessObjects
         [Required]
         [MaxLength(50)]
         [MinLength(2)]
+        [Display(Name ="First Name")]
         public string? FirstName { get; set; }
 
         [Required]
         [MaxLength(50)]
         [MinLength(2)]
+        [Display(Name = "Last Name")]
         public string? LastName { get; set; }
 
         public string? FullName { get { return FirstName + " " + LastName; } }
 
         [Required]
         [MaxLength(50)]
+        [Display(Name = "City")]
         public string? City { get; set; }
 
         [Required]
         [MaxLength(12)]
+        [Display(Name = "Phone Number")]
         public string? PhoneNumber { get; set; }
 
         [Required]
         [MaxLength(50)]
         [RegularExpression("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")]
+        [Display(Name = "Email")]
         public string UserEmail { get; set; }
 
+        [Display(Name = "Role")]
         public int? RoleId { get; set; }
+        [Display(Name = "Role")]
         public UserRole? Role { get; set; }
 
+        [Display(Name = "Category")]
         public Category? Category { get; set; }
 
+        [Display(Name = "Services")]
         public ICollection<ServiceTechnician> ServiceTechnicians { get; } = new HashSet<ServiceTechnician>();
         //public ICollection<Service> Services { get; } = new HashSet<Service>();
 

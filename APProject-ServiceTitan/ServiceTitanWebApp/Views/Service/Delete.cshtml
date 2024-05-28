@@ -1,5 +1,6 @@
-@model ServiceTitanBusinessObjects.Service
-
+@using ServiceTitanWebApp.ViewModels
+@using ServiceTitanBusinessObjects
+@model ServiceDetailsViewModel
 @{
     ViewData["Title"] = "Delete";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -12,34 +13,50 @@
     <h4>Service</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ServiceName)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Service.ServiceName)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ServiceName)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Service.ServiceName)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ServiceDescription)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Service.ServiceDescription)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ServiceDescription)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Service.ServiceDescription)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ServicePrice)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Service.ServicePrice)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ServicePrice)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Service.ServicePrice) BHD
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Category)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Service.Category)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Category.CategoryName)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Service.Category.CategoryName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Service.ServiceTechnicians)
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.Technicians.Count() != 0)
+            {
+                @foreach (var tech in Model.Technicians)
+                {
+                    @tech.FullName <br />
+                }
+            }
+            else
+            {
+                <span class="fst-italic">No Technicians</span>
+            }
         </dd>
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="ServiceID" />
+        <input type="hidden" asp-for="Service.ServiceID" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>
