@@ -46,7 +46,7 @@ namespace ServiceTitanWebApp.Controllers
             // update status to read
             notification.NotificationStatusId = 2;
             _context.Update(notification);
-            _context.SaveChanges();
+            _context.Save(User, GetSourceRoute(), null);
 
             return View(notification);
         }

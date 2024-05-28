@@ -85,7 +85,7 @@ namespace ServiceTitanWebApp.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(userVM.NewUser);
-                _context.SaveChanges();
+                _context.Save(User,GetSourceRoute(),null);
 
                 var user = CreateUser();
 
@@ -103,7 +103,7 @@ namespace ServiceTitanWebApp.Controllers
                     {
                         st.ServicesId = assignedServiceId;   
                         _context.ServiceTechnicians.Add(st);
-                        _context.SaveChanges();
+                        _context.Save(User, GetSourceRoute(), null);
                     }
                 }
                 TempData["CreateSuccess"] = "User Added Successfully";
@@ -231,7 +231,7 @@ namespace ServiceTitanWebApp.Controllers
                         }
                     }
                     _context.Update(existingUser);
-                    await _context.SaveChangesAsync();
+                    await _context.SaveAsync(User, GetSourceRoute(), null);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -297,8 +297,8 @@ namespace ServiceTitanWebApp.Controllers
             {
                 _context.Users.Remove(user);
             }
-            
-            await _context.SaveChangesAsync();
+
+            await _context.SaveAsync(User, GetSourceRoute(), null);
             TempData["DeleteSuccess"] = "User Deleted Successfully";
             return RedirectToAction(nameof(Index));
         }
