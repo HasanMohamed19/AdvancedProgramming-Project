@@ -127,6 +127,9 @@ namespace ServiceTitanWebApp.Controllers
                 ServiceTechnician st = new ServiceTechnician();
                 st.ServicesId = newService.Service.ServiceID;
 
+                if (newService.TechniciansId == null)
+                    newService.TechniciansId = new();
+
                 foreach (var item in newService.TechniciansId)
                 {
                     st.TechniciansId = item;
