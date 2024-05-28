@@ -334,6 +334,7 @@ namespace ServiceTitanBusinessObjects
         private Log CreateLog(object entity, EntityState state, IdentityUser user, string source, string? message)
         {
             var propertyInfo = entity.GetType().GetProperties();
+            string commonType = "AuditTrail";
             if (state  == EntityState.Added)
             {
                 message ??= "Added to entity";
@@ -345,7 +346,7 @@ namespace ServiceTitanBusinessObjects
                     Message = message,
                     OriginalValue = "",
                     CurrentValue = GetEntityPropertyValues(entity, propertyInfo),
-                    Type = "T"
+                    Type = commonType
                 };
             }
             else if (state == EntityState.Modified)
@@ -357,7 +358,7 @@ namespace ServiceTitanBusinessObjects
                     UserId = Users.Single(u => u.UserEmail == user.UserName).UserID,
                     Source = source,
                     Message = message,
-                    Type = "T"
+                    Type = commonType
                 };
 
                 var entry = ChangeTracker.Entries().SingleOrDefault(e => e.Entity == entity);
@@ -381,7 +382,7 @@ namespace ServiceTitanBusinessObjects
                     Message = message,
                     OriginalValue = GetEntityPropertyValues(entity, propertyInfo),
                     CurrentValue = "",
-                    Type = "T"
+                    Type = commonType
                 };
             }
             message ??= "";
@@ -393,7 +394,7 @@ namespace ServiceTitanBusinessObjects
                 Message = message,
                 OriginalValue = "",
                 CurrentValue = "",
-                Type = "T"
+                Type = commonType
             };
         }
 
@@ -442,6 +443,26 @@ namespace ServiceTitanBusinessObjects
             {
                 Time = DateTime.Now,
                 UserId = Users.Single(u => u.UserEmail == user.Identity.Name).UserID,
+                Source = source,
+                OriginalValue = "",
+                CurrentValue = "",
+                Message = message,
+                Type = "Exception"
+            };
+            Logs.Add(log);
+            SaveChanges();
+        }
+
+        public void LogException(Exception ex, IdentityUser user, string source)
+        {
+            RollBack(); // rollback changes to allow saving log
+            string message = (ex.Message + "\n" + ex.InnerException);
+            if (message.Length > 4000)
+                message = message.Substring(0, 3999);
+            Log log = new Log
+            {
+                Time = DateTime.Now,
+                UserId = Users.Single(u => u.UserEmail == user.UserName).UserID,
                 Source = source,
                 OriginalValue = "",
                 CurrentValue = "",

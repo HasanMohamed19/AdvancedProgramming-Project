@@ -175,6 +175,8 @@ namespace ServiceTitanApp
             }
             catch (Exception ex)
             {
+                string source = Helper.GetLogSource(this);
+                context.LogException(ex, Global.User, source);
                 if (ex.InnerException != null)
                     MessageBox.Show(ex.InnerException.ToString());
                 else MessageBox.Show(ex.ToString());

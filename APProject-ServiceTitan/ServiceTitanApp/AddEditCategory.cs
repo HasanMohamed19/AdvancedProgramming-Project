@@ -73,6 +73,8 @@ namespace ServiceTitanApp
 
             } catch (Exception ex)
             {
+                string source = Helper.GetLogSource(this);
+                context.LogException(ex, Global.User, source);
                 MessageBox.Show(ex.Message);
             }
         }
