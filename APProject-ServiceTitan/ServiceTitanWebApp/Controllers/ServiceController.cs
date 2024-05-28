@@ -51,6 +51,12 @@ namespace ServiceTitanWebApp.Controllers
                 ServiceTechnicians = _context.ServiceTechnicians,
             };
 
+            if (User.IsInRole("Manager"))
+            {
+                TempData["userId"] = _context.Users.Single(u => u.UserEmail == User.Identity.Name).UserID;
+            }
+            
+
             //var services = _context.Services.Include(s => s.Category);
             return View(serviceIndexVM);
         }

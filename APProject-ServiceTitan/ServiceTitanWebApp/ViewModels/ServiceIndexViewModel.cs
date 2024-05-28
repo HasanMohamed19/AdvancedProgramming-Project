@@ -10,7 +10,7 @@ namespace ServiceTitanWebApp.ViewModels
         public IEnumerable<ServiceTechnician>? ServiceTechnicians { get; set; }
 
         public string? searchName { get; set; }
-        public string? searchManager { get; set; }
+        public string? searchCategory { get; set; }
 
     }
 }
