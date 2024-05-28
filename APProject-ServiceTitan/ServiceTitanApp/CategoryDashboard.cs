@@ -42,33 +42,48 @@ namespace ServiceTitanApp
 
         private void CreateStatistics()
         {
-
+            tblStats.Controls.Clear();
+            tblBigStats.Controls.Clear();
             // relative to the selected category, this can be refactored to use as querable (todo: later)
 
+            comboCategory.SelectedValue ??= "0";
+            int categoryId = Convert.ToInt32(comboCategory.SelectedValue);
+
             string totalSales = context.ServiceRequests
-                .Where(s => s.Service.CategoryId == Convert.ToInt32(comboCategory.SelectedValue))
+                .Where(s => s.Service.CategoryId == categoryId)
                 .Sum(sr => sr.RequestPrice).ToString("0.000") + "BHD";
 
-            Service topService = context.Services
-                .Where(s => s.CategoryId == Convert.ToInt32(comboCategory.SelectedValue))
+            var topService = context.Services
+                .Where(s => s.CategoryId != null && s.CategoryId == categoryId)
                 .OrderByDescending(service => service.ServiceRequests.Sum(sr => sr.RequestPrice))
                 .FirstOrDefault();
-            string topSellingService = null;
-            if (topService != null)
-            {
-                topSellingService = topService.ServiceName.ToString();
-            }
+            string topSellingService = topService != null ? topService.ServiceName : "None";
+            topSellingService ??= "";
 
             string pendingRequests = context.ServiceRequests
-                .Where(sr => sr.StatusId == 2 && sr.Service.CategoryId == Convert.ToInt32(comboCategory.SelectedValue))
+                .Where(sr => sr.StatusId == 2 && sr.Service.CategoryId == categoryId)
                 .Count().ToString();
+            pendingRequests ??= "";
+
+            string totalServiceRequests = context.ServiceRequests.Count(s => s.Service.CategoryId == categoryId).ToString();
+            totalServiceRequests ??= "";
+
+            string completedRequests = context.ServiceRequests.Count(s => s.Service.CategoryId == categoryId
+                 && s.StatusId == 3).ToString();
+            completedRequests ??= "";
+
+            string overdueRequests = context.ServiceRequests.Count(s => s.Service.CategoryId == categoryId
+                 && s.StatusId == 1
+                 && s.RequestDateNeeded < DateTime.Now).ToString();
+            overdueRequests ??= "";
 
             tblStats.Controls.Add(new Statistic("Total Sales", totalSales, Statistic.StatImages.sales));
-            tblStats.Controls.Add(new Statistic("Pending Requests", pendingRequests, Statistic.StatImages.requests));
-            if (topSellingService != null)
-            {
-                tblStats.Controls.Add(new Statistic("Top Selling Service", topSellingService, Statistic.StatImages.topService));
-            }
+            tblStats.Controls.Add(new Statistic("Top Selling Service", topSellingService, Statistic.StatImages.topService));
+            tblStats.Controls.Add(new Statistic("Total Service Requests", totalServiceRequests, Statistic.StatImages.requests));
+
+            tblBigStats.Controls.Add(new Statistic("Pending Requests", pendingRequests, Statistic.StatImages.requests));
+            tblBigStats.Controls.Add(new Statistic("Completed Requests", completedRequests, Statistic.StatImages.services));
+            tblBigStats.Controls.Add(new Statistic("Overdue Requests", overdueRequests, Statistic.StatImages.requests));
         }
 
         private void btnBack_Click(object sender, EventArgs e)
@@ -83,9 +98,13 @@ namespace ServiceTitanApp
             parentForm.GoToForm(manageCategories);
         }
 
-        private void chartBar_Click(object sender, EventArgs e)
+        private void comboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
+        }
 
+        private void comboCategory_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            CreateStatistics();
         }
     }
 }

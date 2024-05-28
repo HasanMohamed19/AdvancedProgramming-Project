@@ -28,15 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
             tblMain = new TableLayoutPanel();
             tblControls = new TableLayoutPanel();
             comboCategory = new ComboBox();
@@ -44,19 +35,12 @@
             btnBack = new Button();
             btnCategories = new Button();
             tblStats = new TableLayoutPanel();
-            tblChart = new TableLayoutPanel();
-            chartBar = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            chartLine = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            chartPie = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            tblBigStats = new TableLayoutPanel();
             tableLayoutPanel1 = new TableLayoutPanel();
             lblValue = new Label();
             lblTitle = new Label();
             tblMain.SuspendLayout();
             tblControls.SuspendLayout();
-            tblChart.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)chartBar).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)chartLine).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)chartPie).BeginInit();
             tableLayoutPanel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -103,6 +87,8 @@
             comboCategory.Name = "comboCategory";
             comboCategory.Size = new Size(222, 38);
             comboCategory.TabIndex = 0;
+            comboCategory.SelectedIndexChanged += comboCategory_SelectedIndexChanged;
+            comboCategory.SelectionChangeCommitted += comboCategory_SelectionChangeCommitted;
             // 
             // lblSelect
             // 
@@ -152,74 +138,19 @@
             tblStats.Size = new Size(766, 244);
             tblStats.TabIndex = 1;
             // 
-            // tblChart
+            // tblBigStats
             // 
-            tblChart.ColumnCount = 3;
-            tblChart.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
-            tblChart.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
-            tblChart.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
-            tblChart.Controls.Add(chartBar, 2, 0);
-            tblChart.Controls.Add(chartLine, 1, 0);
-            tblChart.Controls.Add(chartPie, 0, 0);
-            tblChart.Dock = DockStyle.Fill;
-            tblChart.Location = new Point(0, 0);
-            tblChart.Name = "tblChart";
-            tblChart.RowCount = 1;
-            tblChart.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tblChart.Size = new Size(1000, 256);
-            tblChart.TabIndex = 1;
-            // 
-            // chartBar
-            // 
-            chartArea1.Name = "ChartArea1";
-            chartBar.ChartAreas.Add(chartArea1);
-            chartBar.Dock = DockStyle.Fill;
-            legend1.Name = "Legend1";
-            chartBar.Legends.Add(legend1);
-            chartBar.Location = new Point(669, 3);
-            chartBar.Name = "chartBar";
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Bar;
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            chartBar.Series.Add(series1);
-            chartBar.Size = new Size(328, 250);
-            chartBar.TabIndex = 2;
-            chartBar.Click += chartBar_Click;
-            // 
-            // chartLine
-            // 
-            chartArea2.Name = "ChartArea1";
-            chartLine.ChartAreas.Add(chartArea2);
-            chartLine.Dock = DockStyle.Fill;
-            legend2.Name = "Legend1";
-            chartLine.Legends.Add(legend2);
-            chartLine.Location = new Point(336, 3);
-            chartLine.Name = "chartLine";
-            series2.ChartArea = "ChartArea1";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series2.Legend = "Legend1";
-            series2.Name = "Series1";
-            chartLine.Series.Add(series2);
-            chartLine.Size = new Size(327, 250);
-            chartLine.TabIndex = 1;
-            // 
-            // chartPie
-            // 
-            chartArea3.Name = "ChartArea1";
-            chartPie.ChartAreas.Add(chartArea3);
-            chartPie.Dock = DockStyle.Fill;
-            legend3.Name = "Legend1";
-            chartPie.Legends.Add(legend3);
-            chartPie.Location = new Point(3, 3);
-            chartPie.Name = "chartPie";
-            series3.ChartArea = "ChartArea1";
-            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
-            series3.Legend = "Legend1";
-            series3.Name = "Series1";
-            chartPie.Series.Add(series3);
-            chartPie.Size = new Size(327, 250);
-            chartPie.TabIndex = 0;
+            tblBigStats.ColumnCount = 3;
+            tblBigStats.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
+            tblBigStats.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
+            tblBigStats.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
+            tblBigStats.Dock = DockStyle.Fill;
+            tblBigStats.Location = new Point(0, 0);
+            tblBigStats.Name = "tblBigStats";
+            tblBigStats.RowCount = 1;
+            tblBigStats.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tblBigStats.Size = new Size(1000, 256);
+            tblBigStats.TabIndex = 1;
             // 
             // tableLayoutPanel1
             // 
@@ -262,7 +193,7 @@
             AutoScaleDimensions = new SizeF(12F, 30F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1000, 500);
-            Controls.Add(tblChart);
+            Controls.Add(tblBigStats);
             Controls.Add(tblMain);
             Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point);
             FormBorderStyle = FormBorderStyle.None;
@@ -273,10 +204,6 @@
             tblMain.ResumeLayout(false);
             tblControls.ResumeLayout(false);
             tblControls.PerformLayout();
-            tblChart.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)chartBar).EndInit();
-            ((System.ComponentModel.ISupportInitialize)chartLine).EndInit();
-            ((System.ComponentModel.ISupportInitialize)chartPie).EndInit();
             tableLayoutPanel1.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -287,11 +214,8 @@
         private TableLayoutPanel tblControls;
         private ComboBox comboCategory;
         private Button btnCategories;
-        private TableLayoutPanel tblChart;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chartPie;
+        private TableLayoutPanel tblBigStats;
         private TableLayoutPanel tblStats;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chartBar;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chartLine;
         private Button btnBack;
         private Label lblSelect;
         private TableLayoutPanel tableLayoutPanel1;
