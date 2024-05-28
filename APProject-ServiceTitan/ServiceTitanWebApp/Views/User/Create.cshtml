@@ -117,6 +117,7 @@
                 $("#technicans-fields").removeClass("d-none");
             } else {
                 $("#technicans-fields").addClass("d-none");
+                $('#clearServicesList').click();
             }
         })
 
@@ -148,8 +149,8 @@
 
             }
         })
-        $('#clearList').click(function() {
-            $('#techniciansList option:selected').each(function () {
+        $('#clearServicesList').click(function () {
+            $('#service-combo option:selected').each(function () {
                 $(this).prop('selected', false);
             })
         });

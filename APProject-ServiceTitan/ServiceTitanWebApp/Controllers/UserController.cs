@@ -8,13 +8,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ServiceTitanBusinessObjects;
+using ServiceTitanWebApp.Helpers;
 using ServiceTitanWebApp.ViewModels;
 
 
 namespace ServiceTitanWebApp.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         private readonly ServiceTitanDBContext _context;
         private readonly UserManager<IdentityUser> _userManager;
