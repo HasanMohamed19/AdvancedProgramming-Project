@@ -7,6 +7,30 @@
 
 <h1>Index</h1>
 
+@{
+    if (TempData["CreateSuccess"] != null)
+    {
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <div>@TempData["CreateSuccess"].ToString()</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    } else if (TempData["EditSuccess"] != null)
+    {
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <div>@TempData["EditSuccess"].ToString()</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    else if (TempData["DeleteSuccess"] != null)
+    {
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <div>@TempData["DeleteSuccess"].ToString()</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+}
+
 <p>
     <a asp-action="Create">Create New</a>
 </p>
@@ -17,10 +41,13 @@
                 @Html.DisplayNameFor(model => model.UserEmail)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserEmail)
+                @Html.DisplayNameFor(model => model.FirstName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserEmail)
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PhoneNumber)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Role)
@@ -35,11 +62,14 @@
                 @Html.DisplayFor(modelItem => item.UserEmail)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.UserEmail)
+                @Html.DisplayFor(modelItem => item.FirstName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.UserEmail)
+                @Html.DisplayFor(modelItem => item.LastName)
             </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Role.RoleName)
             </td>
