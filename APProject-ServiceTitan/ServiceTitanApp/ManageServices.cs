@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -145,6 +146,16 @@ namespace ServiceTitanApp
                     return;
                 }
             }
+
+            // check if there is a request for this service before deleting
+            var hasAnyRequestsInProgressOrPending = context.ServiceRequests.Where(sr => sr.ServiceId == selectedServiceId && (sr.StatusId == 1 || sr.StatusId == 2)).ToList();
+            if (hasAnyRequestsInProgressOrPending.Count() != 0)
+            {
+                MessageBox.Show("Cannot delete service becuase there are pending/inprogress requests for it.");
+                return;
+            }
+
+            
 
             if (MessageBox.Show("Are you sure you want to delete the service (" + selectedService.ServiceName + " and its requests)?", "Confirm Delete", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
