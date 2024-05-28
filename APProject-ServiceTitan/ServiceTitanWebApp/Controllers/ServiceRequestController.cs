@@ -226,6 +226,8 @@ namespace ServiceTitanWebApp.Controllers
                     _context.Add(serviceRequest);
                     await _context.SaveAsync(User, GetSourceRoute(), null);
                     SendCreateNotification(serviceRequest, service);
+                    ApplicationUser u = Users.Single(u => u.UserEmail == user.Identity.Name);
+                    EmailController.Instance().SendServiceRequestMade(u.UserEmail, u.UserEmail, u.FirstName, u.LastName, serviceRequest.RequestPrice);
                     TempData["CreateSuccess"] = "Request Created Successfully";
                 } catch (Exception ex)
                 {
@@ -291,6 +293,8 @@ namespace ServiceTitanWebApp.Controllers
                     _context.Add(serviceRequest);
                     await _context.SaveAsync(User, GetSourceRoute(), null);
                     SendCreateNotification(serviceRequest, service);
+                    ApplicationUser u = Users.Single(u => u.UserEmail == user.Identity.Name);
+                    EmailController.Instance().SendServiceRequestMade(u.UserEmail, u.UserEmail, u.FirstName, u.LastName, serviceRequest.RequestPrice);
                     TempData["CreateSuccess"] = "Request Created Successfully";
                 }
                 catch (Exception ex)
@@ -376,6 +380,8 @@ namespace ServiceTitanWebApp.Controllers
                     _context.Update(existingRequest);
                     await _context.SaveAsync(User, GetSourceRoute(), null);
                     SendEditNotification(existingRequest);
+                    ApplicationUser u = Users.Single(u => u.UserEmail == user.Identity.Name);
+                    EmailController.Instance().SendServiceRequestUpdate(u.UserEmail, u.UserEmail, u.FirstName, u.LastName, existingRequest.RequestPrice);
                     TempData["EditSuccess"] = "Request Saved Successfully";
                 }
                 catch (DbUpdateConcurrencyException ex)
@@ -450,6 +456,9 @@ namespace ServiceTitanWebApp.Controllers
                         _context.Update(serviceRequest);
                         await _context.SaveAsync(User, GetSourceRoute(), null);
                         SendCancelNotification(serviceRequest);
+                        SendCancelNotification(serviceRequest);
+                        ApplicationUser u = Users.Single(u => u.UserEmail == user.Identity.Name);
+                        EmailController.Instance().SendServiceRequestCancel(u.UserEmail, u.UserEmail, u.FirstName, u.LastName, existingRequest.RequestPrice);
                         TempData["CancelSuccess"] = "Request Cancelled Successfully";
                     }
                     catch (DbUpdateConcurrencyException ex)
@@ -517,7 +526,11 @@ namespace ServiceTitanWebApp.Controllers
 
                 await _context.SaveAsync(User, GetSourceRoute(), null);
                 if (serviceRequest.StatusId != 4 && serviceRequest.StatusId != 3)
+                {
                     SendCancelNotification(serviceRequest);
+                    ApplicationUser u = Users.Single(u => u.UserEmail == user.Identity.Name);
+                    EmailController.Instance().SendServiceRequestCancel(u.UserEmail, u.UserEmail, u.FirstName, u.LastName, existingRequest.RequestPrice);
+                }
                 TempData["DeleteSuccess"] = "Request Deleted Successfully";
             } catch (Exception ex)
             {

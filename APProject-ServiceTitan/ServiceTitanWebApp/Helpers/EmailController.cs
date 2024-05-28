@@ -54,7 +54,83 @@ namespace ServiceTitanWebApp.Helpers
             msgMail.Dispose();
         }
 
+        public void SendServiceRequestMade(string email, string username, string firstName, string lastName, string price)
+        {
+            string body = $"<h1>Hello {firstName} {lastName}.<h1>\n <p>You request have been made successfully.</p> <p>Your total price is: {price}</p>\n Thank you for trusting us.\n ";
 
+            MailMessage msgMail;
+            msgMail = new MailMessage();
+            msgMail.From = new MailAddress("servicetitanbh@gmail.com", "serviceTitan");
+            msgMail.To.Add(email);
+
+            msgMail.Subject = "Request Made Successfully";
+            msgMail.Body = body;
+            msgMail.IsBodyHtml = true;
+
+            try
+            {
+                smtpClient.Send(msgMail);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            // to relaease the resoruces used by the mail message
+            msgMail.Dispose();
+        }
+
+        public void SendServiceRequestUpdate(string email, string username, string firstName, string lastName, string price)
+        {
+            string body = $"<h1>Hello {firstName} {lastName}.<h1>\n <p>You request have been updated successfully.</p> <p>Your new total price is: {price}</p>\n Thank you for trusting us.\n ";
+
+            MailMessage msgMail;
+            msgMail = new MailMessage();
+            msgMail.From = new MailAddress("servicetitanbh@gmail.com", "serviceTitan");
+            msgMail.To.Add(email);
+
+            msgMail.Subject = "Request Updated Successfully";
+            msgMail.Body = body;
+            msgMail.IsBodyHtml = true;
+
+            try
+            {
+                smtpClient.Send(msgMail);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            // to relaease the resoruces used by the mail message
+            msgMail.Dispose();
+        }
+
+        public void SendServiceRequestCancel(string email, string username, string firstName, string lastName, string price)
+        {
+            string body = $"<h1>Hello {firstName} {lastName}.<h1>\n <p>You request have been updated successfully.</p> <p>Your new total price is: {price}</p>\n Thank you for trusting us.\n ";
+
+            MailMessage msgMail;
+            msgMail = new MailMessage();
+            msgMail.From = new MailAddress("servicetitanbh@gmail.com", "serviceTitan");
+            msgMail.To.Add(email);
+
+            msgMail.Subject = "Request Updated Successfully";
+            msgMail.Body = body;
+            msgMail.IsBodyHtml = true;
+
+            try
+            {
+                smtpClient.Send(msgMail);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            // to relaease the resoruces used by the mail message
+            msgMail.Dispose();
+        }
 
     }
 }
