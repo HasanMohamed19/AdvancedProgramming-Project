@@ -7,12 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ServiceTitanBusinessObjects;
+using ServiceTitanWebApp.Helpers;
 using ServiceTitanWebApp.ViewModels;
 
 namespace ServiceTitanWebApp.Controllers
 {
     [Authorize]
-    public class DocumentController : Controller
+    public class DocumentController : BaseController
     {
         private readonly ServiceTitanDBContext _context;
 
@@ -76,50 +77,63 @@ namespace ServiceTitanWebApp.Controllers
             if (requestId == null) return NotFound();
             if (files.Count == 0) return NotFound();
             int thisUserId = _context.Users.Single(u => u.UserEmail == User.Identity.Name).UserID;
-            foreach (var file in files)
+            try
             {
-                var basePath = Path.Combine(Directory.GetCurrentDirectory() + "Files");
-                bool basePathExists = Directory.Exists(basePath);
-                if (!basePathExists) Directory.CreateDirectory(basePath);
-                var fileName = Path.GetFileName(file.FileName);
-                var filePath = Path.Combine(basePath, file.FileName);
-                //var extension = Path.GetExtension(file.FileName);
-                if (!System.IO.File.Exists(filePath))
+                foreach (var file in files)
                 {
-                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    var basePath = Path.Combine(Directory.GetCurrentDirectory() + "Files");
+                    bool basePathExists = Directory.Exists(basePath);
+                    if (!basePathExists) Directory.CreateDirectory(basePath);
+                    var fileName = Path.GetFileName(file.FileName);
+                    var filePath = Path.Combine(basePath, file.FileName);
+                    //var extension = Path.GetExtension(file.FileName);
+                    if (!System.IO.File.Exists(filePath))
                     {
-                        await file.CopyToAsync(stream);
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await file.CopyToAsync(stream);
+                        }
+                        Document document = new Document
+                        {
+                            DocumentUploadDate = DateTime.UtcNow,
+                            DocumentType = file.ContentType,
+                            DocumentName = fileName,
+                            DocumentDescription = description,
+                            DocumentPath = filePath,
+                            UserId = thisUserId,
+                            ServiceRequestId = requestId
+                        };
+                        _context.Documents.Add(document);
+                        await _context.SaveAsync(User, GetSourceRoute(), null);
                     }
-                    Document document = new Document
-                    {
-                        DocumentUploadDate = DateTime.UtcNow,
-                        DocumentType = file.ContentType,
-                        DocumentName = fileName,
-                        DocumentDescription = description,
-                        DocumentPath = filePath,
-                        UserId = thisUserId,
-                        ServiceRequestId = requestId
-                    };
-                    _context.Documents.Add(document);
-                    _context.SaveChanges();
                 }
+                TempData["CreateSuccess"] = "Files Uploaded Successfully";
+            } catch (Exception ex)
+            {
+                _context.LogException(ex, User, GetSourceRoute());
+                TempData["CreateFailed"] = "Could not upload files.";
             }
-            TempData["CreateSuccess"] = "Files Uploaded Successfully";
-
             return RedirectToAction(nameof(Index), new { requestId });
         }
 
         public async Task<IActionResult> Download(int? id)
         {
-            var file = await _context.Documents.Where(x => x.DocumentID == id).FirstOrDefaultAsync();
-            if (file == null) return null;
-            var memory = new MemoryStream();
-            using (var stream = new FileStream(file.DocumentPath, FileMode.Open))
+            try
             {
-                await stream.CopyToAsync(memory);
+                var file = await _context.Documents.Where(x => x.DocumentID == id).FirstOrDefaultAsync();
+                if (file == null) return null;
+                var memory = new MemoryStream();
+                using (var stream = new FileStream(file.DocumentPath, FileMode.Open))
+                {
+                    await stream.CopyToAsync(memory);
+                }
+                memory.Position = 0;
+                return File(memory, file.DocumentType, file.DocumentName);
+            } catch (Exception ex)
+            {
+                _context.LogException(ex, User, GetSourceRoute());
             }
-            memory.Position = 0;
-            return File(memory, file.DocumentType, file.DocumentName);
+            return null;
         }
 
         // GET: Document/Edit/5
@@ -164,20 +178,22 @@ namespace ServiceTitanWebApp.Controllers
             try
             {
                 _context.Update(existingDocument);
-                await _context.SaveChangesAsync();
+                await _context.SaveAsync(User, GetSourceRoute(), null);
+                TempData["EditSuccess"] = "Document Saved Successfully";
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
                 if (!DocumentExists(existingDocument.DocumentID))
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+                _context.LogException(ex, User, GetSourceRoute());
+                TempData["EditFailed"] = "Could not save document.";
+            } catch (Exception ex)
+            {
+                _context.LogException(ex, User, GetSourceRoute());
+                TempData["EditFailed"] = "Could not save document.";
             }
-            TempData["EditSuccess"] = "Document Saved Successfully";
             return RedirectToAction(nameof(Index), new { requestId = existingDocument.ServiceRequestId });
         }
 
@@ -214,14 +230,22 @@ namespace ServiceTitanWebApp.Controllers
             {
                 return NotFound();
             }
-            if (System.IO.File.Exists(document.DocumentPath))
+            try
             {
-                System.IO.File.Delete(document.DocumentPath);
+                if (System.IO.File.Exists(document.DocumentPath))
+                {
+                    System.IO.File.Delete(document.DocumentPath);
+                }
+                _context.Documents.Remove(document);
+
+                await _context.SaveAsync(User, GetSourceRoute(), null);
+                TempData["DeleteSuccess"] = "Document Deleted Successfully";
+            } catch (Exception ex)
+            {
+                _context.LogException(ex, User, GetSourceRoute());
+                TempData["DeleteFailed"] = "Could not delete document.";
             }
-            _context.Documents.Remove(document);
             
-            await _context.SaveChangesAsync();
-            TempData["DeleteSuccess"] = "Document Deleted Successfully";
             return RedirectToAction(nameof(Index), new { requestId = document.ServiceRequestId });
         }
 

@@ -7,12 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ServiceTitanBusinessObjects;
+using ServiceTitanWebApp.Helpers;
 using ServiceTitanWebApp.ViewModels;
 
 namespace ServiceTitanWebApp.Controllers
 {
     [Authorize]
-    public class CommentController : Controller
+    public class CommentController : BaseController
     {
         private readonly ServiceTitanDBContext _context;
 
@@ -78,9 +79,17 @@ namespace ServiceTitanWebApp.Controllers
             comment.CommentDate = DateTime.Now;
             if (ModelState.IsValid)
             {
-                _context.Add(comment);
-                await _context.SaveChangesAsync();
-                TempData["CreateSuccess"] = "Comment Created Successfully";
+                try
+                {
+                    _context.Add(comment);
+                    await _context.SaveAsync(User,GetSourceRoute(), null);
+                    TempData["CreateSuccess"] = "Comment Created Successfully";
+                    
+                } catch (Exception ex)
+                {
+                    _context.LogException(ex, User, GetSourceRoute());
+                    TempData["CreateFailed"] = "Could not create comment.";
+                }
                 return RedirectToAction(nameof(Index), new { requestId = comment.ServiceRequestId });
             }
 
@@ -141,20 +150,22 @@ namespace ServiceTitanWebApp.Controllers
                 try
                 {
                     _context.Update(existingComment);
-                    await _context.SaveChangesAsync();
+                    await _context.SaveAsync(User, GetSourceRoute(), null);
+                    TempData["EditSuccess"] = "Comment Saved Successfully";
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
                     if (!CommentExists(existingComment.CommentID))
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+                    _context.LogException(ex, User, GetSourceRoute());
+                    TempData["EditFailed"] = "Could not save comment";
+                } catch (Exception ex)
+                {
+                    _context.LogException(ex, User, GetSourceRoute());
+                    TempData["EditFailed"] = "Could not save comment";
                 }
-                TempData["EditSuccess"] = "Comment Saved Successfully";
                 return RedirectToAction(nameof(Index), new { requestId = existingComment.ServiceRequestId });
             }
             //ViewData["ServiceRequestId"] = new SelectList(_context.ServiceRequests, "RequestID", "RequestID", comment.ServiceRequestId);
@@ -197,19 +208,26 @@ namespace ServiceTitanWebApp.Controllers
             {
                 return Problem("Entity set 'ServiceTitanDBContext.Comments'  is null.");
             }
+
             var comment = await _context.Comments.FindAsync(id);
-            if (comment != null)
+            try
             {
-                int thisUserId = _context.Users.Single(u => u.UserEmail == User.Identity.Name).UserID;
-                if (!User.IsInRole("Admin") 
-                    && !User.IsInRole("Manager") 
-                    && comment.UserId != thisUserId) 
-                    return Forbid();
-                _context.Comments.Remove(comment);
+                if (comment != null)
+                {
+                    int thisUserId = _context.Users.Single(u => u.UserEmail == User.Identity.Name).UserID;
+                    if (!User.IsInRole("Admin") 
+                        && !User.IsInRole("Manager") 
+                        && comment.UserId != thisUserId) 
+                        return Forbid();
+                    _context.Comments.Remove(comment);
+                }
+                await _context.SaveAsync(User, GetSourceRoute(), null);
+                TempData["DeleteSuccess"] = "Comment Deleted Successfully";
+            } catch (Exception ex)
+            {
+                _context.LogException(ex, User, GetSourceRoute());
+                TempData["EditFailed"] = "Could not save comment";
             }
-            
-            await _context.SaveChangesAsync();
-            TempData["DeleteSuccess"] = "Comment Deleted Successfully";
             return RedirectToAction(nameof(Index), new { requestId = comment.ServiceRequestId });
         }
 
