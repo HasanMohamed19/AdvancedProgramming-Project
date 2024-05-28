@@ -86,15 +86,31 @@
                         <div class="row">
                             @if (!User.IsInRole("Technician"))
                             {
-                                <div class="col">
-                                    @Html.DisplayFor(modelItem => item.Technician.FullName)
-                                </div>
+                                @if (item.Technician != null)
+                                {
+                                    <div class="col">
+                                        @Html.DisplayFor(modelItem => item.Technician.FullName)
+                                    </div>
+                                } else
+                                {
+                                    <div class="col fst-italic">
+                                        None
+                                    </div>
+                                }
                             }
                             @if (!User.IsInRole("User"))
                             {
-                                <div class="col">
-                                    @Html.DisplayFor(modelItem => item.Client.FullName)
-                                </div>
+                                @if (item.Client != null)
+                                {
+                                    <div class="col">
+                                        @Html.DisplayFor(modelItem => item.Client.FullName)
+                                    </div>
+                                } else
+                                {
+                                    <div class="col fst-italic">
+                                        None
+                                    </div>
+                                }
                             }
                         </div>
                         <div class="crop-text-2" style="height:3rem;">

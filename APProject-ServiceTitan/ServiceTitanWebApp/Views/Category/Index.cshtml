@@ -67,9 +67,17 @@
                         <div class="crop-text-2" style="height:3rem;">
                             @Html.DisplayFor(modelItem => item.CategoryDescription)
                         </div>
-                        <div class="">
-                            @Html.DisplayFor(modelItem => item.CategoryManager.FullName)
-                        </div>
+                        @if (item.CategoryManager != null)
+                        {
+                            <div>
+                                @Html.DisplayFor(modelItem => item.CategoryManager.FullName)
+                            </div>
+                        } else
+                        {
+                            <div class="fst-italic">
+                                No Manager
+                            </div>
+                        }
                         <hr class="m-2" />
                         <div class="g-2">
                             <a class="btn btn-secondary" asp-action="Details" asp-route-id="@item.CategoryID">Details</a>
