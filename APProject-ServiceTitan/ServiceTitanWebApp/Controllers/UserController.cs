@@ -37,7 +37,7 @@ namespace ServiceTitanWebApp.Controllers
         // GET: User
         public async Task<IActionResult> Index()
         {
-            var serviceTitanDBContext = _context.Users.Include(u => u.Role);
+            var serviceTitanDBContext = _context.Users.Include(u => u.Role).Where(r => r.RoleId != 1);
             return View(await serviceTitanDBContext.ToListAsync());
         }
 
