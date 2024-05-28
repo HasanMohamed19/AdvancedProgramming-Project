@@ -1,8 +1,10 @@
-@model IEnumerable<ServiceTitanBusinessObjects.Service>
+@using ServiceTitanWebApp.ViewModels
+@model ServiceIndexViewModel
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var services = Model.Services.ToList();
 }
 
 <h1>Index</h1>
@@ -10,52 +12,103 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ServiceName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ServiceDescription)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ServicePrice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ServiceName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ServiceDescription)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ServicePrice)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.CategoryName)
-            </td>
-            <td>
-                @if (User.IsInRole("Admin")) 
-                {
-                        <a asp-controller="ServiceRequest" asp-action="AdminCreate" asp-route-id="@item.ServiceID">Create Request</a> <span> |</span>
-                } else
-                {
-                        <a asp-controller="ServiceRequest" asp-action="Create" asp-route-id="@item.ServiceID">Create Request</a> <span> |</span>
-                }
-                    <a asp-action="Edit" asp-route-id="@item.ServiceID">Edit</a> <span> |</span>
-                    <a asp-action="Details" asp-route-id="@item.ServiceID">Details</a> <span> |</span>
-                <a asp-action="Delete" asp-route-id="@item.ServiceID">Delete</a>
-            </td>
-        </tr>
+
+@{
+    @if (TempData["CreateSuccess"] != null)
+    {
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <div>@TempData["CreateSuccess"].ToString()</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    else if (TempData["EditSuccess"] != null)
+    {
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <div>@TempData["EditSuccess"].ToString()</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    else if (TempData["DeleteSuccess"] != null)
+    {
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <div>@TempData["DeleteSuccess"].ToString()</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 }
-    </tbody>
-</table>
+
+
+<div class="container p-3">
+
+    <div class="row pt-4">
+
+        <div class="col-8">
+            <form asp-controller="Service" method="get" asp-action="Index">
+                Service Name:
+                <input type="text" name="searchName" asp-for="searchName" />
+
+
+                Category:
+                <select name="searchCategory" asp-for="searchName" asp-items="Model.Categories.Select(c => new SelectListItem{Text = c.CategoryName, Value = c.CategoryID.ToString()})">
+                    <option value="">All</option>
+                </select>
+
+                <a asp-controller="Service" asp-action="Index" class="btn btn-outline-danger">
+                    Clear
+                </a>
+                <input type="submit" value="Search" class="btn btn-secondary mx-2" />
+            </form>
+        </div>
+
+
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @*@Html.DisplayNameFor(model => model.CategoryName)*@
+                        Service Name
+                    </th>
+                    <th>
+                        @*@Html.DisplayNameFor(model => model.CategoryDescription)*@
+                        Service Description
+                    </th>
+                    <th>
+                        @*@Html.DisplayNameFor(model => model.CategoryManager)*@
+                        Service Price
+                    </th>
+                    <th>
+                        Number of Technicians
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var service in services)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => service.ServiceName)
+
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => service.ServiceDescription)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => service.ServicePrice)
+                        </td>
+                        <td>
+                            @Model.ServiceTechnicians.Count(u => u.ServicesId == service.ServiceID)
+                            @* @Html.DisplayFor(modelItem => service.Technicians.Count()) *@
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@service.ServiceID">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@service.ServiceID">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@service.ServiceID">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
