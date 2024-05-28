@@ -93,6 +93,7 @@
                     }
                     <hr class="m-2" />
                     <div class="g-2">
+                        <a class="btn btn-primary" asp-controller="ServiceRequest" asp-action="Create" asp-route-id="@item.ServiceID">Create Request</a>
                         <a class="btn btn-secondary" asp-action="Details" asp-route-id="@item.ServiceID">Details</a>
                         @if (User.IsInRole("Admin") || ((User.IsInRole("Manager") && item.Category != null && item.Category.CategoryManager != null && item.Category.CategoryManager.UserID == Convert.ToInt32(TempData["userId"]))))
                         {
