@@ -21,6 +21,7 @@ namespace ServiceTitanApp
             frm.Show();
         }
 
+        // function to get the source of the event for logging
         public static string GetLogSource(Form form)
         {
             string source = "Form: " + form.Name;

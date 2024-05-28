@@ -36,6 +36,7 @@ namespace ServiceTitanApp
         {
             comboCategory.DisplayMember = "CategoryName";
             comboCategory.ValueMember = "CategoryID";
+            // check if admin or manager to perfom authorization
             if (Global.RoleName.Equals("Admin"))
             {
                 comboCategory.DataSource = context.Categories.ToList();
@@ -60,6 +61,7 @@ namespace ServiceTitanApp
             PopulateTechnicans();
         }
 
+        // method to populate techn combo box
         private void PopulateTechnicans()
         {
             var technicans = context.Users.Where(u => u.RoleId == 3).AsQueryable();

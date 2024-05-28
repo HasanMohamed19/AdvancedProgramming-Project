@@ -136,6 +136,7 @@ namespace ServiceTitanBusinessObjects
         //        return base.SaveChanges();
         //    }
 
+        // wrapper method for save forms
         public int Save(IdentityUser user, string source, string? message)
         {
             // Detect changes
@@ -179,6 +180,7 @@ namespace ServiceTitanBusinessObjects
             return SaveChanges();
         }
 
+        // wrapper method for save web
         public int Save(ClaimsPrincipal user, string source, string? message)
         {
             // Detect changes
@@ -221,6 +223,8 @@ namespace ServiceTitanBusinessObjects
             // Save changes (including logs)
             return SaveChanges();
         }
+
+        // override method for saveAsync for web
         public async Task<int> SaveAsync(ClaimsPrincipal user, string source, string? message)
         {
             // Detect changes
@@ -264,6 +268,7 @@ namespace ServiceTitanBusinessObjects
             return await SaveChangesAsync();
         }
 
+        // function to create new log object to be inserted
         private Log CreateLog(object entity, EntityState state, ClaimsPrincipal user, string source, string? message)
         {
             var propertyInfo = entity.GetType().GetProperties();
@@ -331,6 +336,7 @@ namespace ServiceTitanBusinessObjects
             };
         }
 
+        // function to create lob object ot be inserted for forms
         private Log CreateLog(object entity, EntityState state, IdentityUser user, string source, string? message)
         {
             var propertyInfo = entity.GetType().GetProperties();
@@ -398,6 +404,7 @@ namespace ServiceTitanBusinessObjects
             };
         }
 
+        //functions to get current and original values
         private string GetOriginalPropertyValues(IEnumerable<PropertyEntry> properties)
         {
             var values = new List<string>();
@@ -434,7 +441,7 @@ namespace ServiceTitanBusinessObjects
             return string.Join(", ", values);
         }
 
-
+        // function to log exceptiops
         public void LogException(Exception ex, ClaimsPrincipal user, string source)
         {
             RollBack(); // rollback changes to allow saving log
@@ -475,6 +482,7 @@ namespace ServiceTitanBusinessObjects
             SaveChanges();
         }
 
+        // function to roll back changes in case of a failure
         public void RollBack()
         {
             var changedEntries = ChangeTracker.Entries()
