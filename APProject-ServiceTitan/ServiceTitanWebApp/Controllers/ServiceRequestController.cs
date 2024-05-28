@@ -35,21 +35,14 @@ namespace ServiceTitanWebApp.Controllers
                 .Include(s => s.Service)
                 .Include(s => s.Status)
                 .Include(s => s.Technician);
-            if (!String.IsNullOrEmpty(searchName))
-                searchName = searchName.ToLower(); // normalize
-
             if (User.IsInRole(UserRole.GetRoleName(3)!))
             {
-                // if technician
-                requests = requests.Where(s => s.Technician != null && s.Technician.UserEmail == loggedInUserEmail);
+                requests = requests.Where(s => s.Technician.UserEmail == loggedInUserEmail);
 
                 // search for client name
                 if (!String.IsNullOrEmpty(searchName))
                 {
-                    requests = requests.Where(r => 
-                    r.Client.FullName!.ToLower().Contains(searchName) 
-                    || r.RequestDescription.ToLower().Contains(searchName) 
-                    || r.Service.ServiceName.ToLower().Contains(searchName));
+                    requests = requests.Where(r => r.Client.FullName!.Contains(searchName));
                 }
 
                 // search for status
@@ -68,16 +61,12 @@ namespace ServiceTitanWebApp.Controllers
             }
             else if (User.IsInRole(UserRole.GetRoleName(4)!))
             {
-                // if client
                 requests = requests.Where(s => s.Client.UserEmail == loggedInUserEmail);
 
-                // search for description and service name
+                // search for client name
                 if (!String.IsNullOrEmpty(searchName))
                 {
-                    requests = requests.Where(r => 
-                    r.RequestDescription.ToLower().Contains(searchName) 
-                    || r.Service.ServiceName.ToLower().Contains(searchName)
-                    || (r.Technician != null && r.Technician.FullName!.ToLower().Contains(searchName)));
+                    requests = requests.Where(r => r.Client.FullName!.Contains(searchName));
                 }
 
                 // search for status
@@ -95,15 +84,11 @@ namespace ServiceTitanWebApp.Controllers
                 return View(requestIndexVM);
             } else if (User.IsInRole(UserRole.GetRoleName(1)!) || User.IsInRole(UserRole.GetRoleName(2)!))
             {
-                // if admin or manager
-                // search for client name, reqeust description or service name
+
+                // search for client name
                 if (!String.IsNullOrEmpty(searchName))
                 {
-                    requests = requests.Where(r => 
-                    r.Client.FullName!.ToLower().Contains(searchName)
-                    || r.RequestDescription.ToLower().Contains(searchName) 
-                    || r.Service.ServiceName.ToLower().Contains(searchName)
-                    || (r.Technician != null && r.Technician.FullName!.ToLower().Contains(searchName)));
+                    requests = requests.Where(r => r.Client.FullName!.Contains(searchName));
                 }
 
                 // search for status

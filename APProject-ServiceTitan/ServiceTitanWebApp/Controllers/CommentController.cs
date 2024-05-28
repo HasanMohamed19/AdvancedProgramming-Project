@@ -29,8 +29,7 @@ namespace ServiceTitanWebApp.Controllers
             var comments = _context.Comments
                 .Include(c => c.ServiceRequest)
                 .Include(c => c.User)
-                .Where(u => u.ServiceRequestId == requestId)
-                .OrderByDescending(o => o.CommentDate);
+                .Where(u => u.ServiceRequestId == requestId);
             RequestCommentsViewModel commentsViewModel = new RequestCommentsViewModel
             {
                 Comments = comments,
