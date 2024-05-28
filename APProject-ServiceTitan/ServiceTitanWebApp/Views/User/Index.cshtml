@@ -28,6 +28,27 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
+    @if (TempData["CreateFailed"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <div>@TempData["CreateFailed"].ToString()</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    else if (TempData["EditFailed"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <div>@TempData["EditFailed"].ToString()</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    else if (TempData["DeleteFailed"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <div>@TempData["DeleteFailed"].ToString()</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 
 }
 
