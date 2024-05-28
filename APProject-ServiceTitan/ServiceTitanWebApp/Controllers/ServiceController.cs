@@ -231,6 +231,9 @@ namespace ServiceTitanWebApp.Controllers
                             .Any(st => st.TechniciansId == tech.UserID
                             && st.ServicesId == serviceVM.Service.ServiceID);
 
+                        if (serviceVM.TechniciansId == null)
+                            serviceVM.TechniciansId = new();
+
                         if (!relationshipExists && serviceVM.TechniciansId.Any(t => t == tech.UserID))
                         {
                             // add if not already selected
