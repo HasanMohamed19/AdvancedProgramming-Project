@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -100,7 +101,7 @@ namespace ServiceTitanApp
             {
 
                 //MessageBox.Show("Database Service has technicians: "+dbService.Technicians.Count().ToString());
-
+                ValidateService();
                 service.ServiceName = txtName.Text;
                 service.ServicePrice = Convert.ToDecimal(txtPrice.Text);
                 service.ServiceDescription = txtDescription.Text;
@@ -175,6 +176,13 @@ namespace ServiceTitanApp
             }
             catch (Exception ex)
             {
+                
+                if (ex is FormatException)
+                {
+                    MessageBox.Show("Price can be just numbers.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
                 string source = Helper.GetLogSource(this);
                 context.LogException(ex, Global.User, source);
                 if (ex.InnerException != null)
@@ -189,6 +197,34 @@ namespace ServiceTitanApp
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
+        }
+
+        private void ValidateService()
+        {
+            foreach (Control ctl in Controls)
+            {
+                if (ctl.HasChildren)
+                {
+                    foreach(Control ctl2 in ctl.Controls)
+                    {
+                        if (ctl2 is TextBox)
+                        {
+                            if (ctl2.Name == txtPrice.Name)
+                            {
+                                if (ctl2.Text == null)
+                                {
+                                    MessageBox.Show("price cannot be empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return;
+                                }
+                            } else if (ctl2.Name == txtName.Text && (ctl.Text.Length <= 0))
+                            {
+                                MessageBox.Show("name cannot be empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

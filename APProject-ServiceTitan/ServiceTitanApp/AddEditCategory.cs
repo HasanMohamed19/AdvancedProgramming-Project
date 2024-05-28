@@ -52,6 +52,13 @@ namespace ServiceTitanApp
             
             try
             {
+                // validation for lengths
+                if (txtName.Text.Length < 5 || txtName.Text == null)
+                {
+                    MessageBox.Show("Category Name cannot be empty and needs to be at least 5 characters long.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
                 //category.Services = null;
                 category.CategoryManager = context.Users.Where(user => user.UserID == Convert.ToInt32(comboManager.SelectedValue)).FirstOrDefault();
                 category.CategoryName = txtName.Text;
