@@ -199,6 +199,10 @@ namespace ServiceTitanWebApp.Controllers
             Service? service = _context.Services.Find(newRequestVM.ServiceId);
             if (service == null) { return NotFound(); }
 
+            //if (serviceRequest.RequestDateNeeded < DateTime.Now.AddDays(2))
+            //    TempData["CreateFailed"] = "Request must be at least 2 days after today.";
+
+
             serviceRequest.StatusId = 1; //pending
             serviceRequest.ClientId = _context.Users.Single(s => s.UserEmail == _userManager.GetUserName(User)).UserID;
             serviceRequest.RequestPrice = service.ServicePrice;

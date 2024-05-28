@@ -35,12 +35,16 @@
         @Html.Raw(TempData["cannotDelete"])
     }
 }
+        <p>
     @if (User.IsInRole("Admin"))
     {
-        <p>
             <a asp-action="Create" class="btn btn-primary">Create New</a>
-        </p>
-    }
+            <a asp-action="Dashboard" class="btn btn-primary">Dashboard</a>
+        } else if (User.IsInRole("Manager"))
+        {
+            <a asp-action="Dashboard" class="btn btn-primary">Dashboard</a>
+        }
+    </p>
 
     <form asp-controller="Category" method="get" asp-action="Index" class="mb-3">
         <div class="hstack gap-2" style="max-width:45rem;">

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ServiceTitanBusinessObjects
 {
-    public class ServiceRequest
+    public class ServiceRequest : IValidatableObject
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -50,6 +50,12 @@ namespace ServiceTitanBusinessObjects
         [Display(Name = "Status")]
         public RequestStatus? Status { get; set; }
 
-
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (RequestDateNeeded < DateTime.Now.AddDays(2))
+            {
+                yield return new ValidationResult("Request must be at least 2 days after today.", new string[] { "RequestDateNeeded" });
+            }
+        }
     }
 }
