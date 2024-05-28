@@ -132,9 +132,15 @@ namespace ServiceTitanWebApp.Controllers
 
                 foreach (var item in newService.TechniciansId)
                 {
-                    st.TechniciansId = item;
-                    _context.ServiceTechnicians.Add(st);
-                    _context.SaveChanges();
+                    try
+                    {
+                        st.TechniciansId = item;
+                        _context.ServiceTechnicians.Add(st);
+                        _context.Save(User, GetSourceRoute(), null);
+                    } catch (Exception ex)
+                    {
+                        _context.LogException(ex, User, GetSourceRoute());
+                    }
                 }
 
                 TempData["CreateSuccess"] = "Service Created Successfully";
@@ -255,16 +261,16 @@ namespace ServiceTitanWebApp.Controllers
 
                     await _context.SaveAsync(User, GetSourceRoute(), null);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
                     if (!ServiceExists(serviceVM.Service.ServiceID))
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+                    _context.LogException(ex, User, GetSourceRoute());
+                } catch (Exception ex)
+                {
+                    _context.LogException(ex, User, GetSourceRoute());
                 }
                 TempData["EditSuccess"] = "Service Edited Successfully";
                 return RedirectToAction(nameof(Index));
@@ -327,13 +333,20 @@ namespace ServiceTitanWebApp.Controllers
                 return Problem("Entity set 'ServiceTitanDBContext.Services'  is null.");
             }
             var service = await _context.Services.FindAsync(id);
-            if (service != null)
+            try
             {
-                _context.Services.Remove(service);
-            }
+                if (service != null)
+                {
+                    _context.Services.Remove(service);
+                }
 
-            await _context.SaveAsync(User, GetSourceRoute(), null);
-            TempData["DeleteSuccess"] = "Service Deleted Successfully";
+                await _context.SaveAsync(User, GetSourceRoute(), null);
+                TempData["DeleteSuccess"] = "Service Deleted Successfully";
+            } catch (Exception ex)
+            {
+                _context.LogException(ex, User, GetSourceRoute());
+                TempData["DeleteFailed"] = "Could not delete service.";
+            }
             return RedirectToAction(nameof(Index));
         }
 
