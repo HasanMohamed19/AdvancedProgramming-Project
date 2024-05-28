@@ -85,9 +85,12 @@
                             @Html.DisplayNameFor(m => model.Client)
                         </th>
                     }
-                    <th>
-                        @Html.DisplayNameFor(m => model.Technician)
-                    </th>
+                    @if (!User.IsInRole("Technician"))
+                    {
+                        <th>
+                            @Html.DisplayNameFor(m => model.Technician)
+                        </th>
+                    }
                     <th>
                         @Html.DisplayNameFor(m => model.Status)
                     </th>
@@ -117,9 +120,12 @@
                             </td>
                         }
 
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Technician.FullName)
-                        </td>
+                        @if (!User.IsInRole("Technician"))
+                        {
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Technician.FullName)
+                            </td>
+                        }
                         <td>
                             @Html.DisplayFor(modelItem => item.Status.Status)
                         </td>
