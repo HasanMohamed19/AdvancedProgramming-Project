@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Security.Claims;
@@ -222,6 +223,7 @@ namespace ServiceTitanBusinessObjects
         private Log CreateLog(object entity, EntityState state, ClaimsPrincipal user, string source, string? message)
         {
             var propertyInfo = entity.GetType().GetProperties();
+            string commonType = "AuditTrail";
             if (state  == EntityState.Added)
             {
                 message ??= "Added to entity";
@@ -233,7 +235,7 @@ namespace ServiceTitanBusinessObjects
                     Message = message,
                     OriginalValue = "",
                     CurrentValue = GetEntityPropertyValues(entity, propertyInfo),
-                    Type = "T"
+                    Type = commonType
                 };
             }
             else if (state == EntityState.Modified)
@@ -245,7 +247,7 @@ namespace ServiceTitanBusinessObjects
                     UserId = Users.Single(u => u.UserEmail == user.Identity.Name).UserID,
                     Source = source,
                     Message = message,
-                    Type = "T"
+                    Type = commonType
                 };
 
                 var entry = ChangeTracker.Entries().SingleOrDefault(e => e.Entity == entity);
@@ -269,7 +271,7 @@ namespace ServiceTitanBusinessObjects
                     Message = message,
                     OriginalValue = GetEntityPropertyValues(entity, propertyInfo),
                     CurrentValue = "",
-                    Type = "T"
+                    Type = commonType
                 };
             }
             message ??= "";
@@ -281,7 +283,7 @@ namespace ServiceTitanBusinessObjects
                 Message = message,
                 OriginalValue = "",
                 CurrentValue = "",
-                Type = "T"
+                Type = commonType
             };
         }
 
@@ -320,6 +322,48 @@ namespace ServiceTitanBusinessObjects
         }
 
 
+        public void LogException(Exception ex, ClaimsPrincipal user, string source)
+        {
+            RollBack(); // rollback changes to allow saving log
+            string message = (ex.Message + "\n" + ex.InnerException);
+            if (message.Length > 4000)
+                message = message.Substring(0, 3999);
+            Log log = new Log
+            {
+                Time = DateTime.Now,
+                UserId = Users.Single(u => u.UserEmail == user.Identity.Name).UserID,
+                Source = source,
+                OriginalValue = "",
+                CurrentValue = "",
+                Message = message,
+                Type = "Exception"
+            };
+            Logs.Add(log);
+            SaveChanges();
+        }
+
+        public void RollBack()
+        {
+            var changedEntries = ChangeTracker.Entries()
+                .Where(x => x.State != EntityState.Unchanged).ToList();
+
+            foreach (var entry in changedEntries)
+            {
+                switch (entry.State)
+                {
+                    case EntityState.Modified:
+                        entry.CurrentValues.SetValues(entry.OriginalValues);
+                        entry.State = EntityState.Unchanged;
+                        break;
+                    case EntityState.Added:
+                        entry.State = EntityState.Detached;
+                        break;
+                    case EntityState.Deleted:
+                        entry.State = EntityState.Unchanged;
+                        break;
+                }
+            }
+        }
     }
 
 
