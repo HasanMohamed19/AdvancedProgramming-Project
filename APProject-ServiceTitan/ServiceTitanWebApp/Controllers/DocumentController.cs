@@ -7,12 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ServiceTitanBusinessObjects;
+using ServiceTitanWebApp.Helpers;
 using ServiceTitanWebApp.ViewModels;
 
 namespace ServiceTitanWebApp.Controllers
 {
     [Authorize]
-    public class DocumentController : Controller
+    public class DocumentController : BaseController
     {
         private readonly ServiceTitanDBContext _context;
 
@@ -101,7 +102,7 @@ namespace ServiceTitanWebApp.Controllers
                         ServiceRequestId = requestId
                     };
                     _context.Documents.Add(document);
-                    _context.SaveChanges();
+                    await _context.SaveAsync(User, GetSourceRoute(), null);
                 }
             }
             TempData["CreateSuccess"] = "Files Uploaded Successfully";
@@ -164,7 +165,7 @@ namespace ServiceTitanWebApp.Controllers
             try
             {
                 _context.Update(existingDocument);
-                await _context.SaveChangesAsync();
+                await _context.SaveAsync(User, GetSourceRoute(), null);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -219,8 +220,8 @@ namespace ServiceTitanWebApp.Controllers
                 System.IO.File.Delete(document.DocumentPath);
             }
             _context.Documents.Remove(document);
-            
-            await _context.SaveChangesAsync();
+
+            await _context.SaveAsync(User, GetSourceRoute(), null);
             TempData["DeleteSuccess"] = "Document Deleted Successfully";
             return RedirectToAction(nameof(Index), new { requestId = document.ServiceRequestId });
         }

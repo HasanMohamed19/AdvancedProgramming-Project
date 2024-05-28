@@ -9,11 +9,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using ServiceTitanBusinessObjects;
+using ServiceTitanWebApp.Helpers;
 using ServiceTitanWebApp.ViewModels;
 
 namespace ServiceTitanWebApp.Controllers
 {
-    public class ServiceRequestController : Controller
+    public class ServiceRequestController : BaseController
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ServiceTitanDBContext _context;
@@ -206,7 +207,7 @@ namespace ServiceTitanWebApp.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(serviceRequest);
-                await _context.SaveChangesAsync();
+                await _context.SaveAsync(User, GetSourceRoute(), null);
                 TempData["CreateSuccess"] = "Request Created Successfully";
                 return RedirectToAction(nameof(Index));
             }
@@ -263,7 +264,7 @@ namespace ServiceTitanWebApp.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(serviceRequest);
-                await _context.SaveChangesAsync();
+                await _context.SaveAsync(User, GetSourceRoute(), null);
                 TempData["CreateSuccess"] = "Request Created Successfully";
                 return RedirectToAction(nameof(Index));
             }
@@ -339,7 +340,7 @@ namespace ServiceTitanWebApp.Controllers
                 try
                 {
                     _context.Update(existingRequest);
-                    await _context.SaveChangesAsync();
+                    await _context.SaveAsync(User, GetSourceRoute(), null);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -408,7 +409,7 @@ namespace ServiceTitanWebApp.Controllers
                     try
                     {
                         _context.Update(serviceRequest);
-                        await _context.SaveChangesAsync();
+                        await _context.SaveAsync(User, GetSourceRoute(), null);
                     }
                     catch (DbUpdateConcurrencyException)
                     {
@@ -469,8 +470,8 @@ namespace ServiceTitanWebApp.Controllers
             {
                 _context.ServiceRequests.Remove(serviceRequest);
             }
-            
-            await _context.SaveChangesAsync();
+
+            await _context.SaveAsync(User, GetSourceRoute(), null);
             TempData["DeleteSuccess"] = "Request Deleted Successfully";
             return RedirectToAction(nameof(Index));
         }

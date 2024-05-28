@@ -79,8 +79,6 @@ namespace ServiceTitanWebApp.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(comment);
-                //var sourceRoute = this.ControllerContext.RouteData.Values;
-                //string source = "WebApp: " + sourceRoute["controller"] + ":" + sourceRoute["action"];
                 await _context.SaveAsync(User,GetSourceRoute(), null);
                 TempData["CreateSuccess"] = "Comment Created Successfully";
                 return RedirectToAction(nameof(Index), new { requestId = comment.ServiceRequestId });
@@ -143,8 +141,6 @@ namespace ServiceTitanWebApp.Controllers
                 try
                 {
                     _context.Update(existingComment);
-                    //var sourceRoute = this.ControllerContext.RouteData.Values;
-                    //string source = "WebApp: " + sourceRoute["controller"] + ":" + sourceRoute["action"];
                     await _context.SaveAsync(User, GetSourceRoute(), null);
                 }
                 catch (DbUpdateConcurrencyException)
@@ -211,8 +207,6 @@ namespace ServiceTitanWebApp.Controllers
                     return Forbid();
                 _context.Comments.Remove(comment);
             }
-            //var sourceRoute = this.ControllerContext.RouteData.Values;
-            //string source = "WebApp: " + sourceRoute["controller"] + ":" + sourceRoute["action"];
             await _context.SaveAsync(User, GetSourceRoute(), null);
             TempData["DeleteSuccess"] = "Comment Deleted Successfully";
             return RedirectToAction(nameof(Index), new { requestId = comment.ServiceRequestId });

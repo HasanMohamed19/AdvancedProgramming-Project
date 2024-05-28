@@ -6,10 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ServiceTitanBusinessObjects;
+using ServiceTitanWebApp.Helpers;
 
 namespace ServiceTitanWebApp.Controllers
 {
-    public class NotificationController : Controller
+    public class NotificationController : BaseController
     {
         private readonly ServiceTitanDBContext _context;
 
@@ -68,7 +69,7 @@ namespace ServiceTitanWebApp.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(notification);
-                await _context.SaveChangesAsync();
+                await _context.SaveAsync(User, GetSourceRoute(), null);
                 return RedirectToAction(nameof(Index));
             }
             ViewData["NotificationStatusId"] = new SelectList(_context.NotificationStatus, "NotificationStatusID", "NotificationStatusName", notification.NotificationStatusId);
@@ -111,7 +112,7 @@ namespace ServiceTitanWebApp.Controllers
                 try
                 {
                     _context.Update(notification);
-                    await _context.SaveChangesAsync();
+                    await _context.SaveAsync(User, GetSourceRoute(), null);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -165,8 +166,8 @@ namespace ServiceTitanWebApp.Controllers
             {
                 _context.Notifications.Remove(notification);
             }
-            
-            await _context.SaveChangesAsync();
+
+            await _context.SaveAsync(User, GetSourceRoute(), null);
             return RedirectToAction(nameof(Index));
         }
 
