@@ -210,7 +210,7 @@ namespace ServiceTitanWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Service")] NewServiceViewModel serviceVM)
+        public async Task<IActionResult> Edit(int id, [Bind("Service,TechniciansId")] NewServiceViewModel serviceVM)
         {
             if (id != serviceVM.Service.ServiceID)
             {
@@ -221,6 +221,29 @@ namespace ServiceTitanWebApp.Controllers
             {
                 try
                 {
+                    // loop through all technicians in the db and check which 
+                    // have been modified for this service
+                    var technicians = _context.Users.Where(u => u.RoleId == 3).ToList();
+                    for (int i=0; i<technicians.Count(); i++)
+                    {
+                        ApplicationUser tech = technicians[i];
+                        bool relationshipExists = _context.ServiceTechnicians
+                            .Any(st => st.TechniciansId == tech.UserID
+                            && st.ServicesId == serviceVM.Service.ServiceID);
+
+                        if (!relationshipExists && serviceVM.TechniciansId.Any(t => t == tech.UserID))
+                        {
+                            // add if not already selected
+                            _context.ServiceTechnicians.Add(new ServiceTechnician { 
+                                TechniciansId = tech.UserID, ServicesId = id });
+                        } else if (relationshipExists && !serviceVM.TechniciansId.Any(t => t == tech.UserID))
+                        {
+                            // remove if deselected
+                            _context.ServiceTechnicians.Remove(_context.ServiceTechnicians
+                                .Single(st => st.TechniciansId == tech.UserID && st.ServicesId == id)
+                                );
+                        }
+                    }
                     _context.Update(serviceVM.Service);
                     
                     await _context.SaveChangesAsync();
