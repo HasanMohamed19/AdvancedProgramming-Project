@@ -9,11 +9,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using ServiceTitanBusinessObjects;
+using ServiceTitanWebApp.Helpers;
 using ServiceTitanWebApp.ViewModels;
 
 namespace ServiceTitanWebApp.Controllers
 {
-    public class ServiceController : Controller
+    public class ServiceController : BaseController
     {
         private readonly ServiceTitanDBContext _context;
 
@@ -116,12 +117,12 @@ namespace ServiceTitanWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(NewServiceViewModel newService)
+        public async Task<IActionResult> Create(NewServiceViewModel newService)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(newService.Service);
-                _context.SaveChanges();
+                await _context.SaveAsync(User, GetSourceRoute(), null);
 
                 ServiceTechnician st = new ServiceTechnician();
                 st.ServicesId = newService.Service.ServiceID;
@@ -248,8 +249,8 @@ namespace ServiceTitanWebApp.Controllers
                         }
                     }
                     _context.Update(serviceVM.Service);
-                    
-                    await _context.SaveChangesAsync();
+
+                    await _context.SaveAsync(User, GetSourceRoute(), null);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -327,8 +328,8 @@ namespace ServiceTitanWebApp.Controllers
             {
                 _context.Services.Remove(service);
             }
-            
-            await _context.SaveChangesAsync();
+
+            await _context.SaveAsync(User, GetSourceRoute(), null);
             TempData["DeleteSuccess"] = "Service Deleted Successfully";
             return RedirectToAction(nameof(Index));
         }
