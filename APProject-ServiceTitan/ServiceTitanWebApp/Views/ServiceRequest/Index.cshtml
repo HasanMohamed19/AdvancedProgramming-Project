@@ -175,10 +175,10 @@
                                     <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.RequestID">Edit</a>
                                 }
                             }
-                            @if (User.IsInRole("Admin"))
+                            @* @if (User.IsInRole("Admin"))
                             {
                                 <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.RequestID">Delete</a>
-                            }
+                            } *@
                         </div>
                     </div>
                 </div>
