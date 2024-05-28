@@ -1,3 +1,4 @@
+@using ServiceTitanBusinessObjects
 @using ServiceTitanWebApp.ViewModels
 @model ServiceRequestIndexViewModel
 
@@ -5,6 +6,7 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ServiceRequest model = new();
 }
 
 <h1>Requests</h1>
@@ -66,35 +68,31 @@
             <thead>
                 <tr>
                     <th>
-                        @* @Html.DisplayNameFor(model => model.Service) *@
-                        Service
+                        @Html.DisplayNameFor(m => model.Service)
                     </th>
                     <th>
-                        @* @Html.DisplayNameFor(model => model.RequestPrice) *@
-                        Request Price
+                        @Html.DisplayNameFor(m => model.RequestPrice)
                     </th>
                     <th>
-                        @* @Html.DisplayNameFor(model => model.RequestDescription) *@
-                        Request Description
+                        @Html.DisplayNameFor(m => model.RequestDescription)
                     </th>
                     <th>
-                        @* @Html.DisplayNameFor(model => model.RequestDateNeeded) *@
-                        RequestDateNeeded
+                        @Html.DisplayNameFor(m => model.RequestDateNeeded)
                     </th>
                     @if (!User.IsInRole("User"))
                     {
                         <th>
-                            @* @Html.DisplayNameFor(model => model.Client) *@
-                            Client
+                            @Html.DisplayNameFor(m => model.Client)
+                        </th>
+                    }
+                    @if (!User.IsInRole("Technician"))
+                    {
+                        <th>
+                            @Html.DisplayNameFor(m => model.Technician)
                         </th>
                     }
                     <th>
-                        @* @Html.DisplayNameFor(model => model.Technician) *@
-                        Technician
-                    </th>
-                    <th>
-                        @* @Html.DisplayNameFor(model => model.Status) *@
-                        Status
+                        @Html.DisplayNameFor(m => model.Status)
                     </th>
                     <th></th>
                 </tr>
@@ -122,9 +120,12 @@
                             </td>
                         }
 
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Technician.FullName)
-                        </td>
+                        @if (!User.IsInRole("Technician"))
+                        {
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Technician.FullName)
+                            </td>
+                        }
                         <td>
                             @Html.DisplayFor(modelItem => item.Status.Status)
                         </td>
