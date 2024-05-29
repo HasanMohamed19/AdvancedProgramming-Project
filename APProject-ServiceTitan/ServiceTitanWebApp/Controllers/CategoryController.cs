@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,11 +15,13 @@ namespace ServiceTitanWebApp.Controllers
 {
     public class CategoryController : BaseController
     {
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly ServiceTitanDBContext _context;
 
-        public CategoryController(ServiceTitanDBContext context)
+        public CategoryController(ServiceTitanDBContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [Authorize]
@@ -52,6 +55,15 @@ namespace ServiceTitanWebApp.Controllers
                 Categories = categories,
                 Managers = _context.Users.Where(u => u.RoleId == 2)
             };
+
+            // add category manager id for dashboard
+            if (User.IsInRole("Manager"))
+            {
+                int userId = _context.Users.Single(s => s.UserEmail == _userManager.GetUserName(User)).UserID;
+                int? categoryId = _context.Categories.SingleOrDefault(c => c.CategoryManagerId != null && c.CategoryManagerId == userId)?.CategoryID;
+                if (categoryId != null)
+                    categoryIndexVM.ManagerCategoryId = categoryId;
+            }
 
             //var managers = new SelectList(_context.Users.Where(u => u.RoleId == 2), "UserID", "FullName", searchManager);
             //ViewBag.managers = managers;
@@ -287,33 +299,39 @@ namespace ServiceTitanWebApp.Controllers
             }
         }
 
-        public IActionResult Dashboard()
+        public IActionResult Dashboard(int? categoryId)
         {
-
-            if (User.IsInRole("Manager"))
+            if (categoryId == null && User.IsInRole("Admin"))
             {
-                int userID = _context.Users.Single(u => u.UserEmail == User.Identity.Name).UserID;
-                string topSellingService = _context.Services
-                .Where(s => s.Category.CategoryManagerId == userID)
+                var topService = _context.Services
                 .OrderByDescending(service => service.ServiceRequests.Sum(sr => sr.RequestPrice))
-                .FirstOrDefault().ServiceName;
+                .FirstOrDefault();
+                string topSellingService = topService != null ? topService.ServiceName : "None";
+                topSellingService ??= "";
 
                 string pendingRequests = _context.ServiceRequests
-                .Where(sr => sr.StatusId == 2 && sr.Service.Category.CategoryManagerId == userID)
+                .Where(sr => sr.StatusId == 1)
                 .Count().ToString();
 
                 ViewData["topSellingService"] = topSellingService;
                 ViewData["pendingRequests"] = pendingRequests;
             }
-            else
+
+            if (categoryId != null && User.IsInRole("Manager"))
             {
-                string topSellingService = _context.Services
+                int userID = _context.Users.Single(u => u.UserEmail == User.Identity.Name).UserID;
+
+                var topService = _context.Services
+                .Where(s => s.CategoryId != null && s.CategoryId == categoryId)
                 .OrderByDescending(service => service.ServiceRequests.Sum(sr => sr.RequestPrice))
-                .FirstOrDefault().ServiceName;
+                .FirstOrDefault();
+                string topSellingService = topService != null ? topService.ServiceName : "None";
+                topSellingService ??= "";
 
                 string pendingRequests = _context.ServiceRequests
-                .Where(sr => sr.StatusId == 2)
+                .Where(sr => sr.StatusId == 1 && sr.Service.CategoryId == categoryId)
                 .Count().ToString();
+                pendingRequests ??= "";
 
                 ViewData["topSellingService"] = topSellingService;
                 ViewData["pendingRequests"] = pendingRequests;

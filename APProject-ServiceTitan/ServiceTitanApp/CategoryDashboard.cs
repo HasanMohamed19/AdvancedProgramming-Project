@@ -61,7 +61,7 @@ namespace ServiceTitanApp
             topSellingService ??= "";
 
             string pendingRequests = context.ServiceRequests
-                .Where(sr => sr.StatusId == 2 && sr.Service.CategoryId == categoryId)
+                .Where(sr => sr.StatusId == 1 && sr.Service.CategoryId == categoryId)
                 .Count().ToString();
             pendingRequests ??= "";
 
