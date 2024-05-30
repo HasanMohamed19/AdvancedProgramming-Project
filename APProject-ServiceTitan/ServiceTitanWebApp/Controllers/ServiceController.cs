@@ -262,6 +262,12 @@ namespace ServiceTitanWebApp.Controllers
                 return NotFound();
             }
 
+            if (User.IsInRole("Manager"))
+            {
+                int managerId = _context.Users.Single(u => u.UserEmail == User.Identity.Name).UserID;
+                serviceVM.Service.CategoryId = _context.Categories.Single(u => u.CategoryManagerId == managerId).CategoryID;
+            }
+
             if (ModelState.IsValid)
             {
                 try

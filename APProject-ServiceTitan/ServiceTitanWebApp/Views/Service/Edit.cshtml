@@ -44,7 +44,7 @@
                 {
                             <div class="form-group">
                                 <label asp-for="Service.CategoryId" class="control-label"></label>
-                                <input type="text" disabled asp-for="Service.CategoryId" class="form-control" value="@Model.Service.Category" />
+                                <input type="text" disabled asp-for="Service.CategoryId" class="form-control" value="@Model.Service.Category?.CategoryName" />
                             </div>
                 }
             }
