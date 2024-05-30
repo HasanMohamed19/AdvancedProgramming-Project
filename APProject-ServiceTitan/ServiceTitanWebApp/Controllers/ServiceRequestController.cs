@@ -38,12 +38,12 @@ namespace ServiceTitanWebApp.Controllers
             // if this is technician, show only requests for him
             if (User.IsInRole(UserRole.GetRoleName(3)!))
             {
-                requests = requests.Where(s => s.Technician.UserEmail == loggedInUserEmail);
+                requests = requests.Where(s => s.Technician != null && s.Technician.UserEmail == loggedInUserEmail);
 
                 // search for client name
                 if (!String.IsNullOrEmpty(searchName))
                 {
-                    requests = requests.Where(r => r.Client.FullName!.Contains(searchName));
+                    requests = requests.Where(r => r.Client != null && r.Client.FullName!.Contains(searchName));
                 }
 
                 // search for status
@@ -63,12 +63,12 @@ namespace ServiceTitanWebApp.Controllers
             else if (User.IsInRole(UserRole.GetRoleName(4)!))
             {
                 // if this is User, show only requests for him
-                requests = requests.Where(s => s.Client.UserEmail == loggedInUserEmail);
+                requests = requests.Where(s => s.Client != null && s.Client.UserEmail == loggedInUserEmail);
 
                 // search for client name
                 if (!String.IsNullOrEmpty(searchName))
                 {
-                    requests = requests.Where(r => r.Client.FullName!.Contains(searchName));
+                    requests = requests.Where(r => r.Client != null && r.Client.FullName!.Contains(searchName));
                 }
 
                 // search for status
@@ -91,7 +91,7 @@ namespace ServiceTitanWebApp.Controllers
                 // search for client name
                 if (!String.IsNullOrEmpty(searchName))
                 {
-                    requests = requests.Where(r => r.Client.FullName!.Contains(searchName));
+                    requests = requests.Where(r => r.Client != null && r.Client.FullName!.Contains(searchName));
                 }
 
                 // search for status
@@ -395,7 +395,7 @@ namespace ServiceTitanWebApp.Controllers
                     _context.Update(existingRequest);
                     await _context.SaveAsync(User, GetSourceRoute(), null);
                     SendEditNotification(existingRequest);
-                    ApplicationUser u = _context.Users.Single(u => serviceRequest.ClientId == u.UserID);
+                    ApplicationUser u = _context.Users.Single(u => existingRequest.ClientId == u.UserID);
                     EmailController.Instance().SendServiceRequestUpdate(u.UserEmail, u.UserEmail, u.FirstName, u.LastName, existingRequest.RequestPrice.ToString());
                     TempData["EditSuccess"] = "Request Saved Successfully";
                 }

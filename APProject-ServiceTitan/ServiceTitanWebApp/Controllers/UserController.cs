@@ -204,7 +204,7 @@ namespace ServiceTitanWebApp.Controllers
                 string newRole = _context.UserRoles.Find(userVM.NewUser.RoleId).RoleName;
                 IdentityUser idUser = await _userManager.FindByEmailAsync(existingUser.UserEmail);
                 var userRole = await _userManager.GetRolesAsync(idUser);
-                var removeResult = await _userManager.RemoveFromRoleAsync(idUser, existingUser.Role.RoleName);
+                var removeResult = await _userManager.RemoveFromRoleAsync(idUser, userRole[0]);
                 if (!removeResult.Succeeded)
                 {
                     return NotFound();
@@ -253,6 +253,7 @@ namespace ServiceTitanWebApp.Controllers
                     }
                     _context.Update(existingUser);
                     await _context.SaveAsync(User, GetSourceRoute(), null);
+                    TempData["EditSuccess"] = "User Edited Successfully";
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
@@ -261,11 +262,12 @@ namespace ServiceTitanWebApp.Controllers
                         return NotFound();
                     }
                     _context.LogException(ex, User, GetSourceRoute());
+                    TempData["EditFailed"] = "Could not save user.";
                 } catch (Exception ex)
                 {
                     _context.LogException(ex, User, GetSourceRoute());
+                    TempData["EditFailed"] = "Could not save user.";
                 }
-                TempData["EditSuccess"] = "User Edited Successfully";
                 return RedirectToAction(nameof(Index));
             }
             ViewData["RoleId"] = new SelectList(_context.UserRoles.Where(ur => ur.RoleID != 1), "RoleID", "RoleName", existingUser.RoleId);
@@ -322,11 +324,12 @@ namespace ServiceTitanWebApp.Controllers
                 }
 
                 await _context.SaveAsync(User, GetSourceRoute(), null);
+                TempData["DeleteSuccess"] = "User Deleted Successfully";
             } catch (Exception ex)
             {
                 _context.LogException(ex, User, GetSourceRoute());
+                TempData["DeleteFailed"] = "Could not delete user.";
             }
-            TempData["DeleteSuccess"] = "User Deleted Successfully";
             return RedirectToAction(nameof(Index));
         }
 
