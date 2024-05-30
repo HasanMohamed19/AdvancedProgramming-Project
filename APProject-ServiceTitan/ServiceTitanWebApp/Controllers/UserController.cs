@@ -93,6 +93,19 @@ namespace ServiceTitanWebApp.Controllers
                 await _emailStore.SetEmailAsync(user, userVM.NewUser.UserEmail, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, "Test@123");
 
+                if (userVM.NewUser.RoleId == 2)
+                {
+                    await _userManager.AddToRoleAsync(user, "Manager");
+                } else if (userVM.NewUser.RoleId == 3)
+                {
+                    await _userManager.AddToRoleAsync(user, "Technician");
+                } else if (userVM.NewUser.RoleId == 4)
+                {
+                    await _userManager.AddToRoleAsync(user, "User");
+                }
+
+                
+
                 userVM.AssignedServicesIds ??= new List<int>();
 
                 if (userVM.NewUser.RoleId == 3)
